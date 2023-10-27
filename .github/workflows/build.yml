@@ -13,16 +13,20 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      SOLUTION_ROOT: src
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore SOLUTION_ROOT
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build SOLUTION_ROOT --no-restore
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test SOLUTION_ROOT --no-build --verbosity normal
