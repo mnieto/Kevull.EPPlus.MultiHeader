@@ -41,7 +41,7 @@ namespace EPPLus.MultiHeader
             if (_header == null)
             {
                 _header = new HeaderManager<T>();
-                Properties = _header.Columns.ToDictionary(x => x.Key, x => x.Value.Property);
+                Properties = _header.Columns.ToDictionary(x => x.Property.Name, x => x.Property);
             }
             WriteHeaders();
 
@@ -67,9 +67,9 @@ namespace EPPLus.MultiHeader
         {
             col = 1;
             row = 1;
-            foreach (string header in _header!.Columns.Keys)
+            foreach (var columnInfo in _header!.Columns)
             {
-                _sheet.Cells[row, col++].Value = _header!.Columns[header].DisplayName;
+                _sheet.Cells[row, col++].Value = columnInfo.DisplayName;
             }
             FirstDataRow = row + 1;
         }
