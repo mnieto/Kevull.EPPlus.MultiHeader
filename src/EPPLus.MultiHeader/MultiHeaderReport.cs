@@ -25,6 +25,31 @@ namespace EPPLus.MultiHeader
 
         public MultiHeaderReport(ExcelPackage xls, string sheetName): this(xls, AddSheet(xls, sheetName)) { }
 
+        public MultiHeaderReport<T> Configure(Action<ConfigurationBuilder<T>> options)
+        {
+            var builder = new ConfigurationBuilder<T>();
+            options?.Invoke(builder);
+            _header = new HeaderManager<T>(builder.Build());
+            return this;
+        }
+
+
+        public void GenerateReport(IEnumerable<T> data)
+        {
+            //If no configuration is provided, use default simple headers
+            if (_header == null)
+            {
+                _header = new HeaderManager<T>();
+            }
+            Properties = _header.Columns.ToDictionary(x => x.Property.Name, x => x.Property);
+            WriteHeaders();
+
+            row = FirstDataRow;
+            foreach (T item in data)
+            {
+                ProcessRow(item);
+            }
+        }
 
         private static ExcelWorksheet AddSheet(ExcelPackage xls, string sheetName)
         {
@@ -33,23 +58,6 @@ namespace EPPLus.MultiHeader
                 xls.Workbook.Worksheets.Add(sheetName);
             }
             return xls.Workbook.Worksheets[sheetName];
-        }
-
-        public void GenerateReport(IEnumerable<T> data)
-        {
-            //If no configuration is provided, use default simple headers
-            if (_header == null)
-            {
-                _header = new HeaderManager<T>();
-                Properties = _header.Columns.ToDictionary(x => x.Property.Name, x => x.Property);
-            }
-            WriteHeaders();
-
-            row = FirstDataRow;
-            foreach (T item in data)
-            {
-                ProcessRow(item);
-            }
         }
 
         private void ProcessRow(T item)
@@ -73,7 +81,6 @@ namespace EPPLus.MultiHeader
             }
             FirstDataRow = row + 1;
         }
-
 
     }
 }

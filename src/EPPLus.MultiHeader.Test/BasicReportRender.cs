@@ -31,5 +31,43 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal(nameof(Person.Age), sheet.Cells[1, 4].GetValue<string>());
             Assert.Equal("Bateson", sheet.Cells[3, 2].GetValue<string>());
         }
+
+        [Fact]
+        public void Config_SetupOrder_ColumnsAreOrdered()
+        {
+            var people = new List<Person>
+            {
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
+            };
+            var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddColumn(x => x.Age, 1)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal(nameof(Person.Age), sheet.Cells[1, 1].GetValue<string>());
+            Assert.Equal(nameof(Person.Name), sheet.Cells[1, 2].GetValue<string>());
+        }
+
+        [Fact]
+        public void Config_IgnoredColumns_AreNotInTheList()
+        {
+            var people = new List<Person>
+            {
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
+            };
+            var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .IgnoreColumn(x => x.Age)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal(3, sheet.Dimension.End.Column);
+        }
+
     }
 }

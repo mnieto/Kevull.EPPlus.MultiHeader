@@ -11,6 +11,11 @@ namespace EPPLus.MultiHeader
             Columns = BuildHeaders();
         }
 
+        public HeaderManager(List<ColumnInfo> columns)
+        {
+            Columns = columns;
+        }
+
         private List<ColumnInfo> BuildHeaders()
         {
             var result = new List<ColumnInfo>();
