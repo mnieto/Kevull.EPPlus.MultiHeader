@@ -21,7 +21,7 @@ namespace EPPLus.MultiHeader.Test
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
                 new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
             };
-            var xls = new ExcelPackage();
+            using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.GenerateReport(people);
@@ -41,7 +41,7 @@ namespace EPPLus.MultiHeader.Test
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
                 new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
             };
-            var xls = new ExcelPackage();
+            using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Age, 1)
@@ -60,7 +60,7 @@ namespace EPPLus.MultiHeader.Test
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
                 new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
             };
-            var xls = new ExcelPackage();
+            using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.SurName, 1)
@@ -79,7 +79,7 @@ namespace EPPLus.MultiHeader.Test
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
                 new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
             };
-            var xls = new ExcelPackage();
+            using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Age, hidden: true)
