@@ -12,7 +12,6 @@ namespace EPPLus.MultiHeader
 
         private int FirstDataRow = 2;
         private int row;
-        private int col;
         protected HeaderManager<T>? _header;
 
         protected Dictionary<string, PropertyInfo>? Properties { get; private set; }
@@ -49,6 +48,7 @@ namespace EPPLus.MultiHeader
             {
                 ProcessRow(item);
             }
+            DoFormatting();
         }
 
         private static ExcelWorksheet AddSheet(ExcelPackage xls, string sheetName)
@@ -62,24 +62,31 @@ namespace EPPLus.MultiHeader
 
         private void ProcessRow(T item)
         {
-            col = 1;
-            foreach(string key in Properties!.Keys)
+            int col = 1;
+            foreach (var columnInfo in _header!.Columns)
             {
-                object? cellValue = Properties[key].GetValue(item);
-                _sheet.Cells[row, col++].Value = cellValue;
+                _sheet.Cells[row, col++].Value = Properties![columnInfo.Name].GetValue(item);
             }
             row++;
         }
 
         private void WriteHeaders()
         {
-            col = 1;
+            int col = 1;
             row = 1;
             foreach (var columnInfo in _header!.Columns)
             {
                 _sheet.Cells[row, col++].Value = columnInfo.DisplayName;
             }
             FirstDataRow = row + 1;
+        }
+
+        private void DoFormatting()
+        {
+            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden))
+            {
+                _sheet.Column(columnInfo.Order!.Value).Hidden = true;
+            }
         }
 
     }

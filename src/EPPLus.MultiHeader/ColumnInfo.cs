@@ -7,6 +7,7 @@ namespace EPPLus.MultiHeader
         private string? _displayName;
         private int? _order;
         public PropertyInfo Property { get; set; }
+        public bool Hidden { get; set; }
         public string Name { get => Property.Name; }
         public string DisplayName { get => _displayName ?? Property.Name; set => _displayName = value; }
 
@@ -29,6 +30,7 @@ namespace EPPLus.MultiHeader
             if (config != null)
             {
                 DisplayName = config.DisplayName;
+                Hidden = config.Hidden;
                 Ignore = config.Ignore;
                 Order = config.Order;
             }

@@ -19,8 +19,8 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void DisplayName_IsName_IfNotAssigned()
         {
-            var sut = new ColumnInfo(typeof(Person).GetProperty(nameof(Person.BirthDate))!);
-            Assert.Equal(nameof(Person.BirthDate), sut.DisplayName);
+            var sut = new ColumnInfo(typeof(Person).GetProperty(nameof(Person.Name))!);
+            Assert.Equal(nameof(Person.Name), sut.DisplayName);
         }
     }
 }

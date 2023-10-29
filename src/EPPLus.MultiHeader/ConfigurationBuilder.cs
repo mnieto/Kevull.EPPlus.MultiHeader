@@ -21,9 +21,9 @@ namespace EPPLus.MultiHeader
             return this;
         }
 
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object>> columnSelector, int order, string? displayName = null)
+        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
-            columns.Add(new ColumnConfig<T>(columnSelector, order, displayName));
+            columns.Add(new ColumnConfig<T>(columnSelector, order, displayName, hidden));
             return this;
         }
 

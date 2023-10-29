@@ -1,13 +1,14 @@
 using System.Xml.Linq;
 using System;
 using OfficeOpenXml;
+using NuGet.Frameworks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    public class BasicReportRender
+    public class OneHeaderRenderTest
     {
 
-        public BasicReportRender()
+        public OneHeaderRenderTest()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
@@ -62,11 +63,30 @@ namespace EPPLus.MultiHeader.Test
             var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
+                .AddColumn(x => x.SurName, 1)
                 .IgnoreColumn(x => x.Age)
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
             Assert.Equal(3, sheet.Dimension.End.Column);
+        }
+
+        [Fact]
+        public void HiddenColumns_AreRendered_AsHidden()
+        {
+            var people = new List<Person>
+            {
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28")),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"))
+            };
+            var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddColumn(x => x.Age, hidden: true)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.True(sheet.Column(4).Hidden);
         }
 
     }
