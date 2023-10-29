@@ -17,9 +17,9 @@ namespace EPPLus.MultiHeader.Test
             var sut = builder.Build();
 
             Assert.Equal(1, sut.First(x => x.Name == nameof(Person.Name)).Order);
-            Assert.Equal(2, sut.First(x => x.Name == nameof(Person.SurName)).Order);
+            Assert.Equal(2, sut.First(x => x.Name == nameof(Person.Surname)).Order);
             Assert.Equal(3, sut.First(x => x.Name == nameof(Person.BirthDate)).Order);
-            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.Age)).Order);
+            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
 
         }
 
@@ -32,8 +32,8 @@ namespace EPPLus.MultiHeader.Test
 
             Assert.Equal(1, sut.First(x => x.Name == nameof(Person.BirthDate)).Order);
             Assert.Equal(2, sut.First(x => x.Name == nameof(Person.Name)).Order);
-            Assert.Equal(3, sut.First(x => x.Name == nameof(Person.SurName)).Order);
-            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.Age)).Order);
+            Assert.Equal(3, sut.First(x => x.Name == nameof(Person.Surname)).Order);
+            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
 
         }
 
@@ -52,13 +52,13 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Build_IgnoredColumns_AreNotInTheList()
         {
-            var builder = new ConfigurationBuilder<Person>(new ColumnConfig<Person>(x => x.Age, true));
+            var builder = new ConfigurationBuilder<Person>(new ColumnConfig<Person>(x => x.NumOfComputers, true));
 
             var sut = builder.Build();
 
             Assert.Collection(sut, 
                 x => Assert.Equal(nameof(Person.Name), x.Name),
-                x => Assert.Equal(nameof(Person.SurName), x.Name),
+                x => Assert.Equal(nameof(Person.Surname), x.Name),
                 x => Assert.Equal(nameof(Person.BirthDate), x.Name)
             );
         }

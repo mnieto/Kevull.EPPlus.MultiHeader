@@ -34,12 +34,12 @@ namespace EPPLus.MultiHeader
 
     public class ColumnConfig<T> : ColumnConfig
     {
-        public ColumnConfig(Expression<Func<T, object>> columnSelector) : base(GetPropertyName(columnSelector)) { }
-        public ColumnConfig(Expression<Func<T, object>> columnSelector, bool ignore) : base(GetPropertyName(columnSelector), ignore) { }
-        public ColumnConfig(Expression<Func<T, object>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        public ColumnConfig(Expression<Func<T, object?>> columnSelector) : base(GetPropertyName(columnSelector)) { }
+        public ColumnConfig(Expression<Func<T, object?>> columnSelector, bool ignore) : base(GetPropertyName(columnSelector), ignore) { }
+        public ColumnConfig(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
 
-        private static string GetPropertyName(Expression<Func<T, object>> columnSelector)
+        private static string GetPropertyName(Expression<Func<T, object?>> columnSelector)
         {
             var memberExpr = columnSelector.Body as MemberExpression;
             var unaryExpr = columnSelector.Body as UnaryExpression;

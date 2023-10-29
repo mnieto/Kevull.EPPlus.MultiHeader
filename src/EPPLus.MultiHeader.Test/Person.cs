@@ -7,18 +7,8 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    internal record Person(string Name, string SurName, DateTime BirthDate)
+    internal record Person(string Name, string Surname, DateTime BirthDate, int? NumOfComputers)
     {
-        public int Age
-        {
-            get
-            {
-                var today = DateTime.Today;
-                var age = (today.Year - BirthDate.Date.Year);
-                // Go back to the year in which the person was born in case of a leap year
-                if (BirthDate.Date > today.AddYears(-age)) age--;
-                return age;
-            }
-        }
+
     }
 }

@@ -15,19 +15,19 @@ namespace EPPLus.MultiHeader
             this.columns = columns.ToList();
         }
 
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object>> columnSelector)
+        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector)
         {
             columns.Add(new ColumnConfig<T>(columnSelector));
             return this;
         }
 
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
             columns.Add(new ColumnConfig<T>(columnSelector, order, displayName, hidden));
             return this;
         }
 
-        public ConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object>> columnSelector)
+        public ConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object?>> columnSelector)
         {
             columns.Add(new ColumnConfig<T>(columnSelector, true));
             return this;
