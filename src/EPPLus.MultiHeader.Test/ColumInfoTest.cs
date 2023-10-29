@@ -11,7 +11,8 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Order_MustBeOneOrUpper()
         {
-            var sut = new ColumnInfo(typeof(Person).GetProperty(nameof(Person.Name))!);
+            var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.Name));
+            var sut = new ColumnInfo(property);
             Action act = () => sut.Order = 0;
             Assert.Throws<ArgumentOutOfRangeException>(act);
         }
@@ -19,8 +20,9 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void DisplayName_IsName_IfNotAssigned()
         {
-            var sut = new ColumnInfo(typeof(Person).GetProperty(nameof(Person.Name))!);
-            Assert.Equal(nameof(Person.Name), sut.DisplayName);
+            var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.BirthDate));
+            var sut = new ColumnInfo(property);
+            Assert.Equal(property.Name, sut.DisplayName);
         }
     }
 }
