@@ -11,11 +11,23 @@ namespace EPPLus.MultiHeader
     public class ColumnConfig
     {
         private string? _displayName;
+        private int? _order;
         public bool Hidden { get; set; }
         public string Name { get; set; }
-        public int? Order { get; set; }
-        public bool Ignore { get; set; }
         public string DisplayName { get => _displayName ?? Name; set => _displayName = value; }
+
+        public int? Order
+        {
+            get => _order;
+            set
+            {
+                if (value != null && value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(Order), "Value must be null or be greater or equals to 1");
+                _order = value;
+            }
+        }
+
+        public bool Ignore { get; set; }
 
         public ColumnConfig(string name, bool ignore)
         {

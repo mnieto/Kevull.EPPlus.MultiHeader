@@ -40,7 +40,7 @@ namespace EPPLus.MultiHeader
             {
                 _header = new HeaderManager<T>();
             }
-            Properties = _header.Columns.ToDictionary(x => x.Property.Name, x => x.Property);
+            Properties = _header.Properties;
             WriteHeaders();
 
             row = FirstDataRow;

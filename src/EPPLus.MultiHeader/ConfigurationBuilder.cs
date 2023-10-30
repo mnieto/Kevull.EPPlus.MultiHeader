@@ -33,21 +33,25 @@ namespace EPPLus.MultiHeader
             return this;
         }
 
-        public List<ColumnInfo> Build()
+        public List<ColumnConfig> Build()
         {
-            var result = new List<ColumnInfo>();
+            var result = new List<ColumnConfig>();
             var properties = typeof(T).GetTypeInfo().GetProperties();
             foreach (var property in properties)
             {
                 var columConfig = columns.FirstOrDefault(x => x.Name.Equals(property.Name));
-                if (ShouldAddColumn(columConfig))
-                    result.Add(new ColumnInfo(property, columConfig));
+                if (columConfig == null)
+                {
+                    result.Add(new ColumnConfig(property.Name));
+                } else if (ShouldAddColumn(columConfig)) { 
+                    result.Add(columConfig);
+                }
             }
             //Add dynamic columns here
             return SetupColumnsOrder(result);
         }
 
-        private List<ColumnInfo> SetupColumnsOrder(List<ColumnInfo> columns)
+        private List<ColumnConfig> SetupColumnsOrder(List<ColumnConfig> columns)
         {
             int c = 0;
             int previous = 0;
@@ -74,9 +78,9 @@ namespace EPPLus.MultiHeader
             return tempList;
         }
 
-        private bool ShouldAddColumn(ColumnConfig? columConfig)
+        private bool ShouldAddColumn(ColumnConfig columConfig)
         {
-            return columConfig == null || (columConfig != null && !columConfig.Ignore);
+            return !columConfig.Ignore;
         }
     }
 }

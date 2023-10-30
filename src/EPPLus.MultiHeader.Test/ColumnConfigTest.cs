@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    public class ColumInfoTest
+    public class ColumnConfigTest
     {
         [Fact]
         public void Order_MustBeOneOrUpper()
         {
             var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.Name));
-            var sut = new ColumnInfo(property);
+            var sut = new ColumnConfig(nameof(Person.Name));
             Action act = () => sut.Order = 0;
             Assert.Throws<ArgumentOutOfRangeException>(act);
         }
@@ -21,8 +21,8 @@ namespace EPPLus.MultiHeader.Test
         public void DisplayName_IsName_IfNotAssigned()
         {
             var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.BirthDate));
-            var sut = new ColumnInfo(property);
-            Assert.Equal(property.Name, sut.DisplayName);
+            var sut = new ColumnConfig(nameof(Person.BirthDate));
+            Assert.Equal(sut.Name, sut.DisplayName);
         }
     }
 }
