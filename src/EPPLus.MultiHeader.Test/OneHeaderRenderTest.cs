@@ -20,13 +20,12 @@ namespace EPPLus.MultiHeader.Test
             var people = new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.GenerateReport(people);
-            xls.SaveAs(@"C:\Users\mniet\Documents\progs\EPPLusMultiHeader\src\ExcelTest.xlsx");
 
             var sheet = xls.Workbook.Worksheets["People"];
             Assert.Equal(maxColumns, sheet.Dimension.End.Column);
@@ -35,7 +34,7 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal("Bateson", sheet.GetValue<string>(3, 2));
             Assert.Null(sheet.GetValue(2, 4));
             Assert.Equal(2, sheet.GetValue<int>(3, 4));
-            Assert.Equal("http://github.com/", sheet.GetValue(3, 5).ToString());
+            Assert.Equal("https://github.com/", sheet.GetValue(3, 5).ToString());
         }
 
         [Fact]
@@ -44,7 +43,7 @@ namespace EPPLus.MultiHeader.Test
             var people = new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -63,7 +62,7 @@ namespace EPPLus.MultiHeader.Test
             var people = new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -82,7 +81,7 @@ namespace EPPLus.MultiHeader.Test
             var people = new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -100,7 +99,7 @@ namespace EPPLus.MultiHeader.Test
             var people = new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
