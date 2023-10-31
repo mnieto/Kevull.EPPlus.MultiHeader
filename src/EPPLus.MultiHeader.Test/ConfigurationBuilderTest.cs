@@ -27,7 +27,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Build_WithSingleColumnOrdered_RemainingPropertiesGoesBelow()
         {
-            var builder = new ConfigurationBuilder<Person>(new ColumnConfig<Person>(x => x.BirthDate, 1));
+            var builder = new ConfigurationBuilder<Person>(new ColumnInfo<Person>(x => x.BirthDate, 1));
 
             var sut = builder.Build();
 
@@ -42,8 +42,8 @@ namespace EPPLus.MultiHeader.Test
         public void Build_WithRepeatedOrder_ThrowsError()
         {
             var builder = new ConfigurationBuilder<Person>(
-                new ColumnConfig<Person>(x => x.BirthDate, 1),
-                new ColumnConfig<Person>(x => x.Name, 1)
+                new ColumnInfo<Person>(x => x.BirthDate, 1),
+                new ColumnInfo<Person>(x => x.Name, 1)
             );
 
             Action act = () => builder.Build();
@@ -53,7 +53,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Build_IgnoredColumns_AreNotInTheList()
         {
-            var builder = new ConfigurationBuilder<Person>(new ColumnConfig<Person>(x => x.NumOfComputers, true));
+            var builder = new ConfigurationBuilder<Person>(new ColumnInfo<Person>(x => x.NumOfComputers, true));
 
             var sut = builder.Build();
 

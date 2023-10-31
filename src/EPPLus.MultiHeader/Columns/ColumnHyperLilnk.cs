@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Columns
 {
-    public class ColumnHyperLilnk : ColumnConfig
+    public class ColumnHyperLilnk : ColumnInfo
     {
         public string UrlPropertyName { get; set; }
         public bool IgnoreLinkErrors { get; set; } = true;
@@ -46,9 +46,9 @@ namespace EPPLus.MultiHeader.Columns
     public class ColumnHyperLilnk<T> : ColumnHyperLilnk 
     {
         public ColumnHyperLilnk(Expression<Func<T, object?>> columnSelector, string urlPropertyName) : 
-            base(ColumnConfig<T>.GetPropertyName(columnSelector), urlPropertyName) { }
+            base(ColumnInfo<T>.GetPropertyName(columnSelector), urlPropertyName) { }
 
         public ColumnHyperLilnk(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
-            : base(ColumnConfig <T>.GetPropertyName(columnSelector), ColumnConfig<T>.GetPropertyName(urlColumnSelector), order, displayName, hidden) { }
+            : base(ColumnInfo <T>.GetPropertyName(columnSelector), ColumnInfo<T>.GetPropertyName(urlColumnSelector), order, displayName, hidden) { }
     }
 }

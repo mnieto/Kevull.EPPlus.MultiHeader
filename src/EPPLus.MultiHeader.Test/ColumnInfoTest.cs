@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    public class ColumnConfigTest
+    public class ColumnInfoTest
     {
         [Fact]
         public void Order_MustBeOneOrUpper()
         {
             var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.Name));
-            var sut = new ColumnConfig(nameof(Person.Name));
+            var sut = new ColumnInfo(nameof(Person.Name));
             Action act = () => sut.Order = 0;
             Assert.Throws<ArgumentOutOfRangeException>(act);
         }
@@ -22,7 +22,7 @@ namespace EPPLus.MultiHeader.Test
         public void DisplayName_IsName_IfNotAssigned()
         {
             var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.BirthDate));
-            var sut = new ColumnConfig(nameof(Person.BirthDate));
+            var sut = new ColumnInfo(nameof(Person.BirthDate));
             Assert.Equal(sut.Name, sut.DisplayName);
         }
     }

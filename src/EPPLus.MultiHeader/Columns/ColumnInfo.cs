@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Columns
 {
-    public class ColumnConfig
+    public class ColumnInfo
     {
         protected string? _displayName;
         protected int? _order;
@@ -31,12 +31,12 @@ namespace EPPLus.MultiHeader.Columns
 
         public bool Ignore { get; set; }
 
-        public ColumnConfig(string name, bool ignore)
+        public ColumnInfo(string name, bool ignore)
         {
             Name = name;
             Ignore = ignore;
         }
-        public ColumnConfig(string name, int? order = null, string? displayName = null, bool hidden = false)
+        public ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
         {
             Hidden = hidden;
             Name = name;
@@ -51,11 +51,11 @@ namespace EPPLus.MultiHeader.Columns
 
     }
 
-    public class ColumnConfig<T> : ColumnConfig
+    public class ColumnInfo<T> : ColumnInfo
     {
-        public ColumnConfig(Expression<Func<T, object?>> columnSelector) : base(GetPropertyName(columnSelector)) { }
-        public ColumnConfig(Expression<Func<T, object?>> columnSelector, bool ignore) : base(GetPropertyName(columnSelector), ignore) { }
-        public ColumnConfig(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        public ColumnInfo(Expression<Func<T, object?>> columnSelector) : base(GetPropertyName(columnSelector)) { }
+        public ColumnInfo(Expression<Func<T, object?>> columnSelector, bool ignore) : base(GetPropertyName(columnSelector), ignore) { }
+        public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
 
         internal static string GetPropertyName(Expression<Func<T, object?>> columnSelector)

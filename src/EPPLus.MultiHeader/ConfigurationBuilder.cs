@@ -6,25 +6,25 @@ namespace EPPLus.MultiHeader
 {
     public class ConfigurationBuilder<T>
     {
-        private List<ColumnConfig> columns;
+        private List<ColumnInfo> columns;
 
-        public ConfigurationBuilder() : this(new List<ColumnConfig>()) { }
-        public ConfigurationBuilder(params ColumnConfig[] config): this(config.ToList()) { }
+        public ConfigurationBuilder() : this(new List<ColumnInfo>()) { }
+        public ConfigurationBuilder(params ColumnInfo[] config): this(config.ToList()) { }
 
-        public ConfigurationBuilder(IEnumerable<ColumnConfig> columns)
+        public ConfigurationBuilder(IEnumerable<ColumnInfo> columns)
         {
             this.columns = columns.ToList();
         }
 
         public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector)
         {
-            columns.Add(new ColumnConfig<T>(columnSelector));
+            columns.Add(new ColumnInfo<T>(columnSelector));
             return this;
         }
 
         public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
-            columns.Add(new ColumnConfig<T>(columnSelector, order, displayName, hidden));
+            columns.Add(new ColumnInfo<T>(columnSelector, order, displayName, hidden));
             return this;
         }
 
@@ -36,20 +36,20 @@ namespace EPPLus.MultiHeader
 
         public ConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object?>> columnSelector)
         {
-            columns.Add(new ColumnConfig<T>(columnSelector, true));
+            columns.Add(new ColumnInfo<T>(columnSelector, true));
             return this;
         }
 
-        public List<ColumnConfig> Build()
+        public List<ColumnInfo> Build()
         {
-            var result = new List<ColumnConfig>();
+            var result = new List<ColumnInfo>();
             var properties = typeof(T).GetTypeInfo().GetProperties();
             foreach (var property in properties)
             {
                 var columConfig = columns.FirstOrDefault(x => x.Name.Equals(property.Name));
                 if (columConfig == null)
                 {
-                    result.Add(new ColumnConfig(property.Name));
+                    result.Add(new ColumnInfo(property.Name));
                 } else if (ShouldAddColumn(columConfig)) { 
                     result.Add(columConfig);
                 }
@@ -58,7 +58,7 @@ namespace EPPLus.MultiHeader
             return SetupColumnsOrder(result);
         }
 
-        private List<ColumnConfig> SetupColumnsOrder(List<ColumnConfig> columns)
+        private List<ColumnInfo> SetupColumnsOrder(List<ColumnInfo> columns)
         {
             int c = 0;
             int previous = 0;
@@ -85,7 +85,7 @@ namespace EPPLus.MultiHeader
             return tempList;
         }
 
-        private bool ShouldAddColumn(ColumnConfig columConfig)
+        private bool ShouldAddColumn(ColumnInfo columConfig)
         {
             return !columConfig.Ignore;
         }

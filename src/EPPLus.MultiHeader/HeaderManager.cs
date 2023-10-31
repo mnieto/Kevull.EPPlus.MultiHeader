@@ -5,7 +5,7 @@ namespace EPPLus.MultiHeader
 {
     public class HeaderManager<T>
     {
-        public List<ColumnConfig> Columns { get; set; }
+        public List<ColumnInfo> Columns { get; set; }
         public Dictionary<string, PropertyInfo> Properties { get; set; }
  
 
@@ -13,20 +13,20 @@ namespace EPPLus.MultiHeader
             (Columns, Properties) = BuildHeaders();
         }
 
-        public HeaderManager(List<ColumnConfig> columns)
+        public HeaderManager(List<ColumnInfo> columns)
         {
             Columns = columns;
             var properties = typeof(T).GetTypeInfo().GetProperties();
             Properties = properties.ToDictionary(x => x.Name, x => x);
         }
 
-        private (List<ColumnConfig>, Dictionary<string, PropertyInfo>) BuildHeaders()
+        private (List<ColumnInfo>, Dictionary<string, PropertyInfo>) BuildHeaders()
         {
-            var result = new List<ColumnConfig>();
+            var result = new List<ColumnInfo>();
             var properties = typeof(T).GetTypeInfo().GetProperties();
             foreach (var property in properties)
             {
-                result.Add(new ColumnConfig(property.Name));
+                result.Add(new ColumnInfo(property.Name));
             }
             return (result, properties.ToDictionary(x => x.Name, x => x));
         }
