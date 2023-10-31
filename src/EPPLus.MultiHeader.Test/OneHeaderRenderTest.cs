@@ -7,10 +7,11 @@ namespace EPPLus.MultiHeader.Test
 {
     public class OneHeaderRenderTest
     {
-
+        private int maxColumns;
         public OneHeaderRenderTest()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            maxColumns = typeof(Person).GetProperties().Length;
         }
 
         [Fact]
@@ -18,21 +19,23 @@ namespace EPPLus.MultiHeader.Test
         {
             var people = new List<Person>
             {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2)
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
             };
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.GenerateReport(people);
+            xls.SaveAs(@"C:\Users\mniet\Documents\progs\EPPLusMultiHeader\src\ExcelTest.xlsx");
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.Equal(4, sheet.Dimension.End.Column);
+            Assert.Equal(maxColumns, sheet.Dimension.End.Column);
             Assert.Equal(3, sheet.Dimension.End.Row);
             Assert.Equal(nameof(Person.NumOfComputers), sheet.Cells[1, 4].GetValue<string>());
             Assert.Equal("Bateson", sheet.GetValue<string>(3, 2));
             Assert.Null(sheet.GetValue(2, 4));
             Assert.Equal(2, sheet.GetValue<int>(3, 4));
+            Assert.Equal("http://github.com/", sheet.GetValue(3, 5).ToString());
         }
 
         [Fact]
@@ -40,8 +43,8 @@ namespace EPPLus.MultiHeader.Test
         {
             var people = new List<Person>
             {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2)
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -59,8 +62,8 @@ namespace EPPLus.MultiHeader.Test
         {
             var people = new List<Person>
             {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2)
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -70,7 +73,7 @@ namespace EPPLus.MultiHeader.Test
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.Equal(3, sheet.Dimension.End.Column);
+            Assert.Equal(4, sheet.Dimension.End.Column);
         }
 
         [Fact]
@@ -78,8 +81,8 @@ namespace EPPLus.MultiHeader.Test
         {
             var people = new List<Person>
             {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2)
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
             };
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -89,6 +92,25 @@ namespace EPPLus.MultiHeader.Test
 
             var sheet = xls.Workbook.Worksheets["People"];
             Assert.True(sheet.Column(4).Hidden);
+        }
+
+        [Fact]
+        public void HyperLinkColumns_UseAntherColumnTo_BuildTheLink()
+        {
+            var people = new List<Person>
+            {
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("http://github.com/"))
+            };
+            using var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddHyperLinkColumn(x => x.Name, x => x.Profile)
+                .IgnoreColumn(x => x.Profile)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.True(sheet.Cells[3, 1].Hyperlink != null);
         }
 
     }

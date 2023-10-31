@@ -65,7 +65,7 @@ namespace EPPLus.MultiHeader
             int col = 1;
             foreach (var columnInfo in _header!.Columns)
             {
-                _sheet.Cells[row, col++].Value = Properties![columnInfo.Name].GetValue(item);
+                columnInfo.WriteCell(_sheet.Cells[row, col++], Properties!, item!);
             }
             row++;
         }

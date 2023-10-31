@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using EPPLus.MultiHeader.Columns;
+using System.Reflection;
 
 namespace EPPLus.MultiHeader
 {

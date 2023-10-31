@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -6,12 +8,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EPPLus.MultiHeader
+namespace EPPLus.MultiHeader.Columns
 {
     public class ColumnConfig
     {
-        private string? _displayName;
-        private int? _order;
+        protected string? _displayName;
+        protected int? _order;
         public bool Hidden { get; set; }
         public string Name { get; set; }
         public string DisplayName { get => _displayName ?? Name; set => _displayName = value; }
@@ -42,6 +44,11 @@ namespace EPPLus.MultiHeader
             _displayName = displayName;
         }
 
+        public virtual void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object obj)
+        {
+            cell.Value = properties[Name].GetValue(obj);
+        }
+
     }
 
     public class ColumnConfig<T> : ColumnConfig
@@ -51,7 +58,7 @@ namespace EPPLus.MultiHeader
         public ColumnConfig(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
 
-        private static string GetPropertyName(Expression<Func<T, object?>> columnSelector)
+        internal static string GetPropertyName(Expression<Func<T, object?>> columnSelector)
         {
             var memberExpr = columnSelector.Body as MemberExpression;
             var unaryExpr = columnSelector.Body as UnaryExpression;

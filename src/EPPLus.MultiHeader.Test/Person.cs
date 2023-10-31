@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    internal record Person(string Name, string Surname, DateTime BirthDate, int? NumOfComputers)
+    internal record Person(string Name, string Surname, DateTime BirthDate, int? NumOfComputers, Uri? Profile)
     {
 
     }

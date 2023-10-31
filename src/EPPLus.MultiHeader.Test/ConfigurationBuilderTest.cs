@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EPPLus.MultiHeader.Columns;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,8 @@ namespace EPPLus.MultiHeader.Test
             Assert.Collection(sut, 
                 x => Assert.Equal(nameof(Person.Name), x.Name),
                 x => Assert.Equal(nameof(Person.Surname), x.Name),
-                x => Assert.Equal(nameof(Person.BirthDate), x.Name)
+                x => Assert.Equal(nameof(Person.BirthDate), x.Name),
+                x => Assert.Equal(nameof(Person.Profile), x.Name)
             );
         }
 

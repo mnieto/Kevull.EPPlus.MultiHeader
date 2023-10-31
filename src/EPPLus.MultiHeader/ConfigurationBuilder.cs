@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using EPPLus.MultiHeader.Columns;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace EPPLus.MultiHeader
@@ -24,6 +25,12 @@ namespace EPPLus.MultiHeader
         public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
             columns.Add(new ColumnConfig<T>(columnSelector, order, displayName, hidden));
+            return this;
+        }
+
+        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        {
+            columns.Add(new ColumnHyperLilnk<T>(columnSelector, urlColumnSelector, order, displayName, hidden));
             return this;
         }
 
