@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using EPPLus.MultiHeader.Columns;
+using OfficeOpenXml;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using System.CodeDom.Compiler;
 using System.Reflection;
@@ -87,6 +88,16 @@ namespace EPPLus.MultiHeader
             {
                 _sheet.Column(columnInfo.Order!.Value).Hidden = true;
             }
+
+            bool NeedsCalculate = false;
+            foreach(var columnInfo in _header!.Columns.OfType<ColumnFormula>())
+            {
+                var range = _sheet.Cells[FirstDataRow, columnInfo.Order!.Value, _sheet.Dimension.End.Row, columnInfo.Order!.Value];
+                columnInfo.WriteCell(range, Properties!, null);
+                NeedsCalculate = true;
+            }
+            if (NeedsCalculate)
+                _sheet.Calculate();
         }
 
     }

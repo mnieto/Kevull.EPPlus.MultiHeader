@@ -14,14 +14,19 @@ namespace EPPLus.MultiHeader.Test
             maxColumns = typeof(Person).GetProperties().Length;
         }
 
-        [Fact]
-        public void Write2Rows()
+        private List<Person> BuildPeopleList()
         {
-            var people = new List<Person>
+            return new List<Person>
             {
                 new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
                 new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
             };
+        }
+
+        [Fact]
+        public void Write2Rows()
+        {
+            var people = BuildPeopleList();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -40,11 +45,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Config_SetupOrder_ColumnsAreOrdered()
         {
-            var people = new List<Person>
-            {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
-            };
+            var people = BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -59,11 +60,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void Config_IgnoredColumns_AreNotInTheList()
         {
-            var people = new List<Person>
-            {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
-            };
+            var people = BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -78,11 +75,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void HiddenColumns_AreRendered_AsHidden()
         {
-            var people = new List<Person>
-            {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
-            };
+            var people = BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -96,11 +89,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void HyperLinkColumns_UseAntherColumnTo_BuildTheLink()
         {
-            var people = new List<Person>
-            {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
-            };
+            var people = BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -110,6 +99,23 @@ namespace EPPLus.MultiHeader.Test
 
             var sheet = xls.Workbook.Worksheets["People"];
             Assert.True(sheet.Cells[3, 1].Hyperlink != null);
+        }
+
+        [Fact]
+        public void FormulaColumns_Write_Formulas()
+        {
+            var people = BuildPeopleList();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddColumn(x => x.Name, 1)
+                .AddColumn(x => x.Surname, 2)
+                .AddFormula("CompleteName", "CONCATENATE(B2,\", \",A2)", 3)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal("Bateson, Aimée", sheet.GetValue<string>(3, 3));
         }
 
     }

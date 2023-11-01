@@ -31,6 +31,8 @@ namespace EPPLus.MultiHeader.Columns
 
         public bool Ignore { get; set; }
 
+        public virtual bool IsDynamic => false;
+
         public ColumnInfo(string name, bool ignore)
         {
             Name = name;
@@ -44,9 +46,10 @@ namespace EPPLus.MultiHeader.Columns
             _displayName = displayName;
         }
 
-        public virtual void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object obj)
+        public virtual void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
         {
-            cell.Value = properties[Name].GetValue(obj);
+            if (obj != null)
+                cell.Value = properties[Name].GetValue(obj);
         }
 
     }

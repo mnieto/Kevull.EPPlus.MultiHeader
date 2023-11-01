@@ -28,6 +28,12 @@ namespace EPPLus.MultiHeader
             return this;
         }
 
+        public ConfigurationBuilder<T> AddFormula(string name, string formula, int? order = null, string? displayName = null, bool hidden = false)
+        {
+            columns.Add(new ColumnFormula(name, formula, order, displayName, hidden));
+            return this;
+        }
+
         public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
             columns.Add(new ColumnHyperLilnk<T>(columnSelector, urlColumnSelector, order, displayName, hidden));
@@ -54,7 +60,7 @@ namespace EPPLus.MultiHeader
                     result.Add(columConfig);
                 }
             }
-            //Add dynamic columns here
+            result.AddRange(columns.Where(x => x.IsDynamic));
             return SetupColumnsOrder(result);
         }
 

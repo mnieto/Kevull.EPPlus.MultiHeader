@@ -24,8 +24,10 @@ namespace EPPLus.MultiHeader.Columns
             UrlPropertyName = urlPropertyName;
         }
 
-        public override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object obj)
+        public override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
         {
+            if (obj == null)
+                return;
             cell.Value = properties[Name].GetValue(obj);
             object? url = properties[UrlPropertyName].GetValue(obj);
             if (url != null)
