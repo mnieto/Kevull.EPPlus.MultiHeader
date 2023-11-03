@@ -18,8 +18,8 @@ namespace EPPLus.MultiHeader.Test
         {
             return new List<Person>
             {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), 2, new Uri("https://github.com/"))
+                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), Gender.Male,  null, null),
+                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), Gender.Female, 2, new Uri("https://github.com/"))
             };
         }
 
@@ -33,13 +33,18 @@ namespace EPPLus.MultiHeader.Test
             report.GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
+            //Size
             Assert.Equal(maxColumns, sheet.Dimension.End.Column);
             Assert.Equal(3, sheet.Dimension.End.Row);
-            Assert.Equal(nameof(Person.NumOfComputers), sheet.Cells[1, 4].GetValue<string>());
-            Assert.Equal("Bateson", sheet.GetValue<string>(3, 2));
-            Assert.Null(sheet.GetValue(2, 4));
-            Assert.Equal(2, sheet.GetValue<int>(3, 4));
-            Assert.Equal("https://github.com/", sheet.GetValue(3, 5).ToString());
+            
+            //Headers
+            Assert.Equal(nameof(Person.NumOfComputers), sheet.Cells[1, 5].GetValue<string>());
+
+            //Data
+            Assert.Equal(Gender.Female.ToString(), sheet.GetValue<string>(3, 4));
+            Assert.Null(sheet.GetValue(2, 5));
+            Assert.Equal(2, sheet.GetValue<int>(3, 5));
+            Assert.Equal("https://github.com/", sheet.GetValue(3, 6).ToString());
         }
 
         [Fact]
@@ -69,7 +74,7 @@ namespace EPPLus.MultiHeader.Test
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.Equal(4, sheet.Dimension.End.Column);
+            Assert.Equal(5, sheet.Dimension.End.Column);
         }
 
         [Fact]
@@ -83,7 +88,7 @@ namespace EPPLus.MultiHeader.Test
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.True(sheet.Column(4).Hidden);
+            Assert.True(sheet.Column(5).Hidden);
         }
 
         [Fact]

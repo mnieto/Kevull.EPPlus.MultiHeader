@@ -20,7 +20,8 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal(1, sut.First(x => x.Name == nameof(Person.Name)).Order);
             Assert.Equal(2, sut.First(x => x.Name == nameof(Person.Surname)).Order);
             Assert.Equal(3, sut.First(x => x.Name == nameof(Person.BirthDate)).Order);
-            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
+            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.Gender)).Order);
+            Assert.Equal(5, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
 
         }
 
@@ -34,7 +35,8 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal(1, sut.First(x => x.Name == nameof(Person.BirthDate)).Order);
             Assert.Equal(2, sut.First(x => x.Name == nameof(Person.Name)).Order);
             Assert.Equal(3, sut.First(x => x.Name == nameof(Person.Surname)).Order);
-            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
+            Assert.Equal(4, sut.First(x => x.Name == nameof(Person.Gender)).Order);
+            Assert.Equal(5, sut.First(x => x.Name == nameof(Person.NumOfComputers)).Order);
 
         }
 
@@ -61,6 +63,7 @@ namespace EPPLus.MultiHeader.Test
                 x => Assert.Equal(nameof(Person.Name), x.Name),
                 x => Assert.Equal(nameof(Person.Surname), x.Name),
                 x => Assert.Equal(nameof(Person.BirthDate), x.Name),
+                x => Assert.Equal(nameof(Person.Gender), x.Name),
                 x => Assert.Equal(nameof(Person.Profile), x.Name)
             );
         }

@@ -7,7 +7,14 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Test
 {
-    internal record Person(string Name, string Surname, DateTime BirthDate, int? NumOfComputers, Uri? Profile)
+    internal enum Gender
+    {
+        NotSpecified,
+        Male,
+        Female
+    }
+
+    internal record Person(string Name, string Surname, DateTime BirthDate, Gender Gender, int? NumOfComputers, Uri? Profile)
     {
 
     }
