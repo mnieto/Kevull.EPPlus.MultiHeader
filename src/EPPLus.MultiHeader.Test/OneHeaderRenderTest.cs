@@ -118,5 +118,22 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal("Bateson, Aimée", sheet.GetValue<string>(3, 3));
         }
 
+        [Fact]
+        public void ExpressionColumns_Write_ExpressionResults()
+        {
+            var people = BuildPeopleList();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddColumn(x => x.Name, 1)
+                .AddColumn(x => x.Surname, 2)
+                .AddExpression("Initials", x => string.Concat(x.Name[0], '.', x.Surname[0], '.'), 3)
+            ).GenerateReport(people);
+
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal("A.B.", sheet.GetValue<string>(3, 3));
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EPPLus.MultiHeader.Columns;
+using OfficeOpenXml;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -25,6 +26,12 @@ namespace EPPLus.MultiHeader
         public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
         {
             columns.Add(new ColumnInfo<T>(columnSelector, order, displayName, hidden));
+            return this;
+        }
+
+        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false)
+        {
+            columns.Add(new ColumnExpression<T>(name, expression, order, displayName, hidden));
             return this;
         }
 
