@@ -11,7 +11,7 @@ namespace EPPLus.MultiHeader
         private ExcelWorksheet _sheet;
         private ExcelPackage _xls;
 
-        private int FirstDataRow = 2;
+        private int FirstDataRow => _header?.Height + 1 ?? 2;
         private int row;
         protected HeaderManager<T>? _header;
 
@@ -71,15 +71,17 @@ namespace EPPLus.MultiHeader
             row++;
         }
 
-        private void WriteHeaders()
+        private void WriteHeaders(HeaderManager? header = null, int row = 1)
         {
-            int col = 1;
-            row = 1;
-            foreach (var columnInfo in _header!.Columns)
+            header = header ?? _header!;
+            foreach (var columnInfo in header.Columns)
             {
-                _sheet.Cells[row, col++].Value = columnInfo.DisplayName;
+                _sheet.Cells[row, columnInfo.Index].Value = columnInfo.DisplayName;
+                if (columnInfo.HasChildren)
+                {
+                    WriteHeaders(columnInfo.Header!, row + 1);
+                }
             }
-            FirstDataRow = row + 1;
         }
 
         private void DoFormatting()

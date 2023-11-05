@@ -74,12 +74,15 @@ namespace EPPLus.MultiHeader
         private List<ColumnInfo> SetupColumnsOrder(List<ColumnInfo> columns)
         {
             int c = 0;
+            int index = 1;
             int previous = 0;
             var tempList = columns.Where(x => x.Order.HasValue).OrderBy(x => x.Order).ToList();
             tempList.AddRange(columns.Where(x => x.Order == null));
             for (int i = 0; i < tempList.Count; i++)
             {
                 var item = tempList[i];
+                item.Index = index;
+                index += item.Width;
                 if (item.Order.HasValue)
                 {
                     c = item.Order.Value;

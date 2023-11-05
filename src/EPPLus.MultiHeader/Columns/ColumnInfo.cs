@@ -18,6 +18,7 @@ namespace EPPLus.MultiHeader.Columns
         public string Name { get; set; }
         public string DisplayName { get => _displayName ?? Name; set => _displayName = value; }
 
+        public int Index { get; set; } 
         public int? Order
         {
             get => _order;
@@ -32,6 +33,11 @@ namespace EPPLus.MultiHeader.Columns
         public bool Ignore { get; set; }
 
         public virtual bool IsDynamic => false;
+
+        public HeaderManager? Header { get; set; }
+        public bool HasChildren => Header != null && Header.Columns.Count > 0;
+        public int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
+
 
         public ColumnInfo(string name, bool ignore)
         {
