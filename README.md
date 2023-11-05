@@ -2,3 +2,49 @@
 
 # EPPlus.MultiHeader
 Extension for the [EPPlus](https://github.com/EPPlusSoftware/EPPlus) library to create reports from complex objects
+
+Given a list like this:
+```csharp
+            var complexObject = new List<RootLevel> { 
+                new RootLevel {
+                    SimpleProperty = "String1",
+                    ComplexProperty = new SecondLevel
+                    {
+                        LeftColumn = "Left side 1",
+                        RightColumn = new ThirdLevel
+                        {
+                            CatA = 11,
+                            CatB = 12,
+                            CatC = 13
+                        }
+                    }
+                }, 
+                new RootLevel {
+                    SimpleProperty = "String2",
+                    ComplexProperty = new SecondLevel
+                    {
+                        LeftColumn = "Left side 2",
+                        RightColumn = new ThirdLevel
+                        {
+                            CatA = 21,
+                            CatB = 22,
+                            CatC = 23
+                        }
+                    }
+                }
+            };
+```
+
+this code:
+```csharp
+            using var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            report.GenerateReport(complexObject);
+            xls.SaveAs("Report.xlsx");
+```
+
+will render like this:
+
+![image](https://github.com/mnieto/EPPlus.MultiHeader/assets/7962206/ee6a8546-b4e5-478c-88d0-62ffa60cae5e)
+
+
