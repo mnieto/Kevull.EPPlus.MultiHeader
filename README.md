@@ -44,7 +44,6 @@ this code:
 ```
 
 will render like this:
-
-![image](https://github.com/mnieto/EPPlus.MultiHeader/assets/7962206/ee6a8546-b4e5-478c-88d0-62ffa60cae5e)
+![image](https://github.com/mnieto/EPPlus.MultiHeader/assets/7962206/4cb6e383-5d22-46f5-9308-ad21f82100ae)
 
 
