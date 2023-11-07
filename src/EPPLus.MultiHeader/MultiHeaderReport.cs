@@ -63,12 +63,36 @@ namespace EPPLus.MultiHeader
 
         private void ProcessRow(T item)
         {
-            int col = 1;
             foreach (var columnInfo in _header!.Columns)
             {
-                columnInfo.WriteCell(_sheet.Cells[row, col++], Properties!, item!);
+                if (columnInfo.HasChildren)
+                {
+                    ProcessRow(columnInfo.Header!, Properties![columnInfo.Name].GetValue(item));
+                }
+                else
+                {
+                    columnInfo.WriteCell(_sheet.Cells[row, columnInfo.Index], Properties!, item!);
+                }
             }
             row++;
+        }
+
+        private void ProcessRow(HeaderManager header, object? item)
+        {
+            if (item == null)
+                return;
+            foreach(var columnInfo in header.Columns)
+            {
+                if (columnInfo.HasChildren)
+                {
+                    ProcessRow(columnInfo.Header!, header.Properties[columnInfo.Name].GetValue(item));
+                }
+                else
+                {
+                    columnInfo.WriteCell(_sheet.Cells[row, columnInfo.Index], header.Properties, item);
+                }
+            }
+
         }
 
         private void WriteHeaders(HeaderManager? header = null, int row = 1)

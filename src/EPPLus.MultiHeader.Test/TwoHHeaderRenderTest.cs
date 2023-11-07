@@ -72,6 +72,13 @@ namespace EPPLus.MultiHeader.Test
             Assert.Null(sheet.GetValue(3, 2));
             Assert.Equal(nameof(RootLevel.ComplexProperty.RightColumn.CatA), sheet.GetValue<string>(3, 3));
 
+            //Data1
+            Assert.Equal("String1", sheet.GetValue(4, 1));
+            Assert.Equal("Left side 1", sheet.GetValue(4, 2));
+            Assert.Equal(11, sheet.GetValue<int>(4, 3));
+            Assert.Equal(12, sheet.GetValue<int>(4, 4));
+            Assert.Equal(13, sheet.GetValue<int>(4, 5));
+
         }
     }
 }
