@@ -35,6 +35,20 @@ namespace EPPLus.MultiHeader.Test
         }
 
         [Fact]
+        public void Deep_InDirectProprties_IsOne()
+        {
+            var sut = new ColumnInfo<RootLevelDictionary>(x => x.SimpleProperty);
+            Assert.Equal(1, sut.Deep);
+        }
+
+        [Fact]
+        public void Deep_InDirectChildProperties_IsTwo()
+        {
+            var sut = new ColumnInfo<RootLevelDictionary>(x => x.ComplexProperty.RightColumn);
+            Assert.Equal(2, sut.Deep);
+        }
+
+        [Fact]
         public void ColumnEnumeration_Dicitionary_WritesOneColumPerKey()
         {
             var xls = new ExcelPackage();

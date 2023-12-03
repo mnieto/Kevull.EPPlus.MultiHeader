@@ -18,7 +18,7 @@ namespace EPPLus.MultiHeader.Test
 
         private List<RootLevel> BuildStructure()
         {
-            return new List<RootLevel> { 
+            return new List<RootLevel> {
                 new RootLevel {
                     SimpleProperty = "String1",
                     ComplexProperty = new SecondLevel
@@ -31,7 +31,7 @@ namespace EPPLus.MultiHeader.Test
                             CatC = 13
                         }
                     }
-                }, 
+                },
                 new RootLevel {
                     SimpleProperty = "String2",
                     ComplexProperty = new SecondLevel
@@ -42,6 +42,36 @@ namespace EPPLus.MultiHeader.Test
                             CatA = 21,
                             CatB = 22,
                             CatC = 23
+                        }
+                    }
+                }
+            };
+        }
+        private List<RootLevelDictionary> BuildStructureDictionary()
+        {
+            return new List<RootLevelDictionary> { 
+                new RootLevelDictionary {
+                    SimpleProperty = "String1",
+                    ComplexProperty = new SecondLevelDictionary
+                    {
+                        LeftColumn = "Left side 1",
+                        RightColumn = new Dictionary<string, int>
+                        {
+                            { "CatA", 11 },
+                            { "CatB", 12 },
+                            { "CatC", 13 }
+                        }
+                    }
+                }, 
+                new RootLevelDictionary {
+                    SimpleProperty = "String2",
+                    ComplexProperty = new SecondLevelDictionary
+                    {
+                        LeftColumn = "Left side 2",
+                        RightColumn = new Dictionary<string, int>
+                        {
+                            { "CatA", 21 },
+                            { "CatC", 23 }
                         }
                     }
                 }
@@ -79,6 +109,33 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal(12, sheet.GetValue<int>(4, 4));
             Assert.Equal(13, sheet.GetValue<int>(4, 5));
 
+        }
+
+        [Fact]
+        public void ComposedObjects_WithEnumerables_NeedsToBeConfigured()
+        {
+            var complexObject = BuildStructureDictionary();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
+            Assert.Throws<InvalidOperationException>(() => { report.GenerateReport(complexObject); });
+        }
+
+        [Fact]
+        public void ComposedObjects_WithEnumerables_HasWithEqualsToCountOfKeys()
+        {
+            var complexObject = BuildStructureDictionary();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
+            report.Configure(options =>
+                options.AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
+            );
+            report.GenerateReport(complexObject);
+            var sheet = xls.Workbook.Worksheets["Object"];
+            xls.SaveAs(@"c:\users\mniet\Downloads\RootLevelDictionary.xlsx");
+
+            Assert.Equal(5, sheet.Dimension.End.Column);
         }
     }
 }

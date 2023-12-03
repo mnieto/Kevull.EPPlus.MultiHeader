@@ -16,6 +16,9 @@ namespace EPPLus.MultiHeader.Columns
         protected int? _order;
         public bool Hidden { get; set; }
         public string Name { get; set; }
+        public string FullName { get; set; }
+        public string? ParentName { get; protected set; }
+        public Type? ParentType { get; protected set; }
         public string DisplayName { get => _displayName ?? Name; set => _displayName = value; }
 
         public int Index { get; set; } 
@@ -33,21 +36,44 @@ namespace EPPLus.MultiHeader.Columns
         public bool Ignore { get; set; }
 
         public virtual bool IsDynamic => false;
-
+        public int Deep => FullName.Split('.').Length;
+        public virtual bool IsMultiValue => false;
         public HeaderManager? Header { get; set; }
         public bool HasChildren => Header != null && Header.Columns.Count > 0;
-        public int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
+        public virtual int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
 
 
         public ColumnInfo(string name, bool ignore)
         {
-            Name = name;
+            FullName = name;
+            Name = GetName(name);
             Ignore = ignore;
         }
         public ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
         {
             Hidden = hidden;
-            Name = name;
+            FullName = name;
+            Name = GetName(name);
+            Order = order;
+            _displayName = displayName;
+        }
+
+        internal ColumnInfo(PropertyNames names, bool ignore)
+        {
+            FullName = names.FullName;
+            Name = names.Name;
+            ParentName = names.ParentName;
+            ParentType = names.ParentType;
+            Ignore = ignore;
+        }
+
+        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false)
+        {
+            Hidden = hidden;
+            FullName = names.FullName;
+            Name = names.Name;
+            ParentName = names.ParentName;
+            ParentType = names.ParentType;
             Order = order;
             _displayName = displayName;
         }
@@ -56,6 +82,12 @@ namespace EPPLus.MultiHeader.Columns
         {
             if (obj != null)
                 cell.Value = properties[Name].GetValue(obj);
+        }
+
+        private string GetName(string fullName)
+        {
+            int pos = fullName.IndexOf('.');
+            return pos == -1 ? fullName : fullName.Substring(0, pos);
         }
 
     }
@@ -67,14 +99,9 @@ namespace EPPLus.MultiHeader.Columns
         public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
 
-        internal static string GetPropertyName(Expression<Func<T, object?>> columnSelector)
+        internal static PropertyNames GetPropertyName(Expression<Func<T, object?>> columnSelector)
         {
-            var memberExpr = columnSelector.Body as MemberExpression;
-            var unaryExpr = columnSelector.Body as UnaryExpression;
-            if (memberExpr == null && unaryExpr == null)
-                throw new InvalidCastException(columnSelector.Body.ToString());
-
-            return (memberExpr ?? (unaryExpr!.Operand as MemberExpression)!).Member.Name;
+            return new PropertyNameBuilder<T>().Build(columnSelector);
         }
     }
 }

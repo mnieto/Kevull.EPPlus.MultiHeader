@@ -40,6 +40,9 @@ namespace EPPLus.MultiHeader
             if (_header == null)
             {
                 _header = new HeaderManager<T>();
+            } else
+            {
+                _header.BuildHeaders();
             }
             Properties = _header.Properties;
             WriteHeaders();
@@ -100,7 +103,18 @@ namespace EPPLus.MultiHeader
             header = header ?? _header!;
             foreach (var columnInfo in header.Columns)
             {
-                _sheet.Cells[row, columnInfo.Index].Value = columnInfo.DisplayName;
+                if (columnInfo.IsMultiValue)
+                {
+                    int c = columnInfo.Index;
+                    foreach(string key in columnInfo.DisplayName.Split(','))
+                    {
+                        _sheet.Cells[row, c++].Value = key;
+                    }
+                }
+                else
+                {
+                    _sheet.Cells[row, columnInfo.Index].Value = columnInfo.DisplayName;
+                }
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
@@ -112,7 +126,7 @@ namespace EPPLus.MultiHeader
         {
             foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden))
             {
-                _sheet.Column(columnInfo.Order!.Value).Hidden = true;
+                _sheet.Column(columnInfo.Index).Hidden = true;
             }
 
             bool NeedsCalculate = false;

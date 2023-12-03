@@ -14,7 +14,8 @@ namespace EPPLus.MultiHeader.Columns
         public string UrlPropertyName { get; set; }
         public bool IgnoreLinkErrors { get; set; } = true;
 
-        public ColumnHyperLilnk(string name, string urlPropertyName) : base(name) {
+        public ColumnHyperLilnk(string name, string urlPropertyName) : base(name)
+        {
             UrlPropertyName = urlPropertyName;
         }
 
@@ -23,6 +24,18 @@ namespace EPPLus.MultiHeader.Columns
         {
             UrlPropertyName = urlPropertyName;
         }
+
+        internal ColumnHyperLilnk(PropertyNames names, string urlPropertyName) : base(names)
+        {
+            UrlPropertyName = urlPropertyName;
+        }
+
+        internal ColumnHyperLilnk(PropertyNames names, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false) :
+            base(names, order, displayName, hidden)
+        {
+            UrlPropertyName = urlPropertyName;
+        }
+
 
         public override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
         {
@@ -51,6 +64,6 @@ namespace EPPLus.MultiHeader.Columns
             base(ColumnInfo<T>.GetPropertyName(columnSelector), urlPropertyName) { }
 
         public ColumnHyperLilnk(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
-            : base(ColumnInfo <T>.GetPropertyName(columnSelector), ColumnInfo<T>.GetPropertyName(urlColumnSelector), order, displayName, hidden) { }
+            : base(ColumnInfo<T>.GetPropertyName(columnSelector), ColumnInfo<T>.GetPropertyName(urlColumnSelector).Name, order, displayName, hidden) { }
     }
 }

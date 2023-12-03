@@ -29,6 +29,12 @@ namespace EPPLus.MultiHeader
             return this;
         }
 
+        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false)
+        {
+            columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, order, displayName, hidden));
+            return this;
+        }
+
         public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false)
         {
             columns.Add(new ColumnExpression<T>(name, expression, order, displayName, hidden));
@@ -55,55 +61,8 @@ namespace EPPLus.MultiHeader
 
         public List<ColumnInfo> Build()
         {
-            var result = new List<ColumnInfo>();
-            var properties = typeof(T).GetTypeInfo().GetProperties();
-            foreach (var property in properties)
-            {
-                var columConfig = columns.FirstOrDefault(x => x.Name.Equals(property.Name));
-                if (columConfig == null)
-                {
-                    result.Add(new ColumnInfo(property.Name));
-                } else if (ShouldAddColumn(columConfig)) { 
-                    result.Add(columConfig);
-                }
-            }
-            result.AddRange(columns.Where(x => x.IsDynamic));
-            return SetupColumnsOrder(result);
+            return columns;
         }
 
-        private List<ColumnInfo> SetupColumnsOrder(List<ColumnInfo> columns)
-        {
-            int c = 0;
-            int index = 1;
-            int previous = 0;
-            var tempList = columns.Where(x => x.Order.HasValue).OrderBy(x => x.Order).ToList();
-            tempList.AddRange(columns.Where(x => x.Order == null));
-            for (int i = 0; i < tempList.Count; i++)
-            {
-                var item = tempList[i];
-                item.Index = index;
-                index += item.Width;
-                if (item.Order.HasValue)
-                {
-                    c = item.Order.Value;
-                    if (i == 0) {
-                        previous = c;
-                    } else if (c == previous)
-                    {
-                        throw new InvalidOperationException($"Repeated order for columns {tempList[i].Name} and {tempList[i - 1].Name}");
-                    }
-                }
-                else
-                {
-                    item.Order = ++c;
-                }
-            }
-            return tempList;
-        }
-
-        private bool ShouldAddColumn(ColumnInfo columConfig)
-        {
-            return !columConfig.Ignore;
-        }
     }
 }

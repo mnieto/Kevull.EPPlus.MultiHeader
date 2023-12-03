@@ -1,84 +1,163 @@
 ﻿using EPPLus.MultiHeader.Columns;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.Pkcs;
 
 namespace EPPLus.MultiHeader
 {
     public class HeaderManager
     {
         public List<ColumnInfo> Columns { get; set; }
-        public Dictionary<string, PropertyInfo> Properties { get; set; }
+        public Dictionary<string, PropertyInfo>? Properties { get; set; }
 
         public int Height { get; set; }
 
         protected Type ObjectType { get; private set; }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public HeaderManager(Type type)
+        protected List<ColumnInfo> DirectColumns => Columns.Where(x => x.Name == x.FullName).ToList();
+        protected List<ColumnInfo> ChildColumns(int deep)
         {
-            ObjectType = type;
-            BuildHeaders();
+            var result = new List<ColumnInfo>();
+            foreach(var col in Columns.Where(x => x.Deep > deep))
+            {
+                col.FullName = string.Join('.', col.FullName.Split('.').Skip(deep));
+                result.Add(col);
+            }
+            return result;
         }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        public HeaderManager(Type type) : this(type, 1, 1) { }
 
         public HeaderManager(Type type, List<ColumnInfo> columns)
         {
             ObjectType = type;
             Columns = columns;
-            var properties = ObjectType.GetTypeInfo().GetProperties();
-            Properties = properties.ToDictionary(x => x.Name, x => x);
-            BuildHeadersFromColumns();
         }
 
-        private void BuildHeaders(int index = 1, int deep = 1)
+        protected HeaderManager(Type type, int index, int deep, List<ColumnInfo>? columns = null)
+        {
+            ObjectType = type;
+            Columns = columns ?? new List<ColumnInfo>();
+            BuildHeaders(index, deep);
+        }
+
+        public void BuildHeaders()
+        {
+            BuildHeaders(1, 1);
+        }
+
+        private void BuildHeaders(int index, int deep)
         {
             Height = deep;
-            var result = new List<ColumnInfo>();
-            var properties = ObjectType.GetTypeInfo().GetProperties();
-            int order = 1;
-            foreach (var property in properties)
-            {
-                var colInfo = new ColumnInfo(property.Name);
-                colInfo.Index = index;
-                colInfo.Order = order++;
-                result.Add(colInfo);
-                if (IsNestedObject(property.PropertyType))
-                {
-                    colInfo.Header = new HeaderManager(property.PropertyType);
-                    colInfo.Header.BuildHeaders(index, deep + 1);
-                    Height = Math.Max(Height, colInfo.Header.Height);
-                }
-                index += colInfo.Width;
+            var properties = GetProperties(ObjectType.GetTypeInfo());
+            var result = BuildFromDefinedColumns();
+            result.AddRange(BuildFromRemainingProperties(properties.Where(x => !x.Used)));
+            result.RemoveAll(x => x.Ignore);
+            result.AddRange(Columns.Where(x => x.Deep > deep));
 
-            }
             Columns = result;
-            Properties = properties.ToDictionary(x => x.Name, x => x);
-            
-        }
+            Properties = properties.Where(x => !x.Ignored)
+                .Select(x => x.Info)
+                .ToDictionary(x => x.Name, x => x);
 
-        private void BuildHeadersFromColumns(int index = 1, int deep = 1)
-        {
-            Height = deep;
-            foreach(var colInfo in Columns)
-            {
-                if (colInfo.IsDynamic)
-                    continue;
-                var property = Properties[colInfo.Name];
-                if (IsNestedObject(property.PropertyType))
+
+            List<ColumnInfo> BuildFromDefinedColumns() {
+                var result = new List<ColumnInfo>(DirectColumns.Where(x => x.Order.HasValue));
+                foreach (var colInfo in result)
                 {
-                    colInfo.Header = new HeaderManager(property.PropertyType);
-                    colInfo.Header.BuildHeaders(index, deep + 1);
-                    Height = Math.Max(Height, colInfo.Header.Height);
+                    if (colInfo.Ignore)
+                    {
+                        var property = properties.First(x => x.Info.Name == colInfo.Name);
+                        property.Ignored = colInfo.Ignore;
+                        property.Used = true;
+                        continue;
+                    }
+
+                    if (!colInfo.IsDynamic)
+                    {
+                        var property = properties.First(x => x.Info.Name == colInfo.Name);
+                        property.Ignored = colInfo.Ignore;
+                        if (IsNestedObject(property.Info.PropertyType))
+                        {
+                            colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
+                            Height = Math.Max(Height, colInfo.Header.Height);
+                        }
+                        property.Used = true;
+                    }
+                    colInfo.Index = index;
                     index += colInfo.Width;
                 }
-
+                return result;
             }
+
+            List<ColumnInfo> BuildFromRemainingProperties(IEnumerable<ObjectProperty> properties)
+            {
+                var result = new List<ColumnInfo>();
+                foreach (var property in properties)
+                {
+                    var colInfo = ColumnInfoFactory(property.Info);
+                    if (colInfo.Ignore)
+                        continue;
+                    result.Add(colInfo);
+                    if (IsNestedObject(property.Info.PropertyType))
+                    {
+                        colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
+                        Height = Math.Max(Height, colInfo.Header.Height);
+                    }
+                    colInfo.Index = index;
+                    index += colInfo.Width;
+                }
+                return result;
+            }
+
+        }
+
+        private List<ObjectProperty> GetProperties(TypeInfo typeInfo)
+        {
+            var result = new List<ObjectProperty>();
+            foreach (var item in typeInfo.GetProperties())
+            {
+                result.Add(new ObjectProperty(item));
+            }
+            return result;
         }
 
         private bool IsNestedObject(Type type)
         {
+            if (typeof(IDictionary).IsAssignableFrom(type))
+            {
+                type = type.GenericTypeArguments[1];
+            }
             return type != typeof(string) &&
                    (type.IsClass || type.IsInterface) &&
                    type != typeof(Uri);
+        }
+
+        private ColumnInfo ColumnInfoFactory(PropertyInfo property)
+        {
+            var column = DirectColumns.FirstOrDefault(x => x.Name == property.Name && !x.IsDynamic);
+            if (column != null)
+            {
+                return column;
+            }
+            if (property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))   //IList<T>, IDictionary<K,T>, IDictionary and string implement IEnumerable
+                throw new InvalidOperationException($"Column {property.Name} is IEnumerable and must be preconfigured. See ConfigurationBuilder.Configure.");
+            return new ColumnInfo(property.Name);
+        }
+
+        [DebuggerDisplay("{Info.Name}")]
+        private class ObjectProperty
+        {
+            public ObjectProperty(PropertyInfo property)
+            {
+                Info = property;
+            }
+            public PropertyInfo Info { get; set; }
+            public bool Used { get; set; }
+            public bool Ignored { get; set; }
         }
     }
 

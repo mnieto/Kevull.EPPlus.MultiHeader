@@ -12,24 +12,6 @@ namespace EPPLus.MultiHeader.Test
     public class HeaderManagerTest
     {
 
-        private RootLevel BuildStructure()
-        {
-            return new RootLevel
-            {
-                SimpleProperty = "A string",
-                ComplexProperty = new SecondLevel
-                {
-                    LeftColumn = "Left side",
-                    RightColumn = new ThirdLevel
-                    {
-                        CatA = 1,
-                        CatB = 2,
-                        CatC = 3
-                    }
-                }
-            };
-        }
-
         [Fact]
         public void SimpleProperty_Has_No_Children()
         {

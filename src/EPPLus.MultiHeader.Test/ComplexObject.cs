@@ -25,4 +25,18 @@ namespace EPPLus.MultiHeader.Test
         public int CatC { get; set; }
     }
 
+
+    internal class RootLevelDictionary
+    {
+        public string SimpleProperty { get; set; }
+        public SecondLevelDictionary ComplexProperty { get; set; }
+    }
+
+    internal class SecondLevelDictionary
+    {
+        public string LeftColumn { get; set; }
+        public Dictionary<string, int> RightColumn { get; set; }
+    }
+
+
 }
