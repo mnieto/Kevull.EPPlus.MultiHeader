@@ -85,6 +85,10 @@ namespace EPPLus.MultiHeader
                             colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
                             Height = Math.Max(Height, colInfo.Header.Height);
                         }
+                        if (colInfo.IsMultiValue)
+                        {
+                            Height = Math.Max(Height, deep + 1);
+                        }
                         property.Used = true;
                     }
                     colInfo.Index = index;
@@ -106,6 +110,10 @@ namespace EPPLus.MultiHeader
                     {
                         colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
                         Height = Math.Max(Height, colInfo.Header.Height);
+                    }
+                    if (colInfo.IsMultiValue)
+                    {
+                        Height = Math.Max(Height, deep + 1);
                     }
                     colInfo.Index = index;
                     index += colInfo.Width;

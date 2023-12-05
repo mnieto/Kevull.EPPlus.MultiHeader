@@ -72,6 +72,18 @@ namespace EPPLus.MultiHeader.Columns
                 throw new NotSupportedException($"only {nameof(IEnumerable)} or {nameof(IDictionary)} are supported");
             }
         }
+
+        public override void WriteHeader(ExcelRange cell)
+        {
+            cell.Value = DisplayName;
+            var enumerator = _keyValues.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                string key = enumerator.Current.Key;
+                int offset = _keyValues[key];
+                cell.Offset(1, offset).Value = key;
+            }
+        }
     }
 
     public class ColumnEnumeration<T> : ColumnEnumeration

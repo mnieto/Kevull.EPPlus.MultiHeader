@@ -84,6 +84,11 @@ namespace EPPLus.MultiHeader.Columns
                 cell.Value = properties[Name].GetValue(obj);
         }
 
+        public virtual void WriteHeader(ExcelRange cell)
+        {
+            cell.Value = DisplayName;
+        }
+
         private string GetName(string fullName)
         {
             int pos = fullName.IndexOf('.');

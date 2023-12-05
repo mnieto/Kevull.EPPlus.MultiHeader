@@ -103,18 +103,7 @@ namespace EPPLus.MultiHeader
             header = header ?? _header!;
             foreach (var columnInfo in header.Columns)
             {
-                if (columnInfo.IsMultiValue)
-                {
-                    int c = columnInfo.Index;
-                    foreach(string key in columnInfo.DisplayName.Split(','))
-                    {
-                        _sheet.Cells[row, c++].Value = key;
-                    }
-                }
-                else
-                {
-                    _sheet.Cells[row, columnInfo.Index].Value = columnInfo.DisplayName;
-                }
+                columnInfo.WriteHeader(_sheet.Cells[row, columnInfo.Index]);
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
