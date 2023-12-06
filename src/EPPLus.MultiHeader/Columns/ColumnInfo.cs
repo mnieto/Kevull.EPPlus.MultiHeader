@@ -2,6 +2,7 @@
 using OfficeOpenXml.FormulaParsing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace EPPLus.MultiHeader.Columns
 {
+    [DebuggerDisplay("{Name}")]
     public class ColumnInfo
     {
         protected string? _displayName;
@@ -76,6 +78,11 @@ namespace EPPLus.MultiHeader.Columns
             ParentType = names.ParentType;
             Order = order;
             _displayName = displayName;
+        }
+
+        public virtual void FormatHeader(ExcelRange cell, int height)
+        {
+            cell.Offset(0, 0, height, Width).Merge = true;
         }
 
         public virtual void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)

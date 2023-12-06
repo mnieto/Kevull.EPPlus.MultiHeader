@@ -1,5 +1,6 @@
 ﻿using EPPLus.MultiHeader.Columns;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -56,6 +57,13 @@ namespace EPPLus.MultiHeader
         public ConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object?>> columnSelector)
         {
             columns.Add(new ColumnInfo<T>(columnSelector, true));
+            return this;
+        }
+
+        public ConfigurationBuilder<T> AddHeaderStyle(ExcelPackage xls, Action<ExcelStyle> style)
+        {
+            var namedStyle = xls.Workbook.Styles.CreateNamedStyle(MultiHeaderReport<T>.HeaderStyleName);
+            style(namedStyle.Style);
             return this;
         }
 

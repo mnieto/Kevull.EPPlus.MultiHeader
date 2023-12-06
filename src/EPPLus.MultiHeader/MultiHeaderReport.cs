@@ -1,7 +1,8 @@
 ﻿using EPPLus.MultiHeader.Columns;
 using OfficeOpenXml;
-using OfficeOpenXml.ConditionalFormatting.Contracts;
-using System.CodeDom.Compiler;
+using OfficeOpenXml.Style;
+using System.Drawing;
+using System.Linq;
 using System.Reflection;
 
 namespace EPPLus.MultiHeader
@@ -14,6 +15,8 @@ namespace EPPLus.MultiHeader
         private int FirstDataRow => _header?.Height + 1 ?? 2;
         private int row;
         protected HeaderManager<T>? _header;
+
+        public const string HeaderStyleName = "Headers";
 
         protected Dictionary<string, PropertyInfo>? Properties { get; private set; }
 
@@ -103,7 +106,9 @@ namespace EPPLus.MultiHeader
             header = header ?? _header!;
             foreach (var columnInfo in header.Columns)
             {
-                columnInfo.WriteHeader(_sheet.Cells[row, columnInfo.Index]);
+                var cell = _sheet.Cells[row, columnInfo.Index];
+                columnInfo.WriteHeader(cell);
+                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - row + 1);
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
@@ -118,6 +123,14 @@ namespace EPPLus.MultiHeader
                 _sheet.Column(columnInfo.Index).Hidden = true;
             }
 
+            var rangeHeader = _sheet.Cells[1, _header!.Columns.Min(x => x.Index), _header.Height, _header.Width];
+            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == HeaderStyleName) == null)
+            {
+                BuildDefaultStyle();
+
+            }
+            rangeHeader.StyleName = HeaderStyleName;
+
             bool NeedsCalculate = false;
             foreach(var columnInfo in _header!.Columns.OfType<ColumnFormula>())
             {
@@ -127,6 +140,19 @@ namespace EPPLus.MultiHeader
             }
             if (NeedsCalculate)
                 _sheet.Calculate();
+        }
+
+        private void BuildDefaultStyle()
+        {
+            var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(HeaderStyleName);
+            namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
+            namedStyle.Style.Font.Bold = true;
         }
 
     }

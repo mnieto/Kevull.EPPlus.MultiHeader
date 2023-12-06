@@ -14,6 +14,7 @@ namespace EPPLus.MultiHeader
         public Dictionary<string, PropertyInfo>? Properties { get; set; }
 
         public int Height { get; set; }
+        public int Width => Columns.Sum(x => x.Width);
 
         protected Type ObjectType { get; private set; }
 

@@ -16,72 +16,10 @@ namespace EPPLus.MultiHeader.Test
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        private List<RootLevel> BuildStructure()
-        {
-            return new List<RootLevel> {
-                new RootLevel {
-                    SimpleProperty = "String1",
-                    ComplexProperty = new SecondLevel
-                    {
-                        LeftColumn = "Left side 1",
-                        RightColumn = new ThirdLevel
-                        {
-                            CatA = 11,
-                            CatB = 12,
-                            CatC = 13
-                        }
-                    }
-                },
-                new RootLevel {
-                    SimpleProperty = "String2",
-                    ComplexProperty = new SecondLevel
-                    {
-                        LeftColumn = "Left side 2",
-                        RightColumn = new ThirdLevel
-                        {
-                            CatA = 21,
-                            CatB = 22,
-                            CatC = 23
-                        }
-                    }
-                }
-            };
-        }
-        private List<RootLevelDictionary> BuildStructureDictionary()
-        {
-            return new List<RootLevelDictionary> { 
-                new RootLevelDictionary {
-                    SimpleProperty = "String1",
-                    ComplexProperty = new SecondLevelDictionary
-                    {
-                        LeftColumn = "Left side 1",
-                        RightColumn = new Dictionary<string, int>
-                        {
-                            { "CatA", 11 },
-                            { "CatB", 12 },
-                            { "CatC", 13 }
-                        }
-                    }
-                }, 
-                new RootLevelDictionary {
-                    SimpleProperty = "String2",
-                    ComplexProperty = new SecondLevelDictionary
-                    {
-                        LeftColumn = "Left side 2",
-                        RightColumn = new Dictionary<string, int>
-                        {
-                            { "CatA", 21 },
-                            { "CatC", 23 }
-                        }
-                    }
-                }
-            };
-        }
-
         [Fact]
         public void ComposedObjects_AreRendered_InSecondRow()
         {
-            var complexObject = BuildStructure();
+            var complexObject = RootLevel.CreateTest();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<RootLevel>(xls, "Object");
@@ -114,7 +52,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void ComposedObjects_WithEnumerables_NeedsToBeConfigured()
         {
-            var complexObject = BuildStructureDictionary();
+            var complexObject = RootLevelDictionary.CreateTest();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
@@ -124,7 +62,7 @@ namespace EPPLus.MultiHeader.Test
         [Fact]
         public void ComposedObjects_WithEnumerables_HasWithEqualsToCountOfKeys()
         {
-            var complexObject = BuildStructureDictionary();
+            var complexObject = RootLevelDictionary.CreateTest();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");

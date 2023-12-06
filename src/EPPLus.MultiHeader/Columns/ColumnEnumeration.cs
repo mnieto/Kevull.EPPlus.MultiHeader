@@ -42,6 +42,17 @@ namespace EPPLus.MultiHeader.Columns
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
         }
 
+        public override void FormatHeader(ExcelRange cell, int height)
+        {
+            cell.Offset(0, 0, 1, Width).Merge = true;
+            var enumerator = _keyValues.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                int offset = _keyValues[enumerator.Current.Key];
+                cell.Offset(1, offset, height - 1, 1).Merge = true;
+            }
+        }
+
         public override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
