@@ -7,6 +7,10 @@ using System.Reflection;
 
 namespace EPPLus.MultiHeader
 {
+    /// <summary>
+    /// Given an <see cref="IEnumerable{T}"/> list of objects of type <see cref="T"/> creates an in-memory Excel report
+    /// </summary>
+    /// <typeparam name="T">Type of objects</typeparam>
     public class MultiHeaderReport<T>
     {
         private ExcelWorksheet _sheet;
@@ -16,18 +20,33 @@ namespace EPPLus.MultiHeader
         private int row;
         protected HeaderManager<T>? _header;
 
-        public const string HeaderStyleName = "Headers";
+        internal const string HeaderStyleName = "Headers";
 
         protected Dictionary<string, PropertyInfo>? Properties { get; private set; }
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
+        /// <param name="sheet">Existing worksheet where generate the report</param>
         public MultiHeaderReport(ExcelPackage xls, ExcelWorksheet sheet)
         {
             _xls = xls;
             _sheet = sheet;
         }
 
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
+        /// <param name="sheet">Worksheet name to be created where generate the report</param>
         public MultiHeaderReport(ExcelPackage xls, string sheetName): this(xls, AddSheet(xls, sheetName)) { }
 
+        /// <summary>
+        /// Customize the columns and formats during the report generation. See <see cref="ConfigurationBuilder{T}"./>
+        /// </summary>
+        /// <param name="options">Lambda expresion to configure the report</param>
+        /// <returns><see cref="MultiHeaderReport{T}" This allows a fluent style to configure and generate the report/></returns>
         public MultiHeaderReport<T> Configure(Action<ConfigurationBuilder<T>> options)
         {
             var builder = new ConfigurationBuilder<T>();
@@ -37,6 +56,11 @@ namespace EPPLus.MultiHeader
         }
 
 
+        /// <summary>
+        /// Generate the report in Excel
+        /// </summary>
+        /// <param name="data">Data of tyepe <typeparamref name="T"/></param>
+        /// <remarks>If there is any configuration, it will generate the report using the default conventions</remarks>
         public void GenerateReport(IEnumerable<T> data)
         {
             //If no configuration is provided, use default simple headers

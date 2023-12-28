@@ -8,17 +8,53 @@ using System.Security.Cryptography.Pkcs;
 
 namespace EPPLus.MultiHeader
 {
+    /// <summary>
+    /// Stores information about the columns to be shown and build the needed header structure
+    /// </summary>
+    /// <remarks>
+    /// <para>As the source Type can have nested properties, this structure is recursive</para>
+    /// <para>Intended for internal use. Use <see cref="HeaderManager{T}"/> instead.</para>
+    /// </remarks>
     public class HeaderManager
     {
+        /// <summary>
+        /// List of columns. Each column stores the given customization during the configuration phase
+        /// </summary>
+        /// <remarks>
+        /// <para>This property will reference ALL configured columns, independently of the nested level</para>
+        /// <para>To get the properties of this level see the protected property <see cref="DirectColumns"/></para>
+        /// </remarks>
         public List<ColumnInfo> Columns { get; set; }
+
+        /// <summary>
+        /// Porperties, by property name, of the source Type
+        /// </summary>
         public Dictionary<string, PropertyInfo>? Properties { get; set; }
 
-        public int Height { get; set; }
+        /// <summary>
+        /// Gets the number of rows of the Header. That is the deep of nested properties in the source Type
+        /// </summary>
+        public int Height { get; internal set; }
+        
+        /// <summary>
+        /// Gets the number of columns needed to represent the object of the source Type
+        /// </summary>
         public int Width => Columns.Sum(x => x.Width);
 
+        /// <summary>
+        /// <see cref="Type"/> of the source Type
+        /// </summary>
         protected Type ObjectType { get; private set; }
 
+        /// <summary>
+        /// Configured columns that belong to this level
+        /// </summary>
         protected List<ColumnInfo> DirectColumns => Columns.Where(x => x.Name == x.FullName).ToList();
+
+        /// <summary>
+        /// Returns a list of configured columns that belong to the next level. WARN: This operation is NOT idempotent
+        /// </summary>
+        /// <param name="deep">current deep. That is, the method will return the inmediate children columns</param>
         protected List<ColumnInfo> ChildColumns(int deep)
         {
             var result = new List<ColumnInfo>();
@@ -30,14 +66,25 @@ namespace EPPLus.MultiHeader
             return result;
         }
 
+        /// <summary>
+        /// Ctor. Invoked when using default configuration
+        /// </summary>
+        /// <remarks>Intended for internal use. Use <see cref="HeaderManager{T}.HeaderManager()"/> instead</remarks>
         public HeaderManager(Type type) : this(type, 1, 1) { }
 
+        /// <summary>
+        /// Ctor. Invoked when using configured columns
+        /// </summary>
+        /// <remarks>Intended for internal use. Use <see cref="HeaderManager{T}.HeaderManager(List{ColumnInfo})"/>i nstead</remarks>
         public HeaderManager(Type type, List<ColumnInfo> columns)
         {
             ObjectType = type;
             Columns = columns;
         }
 
+        /// <summary>
+        /// Ctor. Invoked mainly from nested property levels
+        /// </summary>
         protected HeaderManager(Type type, int index, int deep, List<ColumnInfo>? columns = null)
         {
             ObjectType = type;
@@ -45,7 +92,10 @@ namespace EPPLus.MultiHeader
             BuildHeaders(index, deep);
         }
 
-        public void BuildHeaders()
+        /// <summary>
+        /// Build the <see cref="Columns"/> and header structure
+        /// </summary>
+        internal void BuildHeaders()
         {
             BuildHeaders(1, 1);
         }
@@ -170,11 +220,21 @@ namespace EPPLus.MultiHeader
         }
     }
 
+    /// <summary>
+    /// Stores information about the columns to be shown and build the needed header structure
+    /// </summary>
+    /// <remarks>As the source Type can have nested properties, this structure is recursive</remarks>
     public class HeaderManager<T> : HeaderManager
     {
 
+        /// <summary>
+        /// Ctor. Invoked when using default configuration
+        /// </summary>
         public HeaderManager() : base(typeof(T)) { }
 
+        /// <summary>
+        /// Ctor. Invoked when using configured columns
+        /// </summary>
         public HeaderManager(List<ColumnInfo> columns): base(typeof(T), columns) { }
 
     }
