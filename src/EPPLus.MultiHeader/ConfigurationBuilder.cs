@@ -15,6 +15,11 @@ namespace EPPLus.MultiHeader
         private List<ColumnInfo> columns;
 
         /// <summary>
+        /// Shows or not autofilter on last header row
+        /// </summary>
+        public bool AutoFilter { get; set; } = true;
+
+        /// <summary>
         /// Ctor invoked to get default configuration at first step
         /// </summary>
         public ConfigurationBuilder() : this(new List<ColumnInfo>()) { }
@@ -151,9 +156,11 @@ namespace EPPLus.MultiHeader
         /// <summary>
         /// Garther all the provided information to generate the needed internal structures
         /// </summary>
-        public List<ColumnInfo> Build()
+        public HeaderManager<T> Build()
         {
-            return columns;
+            var headerManager = new HeaderManager<T>(columns);
+            headerManager.AutoFilter = AutoFilter;
+            return headerManager;
         }
 
     }

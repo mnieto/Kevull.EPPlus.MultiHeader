@@ -51,7 +51,7 @@ namespace EPPLus.MultiHeader
         {
             var builder = new ConfigurationBuilder<T>();
             options?.Invoke(builder);
-            _header = new HeaderManager<T>(builder.Build());
+            _header = builder.Build();
             return this;
         }
 
@@ -125,7 +125,7 @@ namespace EPPLus.MultiHeader
 
         }
 
-        private void WriteHeaders(HeaderManager? header = null, int row = 1)
+        private void WriteHeaders(HeaderManager? header = null, int row = HeaderManager.FirstRow)
         {
             header = header ?? _header!;
             foreach (var columnInfo in header.Columns)
@@ -147,7 +147,10 @@ namespace EPPLus.MultiHeader
                 _sheet.Column(columnInfo.Index).Hidden = true;
             }
 
-            var rangeHeader = _sheet.Cells[1, _header!.Columns.Min(x => x.Index), _header.Height, _header.Width];
+            int lastHeaderRow = HeaderManager.FirstRow + _header.Height - 1;
+            _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width].AutoFilter = _header.AutoFilter;
+
+            var rangeHeader = _sheet.Cells[HeaderManager.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
             if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == HeaderStyleName) == null)
             {
                 BuildDefaultStyle();

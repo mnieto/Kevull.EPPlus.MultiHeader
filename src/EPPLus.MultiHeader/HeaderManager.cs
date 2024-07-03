@@ -17,6 +17,12 @@ namespace EPPLus.MultiHeader
     /// </remarks>
     public class HeaderManager
     {
+
+        /// <summary>
+        /// First row used for headers
+        /// </summary>
+        public const int FirstRow = 1;
+
         /// <summary>
         /// List of columns. Each column stores the given customization during the configuration phase
         /// </summary>
@@ -30,6 +36,11 @@ namespace EPPLus.MultiHeader
         /// Porperties, by property name, of the source Type
         /// </summary>
         public Dictionary<string, PropertyInfo>? Properties { get; set; }
+
+        /// <summary>
+        /// Shows or not autofilter on last header row
+        /// </summary>
+        public bool AutoFilter { get; set; } = true;
 
         /// <summary>
         /// Gets the number of rows of the Header. That is the deep of nested properties in the source Type

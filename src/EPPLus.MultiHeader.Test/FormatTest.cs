@@ -49,5 +49,18 @@ namespace EPPLus.MultiHeader.Test
             Assert.Equal(OfficeOpenXml.Style.ExcelHorizontalAlignment.Center, sheet.Cells["A1"].Style.HorizontalAlignment);
             Assert.NotEqual(Color.LightGray.ToArgb().ToString("X"), sheet.Cells["A1"].Style.Fill.BackgroundColor.Rgb);
         }
+
+        [Fact]
+        public void Headers_WithAutoFilter_SetAutoFilterInLeafLevelHeader()
+        {
+            var complexObject = RootLevel.CreateTest();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            report.GenerateReport(complexObject);
+            var sheet = xls.Workbook.Worksheets["Object"];
+
+            Assert.True(sheet.Cells["A3:E3"].AutoFilter);
+        }
     }
 }
