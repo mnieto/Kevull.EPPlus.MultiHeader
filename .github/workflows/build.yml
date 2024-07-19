@@ -38,7 +38,7 @@ jobs:
       run: dotnet pack --configuration Release --output ${{ env.NUGET_FOLDER }}
 
     - name: upload arifact
-      uses: actions/upload-artifact@4.3.4
+      uses: actions/upload-artifact@4
       with:
         name: nuget
         if-no-files-found: error
