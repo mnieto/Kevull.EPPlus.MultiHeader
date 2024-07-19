@@ -23,10 +23,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: $DOTNET_VERSION
+        dotnet-version: ${{ env.$DOTNET_VERSION }}
 
     - name: Restore dependencies
-      run: dotnet restore $SOLUTION_ROOT
+      run: dotnet restore {{ env.$SOLUTION_ROOT }}
 
     - name: Build
       run: dotnet build $SOLUTION_ROOT --no-restore
@@ -53,7 +53,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: $DOTNET_VERSION
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: download artifact
         uses: actions/download-artifact@v3
@@ -88,7 +88,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: $DOTNET_VERSION        
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       # Publish all NuGet packages to NuGet.org
       # Use --skip-duplicate to prevent errors if a package with the same version already exists.
