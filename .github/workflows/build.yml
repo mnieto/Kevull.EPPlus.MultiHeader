@@ -9,14 +9,16 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  NUGET_FOLDER: ${{ github.workspace}}/nuget
+  DOTNET_VERSION: 6.0.X
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       SOLUTION_ROOT: src/EPPLus.MultiHeader.sln
-      NUGET_FOLDER: ${{ github.workspace}}/nuget
-      DOTNET_VERSION: 6.0.X
-      
+
     steps:
     - uses: actions/checkout@v3
 
@@ -80,10 +82,10 @@ jobs:
     needs: [ validate_nuget ]
     steps:
       # Download the NuGet package created in the previous job
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: nuget
-          path: ${{ env.DOTNET_VERSION }}
+          path: ${{ env.NUGET_FOLDER }}
 
       # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET Core
