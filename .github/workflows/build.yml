@@ -29,13 +29,13 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION_ROOT }}
 
     - name: Build
-      run: dotnet build $SOLUTION_ROOT --no-restore
+      run: dotnet build ${{ env.SOLUTION_ROOT }} --no-restore
 
     - name: Test
-      run: dotnet test $SOLUTION_ROOT --no-build --verbosity normal
+      run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --verbosity normal
 
     - name: Create nupkg
-      run: dotnet pack --configuration Release --output ${{ env.NUGET_FOLDER }}
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --configuration Release --output ${{ env.NUGET_FOLDER }}
 
     - name: upload arifact
       uses: actions/upload-artifact@v4
