@@ -1,5 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# Based on https://www.meziantou.net/publishing-a-nuget-package-following-best-practices-using-github.htm#github-actions-1816d5
 
 name: 'build library'
 
@@ -9,25 +8,96 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  NUGET_FOLDER: ${{ github.workspace}}/nuget
+  DOTNET_VERSION: 6.0.X
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     env:
       SOLUTION_ROOT: src/EPPLus.MultiHeader.sln
-      
+
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Restore dependencies
-      run: dotnet restore $SOLUTION_ROOT
+      run: dotnet restore ${{ env.SOLUTION_ROOT }}
 
     - name: Build
-      run: dotnet build $SOLUTION_ROOT --no-restore
+      run: dotnet build ${{ env.SOLUTION_ROOT }} --no-restore
 
     - name: Test
-      run: dotnet test $SOLUTION_ROOT --no-build --verbosity normal
+      run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --verbosity normal
+
+    - name: Create nupkg
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --configuration Release --output ${{ env.NUGET_FOLDER }}
+
+    - name: upload arifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget
+        if-no-files-found: error
+        retention-days: 7
+        path: ${{ env.NUGET_FOLDER }}/*.nupkg        
+      
+  validate_nuget:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      # Install the .NET SDK indicated in the global.json file
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget
+          path: ${{ env.NUGET_FOLDER }}
+
+      - name: Install nuget validator
+        run: dotnet tool update Meziantou.Framework.NuGetPackageValidation.Tool --global
+
+      # Validate metadata and content of the NuGet package
+      # https://www.nuget.org/packages/Meziantou.Framework.NuGetPackageValidation.Tool#readme-body-tab
+      # If some rules are not applicable, you can disable them
+      # using the --excluded-rules or --excluded-rule-ids option
+      - name: Validate package
+        shell: pwsh
+        run: meziantou.validate-nuget-package (Get-ChildItem "${{ env.NUGET_FOLDER }}/*.nupkg")        
+      
+  deploy:
+    # Publish only when creating a GitHub Release
+    # https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    needs: [ validate_nuget ]
+    steps:
+      # Download the NuGet package created in the previous job
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget
+          path: ${{ env.NUGET_FOLDER }}
+
+      # Install the .NET SDK indicated in the global.json file
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Publish all NuGet packages to NuGet.org
+      # Use --skip-duplicate to prevent errors if a package with the same version already exists.
+      # If you retry a failed workflow, already published packages will be skipped without error.
+      - name: Publish NuGet package
+        shell: pwsh
+        run: |
+          foreach($file in (Get-ChildItem "${{ env.NUGET_FOLDER }}" -Recurse -Include *.nupkg)) {
+              dotnet nuget push $file --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          }
