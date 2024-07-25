@@ -4,14 +4,46 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);CS1591</NoWarn> 	  <!-- If all members are not documented, you can disable the compiler warnings -->
   </PropertyGroup>
 
+  <PropertyGroup>
+	<EnablePackageValidation>true</EnablePackageValidation>
+	<Authors>MNieto</Authors>
+	<Title>EPlus multi-header report</Title>
+	<Description>Extension for the EPPlus library to create reports from complex objects</Description>
+	<PackageProjectUrl>https://github.com/mnieto/EPPlus.MultiHeader</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/mnieto/EPPlus.MultiHeader</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>EPlus;Excel;Multi-header;Report</PackageTags>
+	<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageIcon>EPlusMultiHeader.png</PackageIcon>
+	<!-- Optional: Detect breaking changes from a previous version -->
+	<!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
+  </PropertyGroup>	
+
   <ItemGroup>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="EPPlus" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
 	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 	  <_Parameter1>EPPLus.MultiHeader.Test</_Parameter1>
 	</AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\EPlusMultiHeader.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
