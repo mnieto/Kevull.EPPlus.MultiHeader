@@ -18,10 +18,17 @@ namespace EPPLus.MultiHeader
 
         private int FirstDataRow => _header?.Height + 1 ?? 2;
         private int row;
+        
+        /// <summary>
+        /// Internal <see cref="HeaderManager{T}"/>
+        /// </summary>
         protected HeaderManager<T>? _header;
 
         internal const string HeaderStyleName = "Headers";
 
+        /// <summary>
+        /// Object properties associated to the columns
+        /// </summary>
         protected Dictionary<string, PropertyInfo>? Properties { get; private set; }
 
         /// <summary>

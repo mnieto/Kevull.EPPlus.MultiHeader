@@ -14,6 +14,10 @@ namespace EPPLus.MultiHeader.Columns
     public class ColumnExpression<T> : ColumnInfo
     {
         private Func<T, object?> _expression;
+
+        /// <summary>
+        /// Data content is rendered from the source object or calculated
+        /// </summary>
         public override bool IsDynamic => true;
 
         /// <summary>

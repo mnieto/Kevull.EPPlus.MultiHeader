@@ -99,9 +99,22 @@ namespace EPPLus.MultiHeader.Columns
     /// </summary>
     public class ColumnHyperLink<T> : ColumnHyperLink 
     {
+        /// <summary>
+        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
+        /// </summary>
+        /// <param name="columnSelector">Property associated to the column</param>
+        /// <param name="urlPropertyName">Property that contains the Url</param>
         public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, string urlPropertyName) : 
             base(ColumnInfo<T>.GetPropertyName(columnSelector), urlPropertyName) { }
 
+        /// <summary>
+        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
+        /// </summary>
+        /// <param name="columnSelector">Property associated to the column</param>
+        /// <param name="urlColumnSelector">Property that contains the Url</param>
+        /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
+        /// <param name="displayName"></param>
+        /// <param name="hidden"></param>
         public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(ColumnInfo<T>.GetPropertyName(columnSelector), ColumnInfo<T>.GetPropertyName(urlColumnSelector).Name, order, displayName, hidden) { }
     }

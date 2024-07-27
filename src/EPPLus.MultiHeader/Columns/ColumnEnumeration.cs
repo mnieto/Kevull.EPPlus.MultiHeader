@@ -17,16 +17,41 @@ namespace EPPLus.MultiHeader.Columns
     {
         private readonly Dictionary<string, int> _keyValues;
 
+        /// <summary>
+        /// Number of Excel columns needed to render this property (and all its children)
+        /// </summary>
         public override int Width => Header == null ? _keyValues.Count : Header!.Columns.Sum(c => c.Width) * _keyValues.Count;
+
+        /// <summary>
+        /// Is it a property with a single value or is it a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
+        /// </summary>
         public override bool IsMultiValue => true;
+        
+        /// <summary>
+        /// Allowed values for the child columns
+        /// </summary>
         public List<string> Keys => _keyValues.Keys.Cast<string>().ToList();
 
+        /// <summary>
+        /// Create a Column based on a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <param name="name">Name of the column</param>
+        /// <param name="keyValues">Allowed column names for the child columns</param>
+        /// <param name="ignore">ignore attribute</param>
         public ColumnEnumeration(string name, IEnumerable<string> keyValues, bool ignore) : base(name, ignore)
         {
             int i = 0;
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
         }
 
+        /// <summary>
+        /// Create a Column based on a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <param name="name">Name of the column</param>
+        /// <param name="keyValues">Allowed column names for the child columns</param>
+        /// <param name="order">In which position show the column</param>
+        /// <param name="displayName">A column display name. If null, <paramref name="name"/> will be used</param>
+        /// <param name="hidden">Hide this column</param>
         public ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) : base(name, order, displayName, hidden)
         {
             int i = 0;

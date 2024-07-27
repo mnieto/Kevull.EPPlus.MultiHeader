@@ -15,6 +15,9 @@ namespace EPPLus.MultiHeader.Columns
     {
         private readonly string _formula;
 
+        /// <summary>
+        /// Data content is rendered from the source object or calculated
+        /// </summary>
         public override bool IsDynamic => true;
 
         /// <summary>

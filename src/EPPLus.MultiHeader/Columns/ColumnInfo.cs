@@ -17,7 +17,14 @@ namespace EPPLus.MultiHeader.Columns
     [DebuggerDisplay("{Name}")]
     public class ColumnInfo
     {
+        /// <summary>
+        /// Human friendly name. If it is not provided, it will use <see cref="Name"/>
+        /// </summary>
         protected string? _displayName;
+
+        /// <summary>
+        /// Diplay order. Order is relative to the other columns. Columns that has no order are added after those that have it. Order starts from 1
+        /// </summary>
         protected int? _order;
 
         /// <summary>
@@ -78,6 +85,10 @@ namespace EPPLus.MultiHeader.Columns
         /// Data content is rendered from the source object or calculated
         /// </summary>
         public virtual bool IsDynamic => false;
+        
+        /// <summary>
+        /// Number of child levels below this
+        /// </summary>
         public int Deep => FullName.Split('.').Length;
         
         /// <summary>
