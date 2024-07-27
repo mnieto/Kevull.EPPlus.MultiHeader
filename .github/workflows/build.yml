@@ -10,7 +10,7 @@ on:
 
 env:
   NUGET_FOLDER: ${{ github.workspace}}/nuget
-  DOTNET_VERSION: 6.0.X
+  DOTNET_VERSION: 8.0.X
 
 jobs:
   build:
