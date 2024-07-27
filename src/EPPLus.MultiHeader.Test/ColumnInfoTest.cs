@@ -146,13 +146,13 @@ namespace EPPLus.MultiHeader.Test
 
     internal class RiskDict
     {
-        public string Name { get; set; }
-        public Dictionary<string, int> Levels { get; set; }
+        public string Name { get; set; } = "";
+        public Dictionary<string, int> Levels { get; set; } = new Dictionary<string, int>();
     }
 
     internal class RiskList
     {
-        public string Name { get; set; }
-        public List<int> Levels { get; set; }
+        public string Name { get; set; } = "";
+        public List<int> Levels { get; set; } = new List<int>();
     }
 }

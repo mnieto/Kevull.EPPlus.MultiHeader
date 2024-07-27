@@ -8,8 +8,8 @@ namespace EPPLus.MultiHeader.Test
 {
     internal class RootLevel
     {
-        public string SimpleProperty { get; set; }
-        public SecondLevel ComplexProperty { get; set; }
+        public string SimpleProperty { get; set; } = "";
+        public SecondLevel ComplexProperty { get; set; } = new SecondLevel();
         public static List<RootLevel> CreateTest()
         {
             return new List<RootLevel> {
@@ -45,8 +45,8 @@ namespace EPPLus.MultiHeader.Test
 
     internal class SecondLevel
     {
-        public string LeftColumn { get; set; }
-        public ThirdLevel RightColumn { get; set; }
+        public string LeftColumn { get; set; } = "";
+        public ThirdLevel RightColumn { get; set; } = new ThirdLevel();
     }
 
     internal class ThirdLevel
@@ -59,8 +59,8 @@ namespace EPPLus.MultiHeader.Test
 
     internal class RootLevelDictionary
     {
-        public string SimpleProperty { get; set; }
-        public SecondLevelDictionary ComplexProperty { get; set; }
+        public string SimpleProperty { get; set; } = "";
+        public SecondLevelDictionary ComplexProperty { get; set; } = new SecondLevelDictionary();
 
         public static List<RootLevelDictionary> CreateTest()
         {
@@ -96,8 +96,8 @@ namespace EPPLus.MultiHeader.Test
 
     internal class SecondLevelDictionary
     {
-        public string LeftColumn { get; set; }
-        public Dictionary<string, int> RightColumn { get; set; }
+        public string LeftColumn { get; set; } = "";
+        public Dictionary<string, int> RightColumn { get; set; } = new Dictionary<string, int>();
     }
 
 

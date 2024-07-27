@@ -14,6 +14,9 @@ namespace EPPLus.MultiHeader.Columns
     /// </summary>
     public class ColumnHyperLink : ColumnInfo
     {
+        /// <summary>
+        /// Object property that contains the Url
+        /// </summary>
         public string UrlPropertyName { get; set; }
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used internaly to build nested objects
         /// </summary>
-        /// <param name="name">name of the property. This will match with the property name</param>
+        /// <param name="names">name of the property. This will match with the property name</param>
         /// <param name="urlPropertyName">property that contains the url</param>
         internal ColumnHyperLink(PropertyNames names, string urlPropertyName) : base(names)
         {
@@ -58,7 +61,7 @@ namespace EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used internaly to build nested objects
         /// </summary>
-        /// <param name="name">name of the property. This will match with the property name</param>
+        /// <param name="names">name of the property. This will match with the property name</param>
         /// <param name="urlPropertyName">property that contains the url</param>
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>

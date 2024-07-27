@@ -120,7 +120,7 @@ namespace EPPLus.MultiHeader.Columns
         /// <param name="columnSelector">Lambda expression to specify the property</param>
         /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
         /// <param name="order">Ignore this property. This column will not be rendered</param>
-        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="Name"/></param>
+        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
         /// <param name="hidden">Is this column rendered but hidden?</param>
         public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) :
             base(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden)

@@ -62,7 +62,7 @@ namespace EPPLus.MultiHeader
         }
 
         /// <summary>
-        /// Add a column whose type implements <see cref="IDictionary{TKey, TValue}" or <see cref="IEnumerable{T}"/> where Tkey is always invoked with <see cref="Object.ToString()"/> />
+        /// Add a column whose type implements <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/> where Tkey is always invoked with <see cref="Object.ToString()"/> />
         /// </summary>
         /// <param name="columnSelector">Allows specify the column name</param>
         /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>

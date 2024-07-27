@@ -8,7 +8,7 @@ using System.Reflection;
 namespace EPPLus.MultiHeader
 {
     /// <summary>
-    /// Given an <see cref="IEnumerable{T}"/> list of objects of type <see cref="T"/> creates an in-memory Excel report
+    /// Given an <see cref="IEnumerable{T}"/> list of objects it creates an in-memory Excel report
     /// </summary>
     /// <typeparam name="T">Type of objects</typeparam>
     public class MultiHeaderReport<T>
@@ -39,14 +39,14 @@ namespace EPPLus.MultiHeader
         /// Ctor
         /// </summary>
         /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
-        /// <param name="sheet">Worksheet name to be created where generate the report</param>
+        /// <param name="sheetName">Worksheet name to be created where generate the report</param>
         public MultiHeaderReport(ExcelPackage xls, string sheetName): this(xls, AddSheet(xls, sheetName)) { }
 
         /// <summary>
-        /// Customize the columns and formats during the report generation. See <see cref="ConfigurationBuilder{T}"./>
+        /// Customize the columns and formats during the report generation. See <see cref="ConfigurationBuilder{T}"/>.
         /// </summary>
         /// <param name="options">Lambda expresion to configure the report</param>
-        /// <returns><see cref="MultiHeaderReport{T}" This allows a fluent style to configure and generate the report/></returns>
+        /// <returns><see cref="MultiHeaderReport{T}"/>This allows a fluent style to configure and generate the report</returns>
         public MultiHeaderReport<T> Configure(Action<ConfigurationBuilder<T>> options)
         {
             var builder = new ConfigurationBuilder<T>();
@@ -111,6 +111,8 @@ namespace EPPLus.MultiHeader
         {
             if (item == null)
                 return;
+            if (header.Properties == null)
+                throw new ArgumentNullException(nameof(header.Properties));
             foreach(var columnInfo in header.Columns)
             {
                 if (columnInfo.HasChildren)

@@ -56,7 +56,7 @@ namespace EPPLus.MultiHeader.Columns
         internal int Index { get; set; }
 
         /// <summary>
-        /// Diplay order. Order is relative to the other columns. Columns that has no order are added after those that have it. Order starts from 1</param>
+        /// Diplay order. Order is relative to the other columns. Columns that has no order are added after those that have it. Order starts from 1
         /// </summary>
         public int? Order
         {
@@ -196,7 +196,7 @@ namespace EPPLus.MultiHeader.Columns
         /// </summary>
         /// <param name="columnSelector">Lambda expression to specify the property</param>
         /// <param name="order">Ignore this property. This column will not be rendered</param>
-        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="Name"/></param>
+        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
         /// <param name="hidden">Is this column rendered but hidden?</param>
         public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
