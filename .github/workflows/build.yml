@@ -15,19 +15,6 @@ env:
   DOTNET_VERSION: 8.0.X
 
 jobs:
-  get_version:
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    outputs:
-      VersionParameter: "/p:Version=${{ steps.get_version.outputs.ReleaseVersion }}"
-    steps:
-    - name: Get version
-      id: get_version
-      run: |
-        echo "Version to be released: ${{ github.ref_name }}"
-        echo "ReleaseVersion=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-
-
   build:
     runs-on: ubuntu-latest
     env:
@@ -37,6 +24,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Get version
+      id: get_version
+      if: github.event_name == 'release'
+      run: |
+        echo "Version to be released: ${{ github.ref_name }}"
+        echo "VersionParameter=/p:Version=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -46,13 +40,15 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION_ROOT }}
 
     - name: Build
+      env:
+        VERSION_PARAMETER: ${{ steps.get_version.outputs.VersionParameter }}
       run: dotnet build ${{ env.SOLUTION_ROOT }} --no-restore ${{ env.VERSION_PARAMETER }}
 
     - name: Test
       run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --verbosity normal
 
     - name: Create nupkg
-      run: dotnet pack ${{ env.SOLUTION_ROOT }} --configuration Release --output ${{ env.NUGET_FOLDER }}
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration Release --output ${{ env.NUGET_FOLDER }}
 
     - name: upload arifact
       uses: actions/upload-artifact@v4
