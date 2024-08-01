@@ -7,6 +7,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  release: 
+    types: [prereleased, released ]
 
 env:
   NUGET_FOLDER: ${{ github.workspace}}/nuget
