@@ -13,6 +13,7 @@ on:
 env:
   NUGET_FOLDER: ${{ github.workspace}}/nuget
   DOTNET_VERSION: 8.0.X
+  CONFIGURATION: Release
 
 jobs:
   build:
@@ -42,13 +43,13 @@ jobs:
     - name: Build
       env:
         VERSION_PARAMETER: ${{ steps.get_version.outputs.VersionParameter }}
-      run: dotnet build ${{ env.SOLUTION_ROOT }} --no-restore ${{ env.VERSION_PARAMETER }}
+      run: dotnet build ${{ env.SOLUTION_ROOT }} --no-restore ${{ env.VERSION_PARAMETER }} --configuration ${{ env.CONFIGURATION }}
 
     - name: Test
-      run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --verbosity normal
+      run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} --verbosity normal
 
     - name: Create nupkg
-      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration Release --output ${{ env.NUGET_FOLDER }}
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} --output ${{ env.NUGET_FOLDER }}
 
     - name: upload arifact
       uses: actions/upload-artifact@v4
