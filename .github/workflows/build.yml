@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SOLUTION_ROOT: src/EPPLus.MultiHeader.sln
-      VERSION_PARAMETER: ${{ needs.get_version.outputs.VersionParameter }}
 
     steps:
     - uses: actions/checkout@v3
@@ -49,7 +48,9 @@ jobs:
       run: dotnet test ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} --verbosity normal
 
     - name: Create nupkg
-      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} --output ${{ env.NUGET_FOLDER }}
+      env:
+        VERSION_PARAMETER: ${{ steps.get_version.outputs.VersionParameter }}
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} ${{ env.VERSION_PARAMETER }} --output ${{ env.NUGET_FOLDER }}
 
     - name: upload arifact
       uses: actions/upload-artifact@v4
