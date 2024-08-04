@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SOLUTION_ROOT: src/EPPLus.MultiHeader.sln
+      SOLUTION_ROOT: src/Kevull.EPPLus.MultiHeader.sln
 
     steps:
     - uses: actions/checkout@v3
