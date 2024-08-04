@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EPPLus.MultiHeader.Columns
+namespace Kevull.EPPLus.MultiHeader.Columns
 {
     internal class PropertyNames
     {

@@ -1,4 +1,4 @@
-﻿using EPPLus.MultiHeader.Columns;
+﻿using Kevull.EPPLus.MultiHeader.Columns;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace EPPLus.MultiHeader.Test
+namespace Kevull.EPPLus.MultiHeader.Test
 {
     public class ColumnInfoTest
     {

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EPPLus.MultiHeader.Columns
+namespace Kevull.EPPLus.MultiHeader.Columns
 {
     /// <summary>
     /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content

@@ -1,10 +1,10 @@
-﻿using EPPLus.MultiHeader.Columns;
+﻿using Kevull.EPPLus.MultiHeader.Columns;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace EPPLus.MultiHeader
+namespace Kevull.EPPLus.MultiHeader
 {
     /// <summary>
     /// Helper class to configure the report and column options

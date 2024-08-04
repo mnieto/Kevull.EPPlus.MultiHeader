@@ -1,11 +1,11 @@
-﻿using EPPLus.MultiHeader.Columns;
+﻿using Kevull.EPPLus.MultiHeader.Columns;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
-namespace EPPLus.MultiHeader
+namespace Kevull.EPPLus.MultiHeader
 {
     /// <summary>
     /// Given an <see cref="IEnumerable{T}"/> list of objects it creates an in-memory Excel report

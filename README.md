@@ -1,6 +1,6 @@
-[![build library](https://github.com/mnieto/EPPlus.MultiHeader/actions/workflows/build.yml/badge.svg)](https://github.com/mnieto/EPPlus.MultiHeader/actions/workflows/build.yml)
+[![build library](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/actions/workflows/build.yml/badge.svg)](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/actions/workflows/build.yml)
 
-# EPPlus.MultiHeader
+# Kevull.EPPLus.MultiHeader
 Extension for the [EPPlus](https://github.com/EPPlusSoftware/EPPlus) library to create reports from complex objects
 
 Given a list like this:
@@ -45,6 +45,6 @@ this code:
 
 will render like this:
 
-![image](https://github.com/mnieto/EPPlus.MultiHeader/assets/7962206/4cb6e383-5d22-46f5-9308-ad21f82100ae)
+![image](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/assets/7962206/4cb6e383-5d22-46f5-9308-ad21f82100ae)
 
 

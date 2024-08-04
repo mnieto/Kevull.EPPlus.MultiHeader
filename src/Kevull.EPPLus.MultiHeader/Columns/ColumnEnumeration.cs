@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EPPLus.MultiHeader.Columns
+namespace Kevull.EPPLus.MultiHeader.Columns
 {
     /// <summary>
     /// Specialized <see cref="ColumnInfo"/> that renders data from a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.

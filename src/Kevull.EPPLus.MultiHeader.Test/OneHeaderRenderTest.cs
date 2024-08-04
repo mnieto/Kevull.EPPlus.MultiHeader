@@ -3,7 +3,7 @@ using System;
 using OfficeOpenXml;
 using NuGet.Frameworks;
 
-namespace EPPLus.MultiHeader.Test
+namespace Kevull.EPPLus.MultiHeader.Test
 {
     public class OneHeaderRenderTest
     {

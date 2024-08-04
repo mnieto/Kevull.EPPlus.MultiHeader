@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPLus.MultiHeader", "EPPLus.MultiHeader\EPPLus.MultiHeader.csproj", "{FC9DB053-9511-434B-A767-4355475D4066}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPLus.MultiHeader", "Kevull.EPPLus.MultiHeader\Kevull.EPPLus.MultiHeader.csproj", "{FC9DB053-9511-434B-A767-4355475D4066}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPLus.MultiHeader.Test", "EPPLus.MultiHeader.Test\EPPLus.MultiHeader.Test.csproj", "{6FEA8449-BED4-48A0-91A1-48587FFD7604}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPLus.MultiHeader.Test", "Kevull.EPPLus.MultiHeader.Test\Kevull.EPPLus.MultiHeader.Test.csproj", "{6FEA8449-BED4-48A0-91A1-48587FFD7604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
