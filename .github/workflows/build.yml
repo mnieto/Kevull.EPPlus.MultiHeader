@@ -32,7 +32,7 @@ jobs:
         echo "VersionParameter=/p:Version=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -50,7 +50,18 @@ jobs:
     - name: Create nupkg
       env:
         VERSION_PARAMETER: ${{ steps.get_version.outputs.VersionParameter }}
-      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} ${{ env.VERSION_PARAMETER }} --output ${{ env.NUGET_FOLDER }}
+      run: dotnet pack ${{ env.SOLUTION_ROOT }} --no-build --configuration ${{ env.CONFIGURATION }} ${{ env.VERSION_PARAMETER }} --output ${{ env.NUGET_FOLDER }} --include-symbols
+
+    - name: Install nuget validator
+      run: dotnet tool update Meziantou.Framework.NuGetPackageValidation.Tool --global
+
+    # Validate metadata and content of the NuGet package
+    # https://www.nuget.org/packages/Meziantou.Framework.NuGetPackageValidation.Tool#readme-body-tab
+    # If some rules are not applicable, you can disable them
+    # using the --excluded-rules or --excluded-rule-ids option
+    - name: Validate package
+      shell: pwsh
+      run: meziantou.validate-nuget-package (Get-ChildItem "${{ env.NUGET_FOLDER }}/*.nupkg")        
 
     - name: upload arifact
       uses: actions/upload-artifact@v4
@@ -60,39 +71,13 @@ jobs:
         retention-days: 7
         path: ${{ env.NUGET_FOLDER }}/*.nupkg        
       
-  validate_nuget:
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    steps:
-      # Install the .NET SDK indicated in the global.json file
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: nuget
-          path: ${{ env.NUGET_FOLDER }}
-
-      - name: Install nuget validator
-        run: dotnet tool update Meziantou.Framework.NuGetPackageValidation.Tool --global
-
-      # Validate metadata and content of the NuGet package
-      # https://www.nuget.org/packages/Meziantou.Framework.NuGetPackageValidation.Tool#readme-body-tab
-      # If some rules are not applicable, you can disable them
-      # using the --excluded-rules or --excluded-rule-ids option
-      - name: Validate package
-        shell: pwsh
-        run: meziantou.validate-nuget-package (Get-ChildItem "${{ env.NUGET_FOLDER }}/*.nupkg")        
-      
   deploy:
     # Publish only when creating a GitHub Release
     # https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
-    needs: [ validate_nuget ]
+    needs: [ build ]
     steps:
       # Download the NuGet package created in the previous job
       - uses: actions/download-artifact@v4
