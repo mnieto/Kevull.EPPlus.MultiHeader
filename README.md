@@ -45,6 +45,4 @@ this code:
 
 will render like this:
 
-![image](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/assets/7962206/4cb6e383-5d22-46f5-9308-ad21f82100ae)
-
-
+![image](https://github.com/user-attachments/assets/af7b7d4b-b4c2-4146-b8eb-75bfa1ac8b39)
