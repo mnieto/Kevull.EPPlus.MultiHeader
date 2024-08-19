@@ -9,10 +9,10 @@ using Xunit;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class TwoHHeaderRenderTest
+    public class TwoHeaderRenderTest
     {
 
-        public TwoHHeaderRenderTest() {
+        public TwoHeaderRenderTest() {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 

@@ -24,7 +24,7 @@ namespace Kevull.EPPLus.MultiHeader
         /// </summary>
         protected HeaderManager<T>? _header;
 
-        internal const string HeaderStyleName = "Headers";
+        internal const string HeaderStyleName = "__Headers__";
 
         /// <summary>
         /// Object properties associated to the columns
@@ -56,7 +56,7 @@ namespace Kevull.EPPLus.MultiHeader
         /// <returns><see cref="MultiHeaderReport{T}"/>This allows a fluent style to configure and generate the report</returns>
         public MultiHeaderReport<T> Configure(Action<ConfigurationBuilder<T>> options)
         {
-            var builder = new ConfigurationBuilder<T>();
+            var builder = new ConfigurationBuilder<T>(_xls);
             options?.Invoke(builder);
             _header = builder.Build();
             return this;

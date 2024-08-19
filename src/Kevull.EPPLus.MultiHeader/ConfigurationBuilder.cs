@@ -13,6 +13,7 @@ namespace Kevull.EPPLus.MultiHeader
     public class ConfigurationBuilder<T>
     {
         private List<ColumnInfo> columns;
+        private ExcelPackage xls;
 
         /// <summary>
         /// Shows or not autofilter on last header row
@@ -22,20 +23,24 @@ namespace Kevull.EPPLus.MultiHeader
         /// <summary>
         /// Ctor invoked to get default configuration at first step
         /// </summary>
-        public ConfigurationBuilder() : this(new List<ColumnInfo>()) { }
+        /// <param name="xls">Excel reference</param>
+        public ConfigurationBuilder(ExcelPackage xls) : this(xls, new List<ColumnInfo>()) { }
 
         /// <summary>
         /// Ctor intended for testing purposes
         /// </summary>
+        /// <param name="xls">Excel reference</param>
         /// <param name="columns">List of column configurations</param>
-        internal ConfigurationBuilder(params ColumnInfo[] columns) : this(columns.ToList()) { }
+        internal ConfigurationBuilder(ExcelPackage xls, params ColumnInfo[] columns) : this(xls, columns.ToList()) { }
 
         /// <summary>
         /// Ctor
         /// </summary>
+        /// <param name="xls">Excel reference</param>
         /// <param name="columns">List of column configurations</param>
-        public ConfigurationBuilder(IEnumerable<ColumnInfo> columns)
+        public ConfigurationBuilder(ExcelPackage xls, IEnumerable<ColumnInfo> columns)
         {
+            this.xls = xls;
             this.columns = columns.ToList();
         }
 
@@ -130,7 +135,6 @@ namespace Kevull.EPPLus.MultiHeader
         /// <summary>
         /// Adds a custom header style. If not specified, a default one will be applyed
         /// </summary>
-        /// <param name="xls"><see cref="ExcelPackage"/> where the style will be defined</param>
         /// <param name="style">Lambda expresion to define the style</param>
         /// <remarks>The default style is defined as below</remarks>
         /// <example>
@@ -146,10 +150,20 @@ namespace Kevull.EPPLus.MultiHeader
         /// namedStyle.Style.Font.Bold = true;
         /// </code>
         /// </example>
-        public ConfigurationBuilder<T> AddHeaderStyle(ExcelPackage xls, Action<ExcelStyle> style)
+        public ConfigurationBuilder<T> AddHeaderStyle(Action<ExcelStyle> style)
         {
-            var namedStyle = xls.Workbook.Styles.CreateNamedStyle(MultiHeaderReport<T>.HeaderStyleName);
-            style(namedStyle.Style);
+            return AddNamedStyle(MultiHeaderReport<T>.HeaderStyleName, style);
+        }
+
+        /// <summary>
+        /// Adds a named style that can be used later by any column.
+        /// </summary>
+        /// <param name="name">Name of the style</param>
+        /// <param name="style">Action that allows to configure the style</param>
+        public ConfigurationBuilder<T> AddNamedStyle(string name, Action<ExcelStyle> style)
+        {
+            var namedStyle = xls.Workbook.Styles.CreateNamedStyle(name);
+            style?.Invoke(namedStyle.Style);
             return this;
         }
 

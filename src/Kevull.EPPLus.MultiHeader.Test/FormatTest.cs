@@ -38,7 +38,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
             report.Configure(options => options
                 .AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
-                .AddHeaderStyle(xls, x => {
+                .AddHeaderStyle(x => {
                     x.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     x.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                 })

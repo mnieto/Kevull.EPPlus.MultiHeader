@@ -67,7 +67,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var properties = typeof(RiskDict).GetProperties()
                 .ToDictionary(x => x.Name, x => x);
 
-            var column = new ColumnEnumeration("Levels", data.Levels.Keys);
+            var column = new ColumnEnumeration<Dictionary<string, int>>("Levels", data.Levels.Keys);
             column.WriteCell(sheet.Cells["B2"], properties, data);
 
             Assert.Equal(10, sheet.GetValue<int>(2, 2));
@@ -95,7 +95,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var properties = typeof(RiskDict).GetProperties()
                 .ToDictionary(x => x.Name, x => x);
 
-            var column = new ColumnEnumeration("Levels", data.Levels.Keys.Take(2));
+            var column = new ColumnEnumeration<Dictionary<string, int>>("Levels", data.Levels.Keys.Take(2));
             Assert.Throws<KeyNotFoundException>(() => column.WriteCell(sheet.Cells["B2"], properties, data));
         }
 
@@ -113,7 +113,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var properties = typeof(RiskList).GetProperties()
                 .ToDictionary(x => x.Name, x => x);
 
-            var column = new ColumnEnumeration("Levels", data.Levels.ConvertAll(x => x.ToString()));
+            var column = new ColumnEnumeration<List<int>>("Levels", data.Levels.ConvertAll(x => x.ToString()));
             column.WriteCell(sheet.Cells["B2"], properties, data);
 
             Assert.Equal(10, sheet.GetValue<int>(2, 2));
@@ -136,7 +136,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var properties = typeof(RiskList).GetProperties()
                 .ToDictionary(x => x.Name, x => x);
 
-            var column = new ColumnEnumeration("Levels", data.Levels.ConvertAll(x => x.ToString()).Take(2));
+            var column = new ColumnEnumeration<List<int>>("Levels", data.Levels.ConvertAll(x => x.ToString()).Take(2));
             Assert.Throws<KeyNotFoundException>(() => column.WriteCell(sheet.Cells["B2"], properties, data));
         }
 

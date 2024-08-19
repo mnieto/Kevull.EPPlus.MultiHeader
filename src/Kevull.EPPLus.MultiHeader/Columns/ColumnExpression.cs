@@ -11,7 +11,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
     /// <summary>
     /// Add an expression column. That is, each time the report will render a value for this column, it will invoke a lambda expression.
     /// </summary>
-    public class ColumnExpression<T> : ColumnInfo
+    public class ColumnExpression<T> : ColumnInfo<T>
     {
         private Func<T, object?> _expression;
 
@@ -21,11 +21,11 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         public override bool IsDynamic => true;
 
         /// <summary>
-        /// Ctor
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnExpression{T}"/>
         /// </summary>
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
         /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
-        public ColumnExpression(string name, Func<T, object?> expression) : base(name)
+        internal ColumnExpression(string name, Func<T, object?> expression) : base(name)
         {
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }

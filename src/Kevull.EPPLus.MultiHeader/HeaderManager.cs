@@ -237,7 +237,6 @@ namespace Kevull.EPPLus.MultiHeader
     /// <remarks>As the source Type can have nested properties, this structure is recursive</remarks>
     public class HeaderManager<T> : HeaderManager
     {
-
         /// <summary>
         /// Ctor. Invoked when using default configuration
         /// </summary>

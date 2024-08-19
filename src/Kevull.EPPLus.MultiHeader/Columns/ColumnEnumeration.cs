@@ -13,7 +13,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
     /// <summary>
     /// Specialized <see cref="ColumnInfo"/> that renders data from a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
     /// </summary>
-    public class ColumnEnumeration : ColumnInfo
+    public class ColumnEnumeration<T> : ColumnInfo<T>
     {
         private readonly Dictionary<string, int> _keyValues;
 
@@ -33,12 +33,33 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         public List<string> Keys => _keyValues.Keys.Cast<string>().ToList();
 
         /// <summary>
+        /// Simple Ctor
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
+        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues) :
+            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, false)
+        { }
+
+        /// <summary>
+        /// General use Ctor
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
+        /// <param name="order">Ignore this property. This column will not be rendered</param>
+        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
+        /// <param name="hidden">Is this column rendered but hidden?</param>
+        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) :
+            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden)
+        { }
+
+        /// <summary>
         /// Create a Column based on a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
         /// </summary>
         /// <param name="name">Name of the column</param>
         /// <param name="keyValues">Allowed column names for the child columns</param>
         /// <param name="ignore">ignore attribute</param>
-        public ColumnEnumeration(string name, IEnumerable<string> keyValues, bool ignore) : base(name, ignore)
+        internal ColumnEnumeration(string name, IEnumerable<string> keyValues, bool ignore) : base(name, ignore)
         {
             int i = 0;
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
@@ -52,7 +73,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">In which position show the column</param>
         /// <param name="displayName">A column display name. If null, <paramref name="name"/> will be used</param>
         /// <param name="hidden">Hide this column</param>
-        public ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) : base(name, order, displayName, hidden)
+        internal ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) : base(name, order, displayName, hidden)
         {
             int i = 0;
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
@@ -123,32 +144,5 @@ namespace Kevull.EPPLus.MultiHeader.Columns
                 cell.Offset(1, offset).Value = key;
             }
         }
-    }
-
-    /// <summary>
-    /// Specialized <see cref="ColumnInfo"/> that renders data from a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
-    /// </summary>
-    public class ColumnEnumeration<T> : ColumnEnumeration
-    {
-        /// <summary>
-        /// Simple Ctor
-        /// </summary>
-        /// <param name="columnSelector">Lambda expression to specify the property</param>
-        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
-        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues) :
-            base(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, false)
-        { }
-
-        /// <summary>
-        /// General use Ctor
-        /// </summary>
-        /// <param name="columnSelector">Lambda expression to specify the property</param>
-        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
-        /// <param name="order">Ignore this property. This column will not be rendered</param>
-        /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
-        /// <param name="hidden">Is this column rendered but hidden?</param>
-        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) :
-            base(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden)
-        { }
     }
 }

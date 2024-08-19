@@ -111,11 +111,10 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// </summary>
         public virtual int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
 
-
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        public ColumnInfo(string name, bool ignore)
+        internal ColumnInfo(string name, bool ignore)
         {
             FullName = name;
             Name = GetName(name);
@@ -125,7 +124,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        public ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
+        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
         {
             Hidden = hidden;
             FullName = name;
@@ -211,6 +210,29 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="hidden">Is this column rendered but hidden?</param>
         public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
             : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
+
+
+        /// <summary>
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// </summary>
+        internal ColumnInfo(string name, bool ignore) : base(name, ignore) { }
+
+        /// <summary>
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// </summary>
+        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
+            : base(name, order, displayName, hidden) { }
+
+        /// <summary>
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// </summary>
+        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false)
+            : base(names, order, displayName, hidden) { }
+
+        /// <summary>
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// </summary>
+        internal ColumnInfo(PropertyNames names, bool ignore) : base(names, ignore) { }
 
         internal static PropertyNames GetPropertyName(Expression<Func<T, object?>> columnSelector)
         {

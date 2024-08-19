@@ -12,7 +12,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
     /// <summary>
     /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
     /// </summary>
-    public class ColumnHyperLink : ColumnInfo
+    public class ColumnHyperLink<T> : ColumnInfo<T>
     {
         /// <summary>
         /// Object property that contains the Url
@@ -25,24 +25,44 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         public bool IgnoreLinkErrors { get; set; } = true;
 
         /// <summary>
-        /// Ctor
+        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
+        /// </summary>
+        /// <param name="columnSelector">Property associated to the column</param>
+        /// <param name="urlPropertyName">Property that contains the Url</param>
+        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, string urlPropertyName) :
+            this(GetPropertyName(columnSelector), urlPropertyName)
+        { }
+
+        /// <summary>
+        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
+        /// </summary>
+        /// <param name="columnSelector">Property associated to the column</param>
+        /// <param name="urlColumnSelector">Property that contains the Url</param>
+        /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
+        /// <param name="displayName"></param>
+        /// <param name="hidden"></param>
+        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
+            : this(GetPropertyName(columnSelector), GetPropertyName(urlColumnSelector).Name, order, displayName, hidden) { }
+
+        /// <summary>
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnHyperLink{T}"/>
         /// </summary>
         /// <param name="name">name of the property. This will match with the property name</param>
         /// <param name="urlPropertyName">property that contains the url</param>
-        public ColumnHyperLink(string name, string urlPropertyName) : base(name)
+        internal ColumnHyperLink(string name, string urlPropertyName) : base(name)
         {
             UrlPropertyName = urlPropertyName;
         }
 
         /// <summary>
-        /// Ctor
+        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnHyperLink{T}"/>
         /// </summary>
         /// <param name="name">name of the property. This will match with the property name</param>
         /// <param name="urlPropertyName">property that contains the url</param>
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ColumnHyperLink(string name, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false) :
+        internal ColumnHyperLink(string name, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false) :
             base(name, order, displayName, hidden)
         {
             UrlPropertyName = urlPropertyName;
@@ -92,30 +112,5 @@ namespace Kevull.EPPLus.MultiHeader.Columns
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
-    /// </summary>
-    public class ColumnHyperLink<T> : ColumnHyperLink 
-    {
-        /// <summary>
-        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
-        /// </summary>
-        /// <param name="columnSelector">Property associated to the column</param>
-        /// <param name="urlPropertyName">Property that contains the Url</param>
-        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, string urlPropertyName) : 
-            base(ColumnInfo<T>.GetPropertyName(columnSelector), urlPropertyName) { }
-
-        /// <summary>
-        /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
-        /// </summary>
-        /// <param name="columnSelector">Property associated to the column</param>
-        /// <param name="urlColumnSelector">Property that contains the Url</param>
-        /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
-        /// <param name="displayName"></param>
-        /// <param name="hidden"></param>
-        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
-            : base(ColumnInfo<T>.GetPropertyName(columnSelector), ColumnInfo<T>.GetPropertyName(urlColumnSelector).Name, order, displayName, hidden) { }
     }
 }
