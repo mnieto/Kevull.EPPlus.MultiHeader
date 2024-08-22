@@ -112,6 +112,16 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         public virtual int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
 
         /// <summary>
+        /// Name of a style defined in the Excel workbook
+        /// </summary>
+        /// <remarks>
+        /// Style names are not checked at configuration time, but in the <see cref="MultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method
+        /// You can assign the style name during the column creation or use any existing Style in the Excel file. 
+        /// The <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{OfficeOpenXml.Style.ExcelStyle})"/> is a handy method that wraps the EPPlus <see cref="ExcelStyles.CreateNamedStyle(string)"/> method
+        /// </remarks>
+        public string? StyleName { get; set; }
+
+        /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(string name, bool ignore)
@@ -124,13 +134,14 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
+        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             Hidden = hidden;
             FullName = name;
             Name = GetName(name);
             Order = order;
             _displayName = displayName;
+            StyleName = styleName;
         }
 
         /// <summary>
@@ -148,7 +159,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false)
+        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             Hidden = hidden;
             FullName = names.FullName;
@@ -156,6 +167,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
             ParentName = names.ParentName;
             ParentType = names.ParentType;
             Order = order;
+            StyleName= styleName;
             _displayName = displayName;
         }
 
@@ -208,8 +220,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Ignore this property. This column will not be rendered</param>
         /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
         /// <param name="hidden">Is this column rendered but hidden?</param>
-        public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
-            : base(GetPropertyName(columnSelector), order, displayName, hidden) { }
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+            : base(GetPropertyName(columnSelector), order, displayName, hidden, styleName) { }
 
 
         /// <summary>
@@ -220,14 +233,14 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false)
-            : base(name, order, displayName, hidden) { }
+        internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+            : base(name, order, displayName, hidden, styleName) { }
 
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
-        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false)
-            : base(names, order, displayName, hidden) { }
+        internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+            : base(names, order, displayName, hidden, styleName) { }
 
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>

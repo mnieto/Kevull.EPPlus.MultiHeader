@@ -151,6 +151,10 @@ namespace Kevull.EPPLus.MultiHeader
                         {
                             Height = Math.Max(Height, deep + 1);
                         }
+                        if (colInfo.StyleName == null)
+                        {
+                            colInfo.StyleName = GetDefaultStyleNameForDataType(property.Info);
+                        }
                         property.Used = true;
                     }
                     colInfo.Index = index;
@@ -215,7 +219,23 @@ namespace Kevull.EPPLus.MultiHeader
             }
             if (property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))   //IList<T>, IDictionary<K,T>, IDictionary and string implement IEnumerable
                 throw new InvalidOperationException($"Column {property.Name} is IEnumerable and must be preconfigured. See ConfigurationBuilder.Configure.");
-            return new ColumnInfo(property.Name);
+
+            string? styleName = GetDefaultStyleNameForDataType(property);
+            return new ColumnInfo(property.Name, styleName: styleName);
+        }
+
+        private string? GetDefaultStyleNameForDataType(PropertyInfo property)
+        {
+            string? styleName = null;
+            if (property.PropertyType == typeof(DateOnly) || property.PropertyType == typeof(DateTime))
+            {
+                styleName = StyleNames.DateStyleName;
+            }
+            else if (property.PropertyType == typeof(TimeOnly))
+            {
+                styleName = StyleNames.TimeStyleName;
+            }
+            return styleName;
         }
 
         [DebuggerDisplay("{Info.Name}")]

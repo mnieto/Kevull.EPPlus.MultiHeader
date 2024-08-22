@@ -41,8 +41,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName"></param>
         /// <param name="hidden"></param>
-        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
-            : this(GetPropertyName(columnSelector), GetPropertyName(urlColumnSelector).Name, order, displayName, hidden) { }
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ColumnHyperLink(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+            : this(GetPropertyName(columnSelector), GetPropertyName(urlColumnSelector).Name, order, displayName, hidden, styleName) { }
 
         /// <summary>
         /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnHyperLink{T}"/>
@@ -62,8 +63,10 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        internal ColumnHyperLink(string name, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false) :
-            base(name, order, displayName, hidden)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+
+        internal ColumnHyperLink(string name, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) :
+            base(name, order, displayName, hidden, styleName)
         {
             UrlPropertyName = urlPropertyName;
         }
@@ -86,8 +89,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        internal ColumnHyperLink(PropertyNames names, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false) :
-            base(names, order, displayName, hidden)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        internal ColumnHyperLink(PropertyNames names, string urlPropertyName, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) :
+            base(names, order, displayName, hidden, styleName)
         {
             UrlPropertyName = urlPropertyName;
         }

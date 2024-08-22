@@ -38,7 +38,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ColumnFormula(string name, string formula, int? order=null, string? displayName = null, bool hidden = false) : base(name, order, displayName, hidden)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ColumnFormula(string name, string formula, int? order=null, string? displayName = null, bool hidden = false, string? styleName = null) 
+            : base(name, order, displayName, hidden, styleName)
         {
             _formula = formula;
         }

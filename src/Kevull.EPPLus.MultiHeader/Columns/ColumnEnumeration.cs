@@ -49,8 +49,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">Ignore this property. This column will not be rendered</param>
         /// <param name="displayName">Human friendly name. If it is not provided, it will use <see cref="ColumnInfo.Name"/></param>
         /// <param name="hidden">Is this column rendered but hidden?</param>
-        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) :
-            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) :
+            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden, styleName)
         { }
 
         /// <summary>
@@ -73,7 +74,9 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="order">In which position show the column</param>
         /// <param name="displayName">A column display name. If null, <paramref name="name"/> will be used</param>
         /// <param name="hidden">Hide this column</param>
-        internal ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) : base(name, order, displayName, hidden)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        internal ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) 
+            : base(name, order, displayName, hidden, styleName)
         {
             int i = 0;
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
@@ -85,7 +88,8 @@ namespace Kevull.EPPLus.MultiHeader.Columns
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);
         }
 
-        internal ColumnEnumeration(PropertyNames names, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false) : base(names, order, displayName, hidden)
+        internal ColumnEnumeration(PropertyNames names, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) 
+            : base(names, order, displayName, hidden, styleName)
         {
             int i = 0;
             _keyValues = keyValues.ToDictionary(x => x, _ => i++);

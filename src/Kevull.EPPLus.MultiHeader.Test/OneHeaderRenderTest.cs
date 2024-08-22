@@ -14,19 +14,10 @@ namespace Kevull.EPPLus.MultiHeader.Test
             maxColumns = typeof(Person).GetProperties().Length;
         }
 
-        private List<Person> BuildPeopleList()
-        {
-            return new List<Person>
-            {
-                new Person("Médiamass","Large", DateTime.Parse("2017/05/28"), Gender.Male,  null, null),
-                new Person("Aimée","Bateson", DateTime.Parse("1958/06/07"), Gender.Female, 2, new Uri("https://github.com/"))
-            };
-        }
-
         [Fact]
         public void Write2Rows()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -50,7 +41,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         [Fact]
         public void Config_SetupOrder_ColumnsAreOrdered()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -65,7 +56,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         [Fact]
         public void Config_IgnoredColumns_AreNotInTheList()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -74,13 +65,13 @@ namespace Kevull.EPPLus.MultiHeader.Test
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.Equal(5, sheet.Dimension.End.Column);
+            Assert.Equal(maxColumns - 1, sheet.Dimension.End.Column);
         }
 
         [Fact]
         public void HiddenColumns_AreRendered_AsHidden()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -94,7 +85,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         [Fact]
         public void HyperLinkColumns_UseAntherColumnTo_BuildTheLink()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<Person>(xls, "People");
             report.Configure(options => options
@@ -109,7 +100,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         [Fact]
         public void FormulaColumns_Write_Formulas()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");
@@ -126,7 +117,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         [Fact]
         public void ExpressionColumns_Write_ExpressionResults()
         {
-            var people = BuildPeopleList();
+            var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
             var report = new MultiHeaderReport<Person>(xls, "People");

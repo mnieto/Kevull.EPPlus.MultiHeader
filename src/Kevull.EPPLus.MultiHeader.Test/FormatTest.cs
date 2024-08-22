@@ -38,7 +38,8 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
             report.Configure(options => options
                 .AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
-                .AddHeaderStyle(x => {
+                .AddHeaderStyle(x =>
+                {
                     x.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     x.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                 })
@@ -61,6 +62,42 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var sheet = xls.Workbook.Worksheets["Object"];
 
             Assert.True(sheet.Cells["A3:E3"].AutoFilter);
+        }
+
+        [Fact]
+        public void DateOrTimeColumns_HasByDefault_DateTimeNumberFormat()
+        {
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+
+            Assert.Equal(StyleNames.DateFormat, sheet.Cells["C2"].Style.Numberformat.Format);
+            Assert.Equal(StyleNames.TimeFormat, sheet.Cells["G2"].Style.Numberformat.Format);
+        }
+
+        [Fact]
+        public void DateColumns_WithAppliedStyle_HasSpecifiedFormat()
+        {
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddNamedStyle("BirthDay", s =>
+                {
+                    s.Font.Italic = true;
+                    s.Numberformat.Format = "dd/mm";
+                })
+                .AddColumn(x => x.BirthDate, styleName: "BirthDay")
+            );
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+
+            Assert.Equal("dd/mm", sheet.Cells["C2"].Style.Numberformat.Format);
+            Assert.True(sheet.Cells["C2"].Style.Font.Italic);
         }
     }
 }

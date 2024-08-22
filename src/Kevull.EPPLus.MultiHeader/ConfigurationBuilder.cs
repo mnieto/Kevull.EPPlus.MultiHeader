@@ -60,9 +60,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
-            columns.Add(new ColumnInfo<T>(columnSelector, order, displayName, hidden));
+            columns.Add(new ColumnInfo<T>(columnSelector, order, displayName, hidden, styleName));
             return this;
         }
 
@@ -74,9 +75,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
-            columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, order, displayName, hidden));
+            columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, order, displayName, hidden, styleName));
             return this;
         }
 
@@ -88,9 +90,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
-            columns.Add(new ColumnExpression<T>(name, expression, order, displayName, hidden));
+            columns.Add(new ColumnExpression<T>(name, expression, order, displayName, hidden, styleName));
             return this;
         }
 
@@ -102,9 +105,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ConfigurationBuilder<T> AddFormula(string name, string formula, int? order = null, string? displayName = null, bool hidden = false)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ConfigurationBuilder<T> AddFormula(string name, string formula, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
-            columns.Add(new ColumnFormula(name, formula, order, displayName, hidden));
+            columns.Add(new ColumnFormula(name, formula, order, displayName, hidden, styleName));
             return this;
         }
 
@@ -116,9 +120,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// <param name="order">Diplay order. Order is relative to the other columns. Columns that has no <paramref name="order"/> are added after those that have it</param>
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
-        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false)
+        /// <param name="styleName">Name of a style defined in the Excel workbook</param>
+        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
-            columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, order, displayName, hidden));
+            columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, order, displayName, hidden, styleName));
             return this;
         }
 

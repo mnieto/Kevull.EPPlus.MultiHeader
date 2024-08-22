@@ -87,6 +87,7 @@ namespace Kevull.EPPLus.MultiHeader
                 ProcessRow(item);
             }
             DoFormatting();
+            CalulateFormulas();
         }
 
         private static ExcelWorksheet AddSheet(ExcelPackage xls, string sheetName)
@@ -151,26 +152,39 @@ namespace Kevull.EPPLus.MultiHeader
 
         private void DoFormatting()
         {
+            //Hide columns if needed
             foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden))
             {
                 _sheet.Column(columnInfo.Index).Hidden = true;
             }
 
+            //Autofilter
             int lastHeaderRow = HeaderManager.FirstRow + _header.Height - 1;
             _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width].AutoFilter = _header.AutoFilter;
 
+
+            //Styles
+            BuildDefaultHeaderStyle();
+            BuildDateStyle();
+            BuildTimeStyle();
+
             var rangeHeader = _sheet.Cells[HeaderManager.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
-            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == HeaderStyleName) == null)
-            {
-                BuildDefaultStyle();
+            rangeHeader.StyleName = StyleNames.HeaderStyleName;
 
+            foreach(var columnInfo in _header!.Columns.Where(x => x.StyleName != null))
+            {
+                var range = _sheet.Cells[FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index];
+                range.StyleName = columnInfo.StyleName;
             }
-            rangeHeader.StyleName = HeaderStyleName;
 
+        }
+
+        private void CalulateFormulas()
+        {
             bool NeedsCalculate = false;
-            foreach(var columnInfo in _header!.Columns.OfType<ColumnFormula>())
+            foreach (var columnInfo in _header!.Columns.OfType<ColumnFormula>())
             {
-                var range = _sheet.Cells[FirstDataRow, columnInfo.Order!.Value, _sheet.Dimension.End.Row, columnInfo.Order!.Value];
+                var range = _sheet.Cells[FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index];
                 columnInfo.WriteCell(range, Properties!, null);
                 NeedsCalculate = true;
             }
@@ -178,18 +192,49 @@ namespace Kevull.EPPLus.MultiHeader
                 _sheet.Calculate();
         }
 
-        private void BuildDefaultStyle()
+        private void BuildDefaultHeaderStyle()
         {
-            var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(HeaderStyleName);
-            namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-            namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-            namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-            namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-            namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
-            namedStyle.Style.Font.Bold = true;
+            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.HeaderStyleName) == null)
+            {
+                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.HeaderStyleName);
+                namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
+                namedStyle.Style.Font.Bold = true;
+            }
         }
 
+        private void BuildDateStyle()
+        {
+            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.DateStyleName) == null)
+            {
+                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.DateStyleName);
+                namedStyle.Style.Numberformat.Format = StyleNames.DateFormat;
+            }
+        }
+
+        private void BuildTimeStyle()
+        {
+            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.TimeStyleName) == null)
+            {
+                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.TimeStyleName);
+                namedStyle.Style.Numberformat.Format = StyleNames.TimeFormat;
+            }
+        }
+
+    }
+
+    internal class StyleNames
+    {
+        public const string HeaderStyleName =  "__Headers__";
+        public const string DateStyleName = "__date__";
+        public const string TimeStyleName = "__time__";
+
+        internal const string TimeFormat = "[$-x-systime]h:mm:ss AM/PM";    //This format depends on local system settings
+        internal const string DateFormat = "mm-dd-yy";         //This format depends on local system settings
     }
 }
