@@ -1,4 +1,4 @@
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using System;
 using OfficeOpenXml;
 using NuGet.Frameworks;
@@ -111,7 +111,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             ).GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
-            Assert.Equal("Bateson, Aim�e", sheet.GetValue<string>(3, 3));
+            Assert.Equal("Bateson, Aimée", sheet.GetValue<string>(3, 3));
         }
 
         [Fact]
