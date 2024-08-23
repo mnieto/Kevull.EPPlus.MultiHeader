@@ -45,7 +45,7 @@ this code:
 
 will render like this:
 
-![image](https://github.com/user-attachments/assets/af7b7d4b-b4c2-4146-b8eb-75bfa1ac8b39)
+![image](.github/example.png)
 
 
 ## Columns customization
@@ -155,3 +155,10 @@ Similar to the previous one, but specific to apply format to the headers. If you
 
 #### Default style for Date or Time columns
 DateTime, DateOnly and TimeOnly properties are rendered with the corresponding default Date or Time format. You can override the default formats with `AddNamedStyle` and apply the built style to the column definition.
+
+# Roadmap
+- AutoFilter ✓
+- Columns width: Default, specific width, Auto
+- Conditional format
+- Append rows to an existing report
+- Posibility to change the top-left starting point
