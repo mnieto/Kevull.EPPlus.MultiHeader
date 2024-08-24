@@ -21,7 +21,12 @@ namespace Kevull.EPPLus.MultiHeader
         /// <summary>
         /// First row used for headers
         /// </summary>
-        public const int FirstRow = 1;
+        public int FirstRow = 1;
+
+        /// <summary>
+        /// Leftmost column used in the report
+        /// </summary>
+        public int FirstColumn = 1;
 
         /// <summary>
         /// List of columns. Each column stores the given customization during the configuration phase
@@ -108,10 +113,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// </summary>
         internal void BuildHeaders()
         {
-            BuildHeaders(1, 1);
+            BuildHeaders(FirstColumn, 1);
         }
 
-        private void BuildHeaders(int index, int deep)
+        private void BuildHeaders(int column, int deep)
         {
             Height = deep;
             var properties = GetProperties(ObjectType.GetTypeInfo());
@@ -144,7 +149,7 @@ namespace Kevull.EPPLus.MultiHeader
                         property.Ignored = colInfo.Ignore;
                         if (IsNestedObject(property.Info.PropertyType))
                         {
-                            colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
+                            colInfo.Header = new HeaderManager(property.Info.PropertyType, column, deep + 1, ChildColumns(deep));
                             Height = Math.Max(Height, colInfo.Header.Height);
                         }
                         if (colInfo.IsMultiValue)
@@ -157,8 +162,8 @@ namespace Kevull.EPPLus.MultiHeader
                         }
                         property.Used = true;
                     }
-                    colInfo.Index = index;
-                    index += colInfo.Width;
+                    colInfo.Index = column;
+                    column += colInfo.Width;
                 }
                 return result;
             }
@@ -174,15 +179,15 @@ namespace Kevull.EPPLus.MultiHeader
                     result.Add(colInfo);
                     if (IsNestedObject(property.Info.PropertyType))
                     {
-                        colInfo.Header = new HeaderManager(property.Info.PropertyType, index, deep + 1, ChildColumns(deep));
+                        colInfo.Header = new HeaderManager(property.Info.PropertyType, column, deep + 1, ChildColumns(deep));
                         Height = Math.Max(Height, colInfo.Header.Height);
                     }
                     if (colInfo.IsMultiValue)
                     {
                         Height = Math.Max(Height, deep + 1);
                     }
-                    colInfo.Index = index;
-                    index += colInfo.Width;
+                    colInfo.Index = column;
+                    column += colInfo.Width;
                 }
                 return result;
             }

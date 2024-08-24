@@ -156,9 +156,17 @@ Similar to the previous one, but specific to apply format to the headers. If you
 #### Default style for Date or Time columns
 DateTime, DateOnly and TimeOnly properties are rendered with the corresponding default Date or Time format. You can override the default formats with `AddNamedStyle` and apply the built style to the column definition.
 
+### Other customizations
+#### Autofilter
+If true, the report will activate the Excel autofilter for you
+
+#### SetStartingAddress
+Default top-left cell is A1. With `SetStartingAddress` you can specify any other starting cell
+
+
 # Roadmap
 - AutoFilter ✓
 - Columns width: Default, specific width, Auto
 - Conditional format
 - Append rows to an existing report
-- Posibility to change the top-left starting point
+- Posibility to change the top-left starting point ✓

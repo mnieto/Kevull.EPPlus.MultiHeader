@@ -16,7 +16,7 @@ namespace Kevull.EPPLus.MultiHeader
         private ExcelWorksheet _sheet;
         private ExcelPackage _xls;
 
-        private int FirstDataRow => _header?.Height + 1 ?? 2;
+        private int FirstDataRow => _header?.FirstRow + _header?.Height ?? 2;
         private int row;
         
         /// <summary>
@@ -135,14 +135,15 @@ namespace Kevull.EPPLus.MultiHeader
 
         }
 
-        private void WriteHeaders(HeaderManager? header = null, int row = HeaderManager.FirstRow)
+        private void WriteHeaders(HeaderManager? header = null, int? topRow = null)
         {
             header = header ?? _header!;
+            int row = topRow ?? _header!.FirstRow;
             foreach (var columnInfo in header.Columns)
             {
                 var cell = _sheet.Cells[row, columnInfo.Index];
                 columnInfo.WriteHeader(cell);
-                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - row + 1);
+                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - (header.FirstRow - row));
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
@@ -159,7 +160,7 @@ namespace Kevull.EPPLus.MultiHeader
             }
 
             //Autofilter
-            int lastHeaderRow = HeaderManager.FirstRow + _header.Height - 1;
+            int lastHeaderRow = _header.FirstRow + _header.Height - 1;
             _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width].AutoFilter = _header.AutoFilter;
 
 
@@ -168,7 +169,7 @@ namespace Kevull.EPPLus.MultiHeader
             BuildDateStyle();
             BuildTimeStyle();
 
-            var rangeHeader = _sheet.Cells[HeaderManager.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
+            var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
             rangeHeader.StyleName = StyleNames.HeaderStyleName;
 
             foreach(var columnInfo in _header!.Columns.Where(x => x.StyleName != null))

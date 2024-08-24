@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 
 namespace Kevull.EPPLus.MultiHeader
@@ -14,11 +15,22 @@ namespace Kevull.EPPLus.MultiHeader
     {
         private List<ColumnInfo> columns;
         private ExcelPackage xls;
+        private ExcelCellAddress StartingAddress { get; set; } = new ExcelCellAddress();
 
         /// <summary>
         /// Shows or not autofilter on last header row
         /// </summary>
         public bool AutoFilter { get; set; } = true;
+
+        /// <summary>
+        /// Top row where the report will start. Default is 1
+        /// </summary>
+        public int TopRow => StartingAddress.Row;
+
+        /// <summary>
+        /// Left column where the report will start. Defult is 1
+        /// </summary>
+        public int LeftColumn => StartingAddress.Column;
 
         /// <summary>
         /// Ctor invoked to get default configuration at first step
@@ -173,12 +185,33 @@ namespace Kevull.EPPLus.MultiHeader
         }
 
         /// <summary>
+        /// Configure the TopLeft starting cell of the report
+        /// </summary>
+        /// <param name="address">Address of the top-left cell</param>
+        public void SetStartingAddress(string address)
+        {
+            StartingAddress = new ExcelCellAddress(address);
+        }
+
+        /// <summary>
+        /// Configure the TopLeft starting cell of the report
+        /// </summary>
+        /// <param name="row">top row number</param>
+        /// <param name="column">left column number</param>
+        public void SetStartingAddres(int row, int column)
+        {
+            StartingAddress = new ExcelCellAddress(row, column);
+        }
+
+        /// <summary>
         /// Garther all the provided information to generate the needed internal structures
         /// </summary>
         public HeaderManager<T> Build()
         {
             var headerManager = new HeaderManager<T>(columns);
             headerManager.AutoFilter = AutoFilter;
+            headerManager.FirstRow = StartingAddress.Row;
+            headerManager.FirstColumn = StartingAddress.Column;
             return headerManager;
         }
 
