@@ -16,7 +16,9 @@ namespace Kevull.EPPLus.MultiHeader
         private ExcelWorksheet _sheet;
         private ExcelPackage _xls;
 
-        private int FirstDataRow => _header?.FirstRow + _header?.Height ?? 2;
+        private int FirstDataRow => (_header == null || !_header.AppendToExistingReport) ?
+                                    _header?.FirstRow + _header?.Height ?? 2 :
+                                    _sheet.Dimension.End.Row + 1;
         private int row;
         
         /// <summary>
@@ -79,7 +81,8 @@ namespace Kevull.EPPLus.MultiHeader
                 _header.BuildHeaders();
             }
             Properties = _header.Properties;
-            WriteHeaders();
+            if (!_header.AppendToExistingReport)
+                WriteHeaders();
 
             row = FirstDataRow;
             foreach (T item in data)
@@ -169,15 +172,17 @@ namespace Kevull.EPPLus.MultiHeader
             BuildDateStyle();
             BuildTimeStyle();
 
-            var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
-            rangeHeader.StyleName = StyleNames.HeaderStyleName;
+            if (!_header!.AppendToExistingReport)
+            {
+                var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
+                rangeHeader.StyleName = StyleNames.HeaderStyleName;
+            }
 
-            foreach(var columnInfo in _header!.Columns.Where(x => x.StyleName != null))
+            foreach (var columnInfo in _header!.Columns.Where(x => x.StyleName != null))
             {
                 var range = _sheet.Cells[FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index];
                 range.StyleName = columnInfo.StyleName;
             }
-
         }
 
         private void CalulateFormulas()

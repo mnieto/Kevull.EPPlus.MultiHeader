@@ -168,5 +168,5 @@ Default top-left cell is A1. With `SetStartingAddress` you can specify any other
 - AutoFilter ✓
 - Columns width: Default, specific width, Auto
 - Conditional format
-- Append rows to an existing report
+- Append rows to an existing report ✓
 - Posibility to change the top-left starting point ✓

@@ -14,7 +14,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         }
 
         [Fact]
-        public void ReporttStatsAt_TopLeftStartingPoint()
+        public void ReportStatsAt_TopLeftStartingPoint()
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
@@ -30,6 +30,25 @@ namespace Kevull.EPPLus.MultiHeader.Test
             Assert.Equal("Médiamass", sheet.GetValue<string>(4, 2));
         }
 
+        [Fact]
+        public void Report_WithAppendToExistingReport_AppendsNewRowsAtBottom()
+        {
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
 
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+
+            people = Person.BuildPeopleList(2, 3);
+            report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(config =>
+                config.AppendToExistingReport = true
+            );
+            report.GenerateReport(people);
+
+            sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal("Michelle", sheet.GetValue<string>(4, 1));
+        }
     }
 }

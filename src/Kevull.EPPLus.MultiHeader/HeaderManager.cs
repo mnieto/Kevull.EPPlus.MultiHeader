@@ -38,6 +38,11 @@ namespace Kevull.EPPLus.MultiHeader
         public List<ColumnInfo> Columns { get; set; }
 
         /// <summary>
+        /// If <c>true</c> the configuration will find the end of a previous report and 
+        /// </summary>
+        public bool AppendToExistingReport { get; internal set; }
+
+        /// <summary>
         /// Porperties, by property name, of the source Type
         /// </summary>
         public Dictionary<string, PropertyInfo>? Properties { get; set; }
@@ -271,6 +276,5 @@ namespace Kevull.EPPLus.MultiHeader
         /// Ctor. Invoked when using configured columns
         /// </summary>
         public HeaderManager(List<ColumnInfo> columns): base(typeof(T), columns) { }
-
     }
 }

@@ -23,6 +23,11 @@ namespace Kevull.EPPLus.MultiHeader
         public bool AutoFilter { get; set; } = true;
 
         /// <summary>
+        /// If <c>true</c> the configuration will find the end of a previous report and 
+        /// </summary>
+        public bool AppendToExistingReport { get; set; }
+
+        /// <summary>
         /// Top row where the report will start. Default is 1
         /// </summary>
         public int TopRow => StartingAddress.Row;
@@ -212,6 +217,7 @@ namespace Kevull.EPPLus.MultiHeader
             headerManager.AutoFilter = AutoFilter;
             headerManager.FirstRow = StartingAddress.Row;
             headerManager.FirstColumn = StartingAddress.Column;
+            headerManager.AppendToExistingReport = AppendToExistingReport;
             return headerManager;
         }
 
