@@ -157,12 +157,14 @@ Similar to the previous one, but specific to apply format to the headers. If you
 DateTime, DateOnly and TimeOnly properties are rendered with the corresponding default Date or Time format. You can override the default formats with `AddNamedStyle` and apply the built style to the column definition.
 
 ### Other customizations
+#### AppendToExistingReport
+Setting to true it will append data below the last existing data row. It's assumed that the report configuration will be the same that when the previous report was generated.
+
 #### Autofilter
-If true, the report will activate the Excel autofilter for you
+If true, the report will activate the Excel autofilter for you.
 
 #### SetStartingAddress
-Default top-left cell is A1. With `SetStartingAddress` you can specify any other starting cell
-
+Default top-left cell is A1. With `SetStartingAddress` you can specify any other starting cell.
 
 # Roadmap
 - AutoFilter ✓
@@ -170,3 +172,4 @@ Default top-left cell is A1. With `SetStartingAddress` you can specify any other
 - Conditional format
 - Append rows to an existing report ✓
 - Posibility to change the top-left starting point ✓
+- Target netstandard 2.0 in nuget package

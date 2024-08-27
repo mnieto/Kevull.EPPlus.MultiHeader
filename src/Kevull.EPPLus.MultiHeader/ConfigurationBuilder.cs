@@ -23,8 +23,12 @@ namespace Kevull.EPPLus.MultiHeader
         public bool AutoFilter { get; set; } = true;
 
         /// <summary>
-        /// If <c>true</c> the configuration will find the end of a previous report and 
+        /// If <c>true</c> the configuration will find the end of a previous report and append data at the end. Default is <c>false</c>
         /// </summary>
+        /// <remarks>
+        /// It's assumed that the report configuration will be the same that when the previous report was generated.
+        /// The new report will not check existing columns position neither the configuration or style.
+        /// </remarks>
         public bool AppendToExistingReport { get; set; }
 
         /// <summary>
