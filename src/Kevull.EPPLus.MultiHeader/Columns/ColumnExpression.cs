@@ -18,10 +18,10 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Data content is rendered from the source object or calculated
         /// </summary>
-        public override bool IsDynamic => true;
+        internal override bool IsDynamic => true;
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnExpression{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnExpression{T}"/>
         /// </summary>
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
         /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
@@ -41,6 +41,17 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
         public ColumnExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) 
             : base(name, order, displayName, hidden, styleName)
+        {
+            _expression = expression ?? throw new ArgumentNullException(nameof(expression));
+        }
+
+        /// <summary>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnExpression{T}"/>
+        /// </summary>
+        /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
+        /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        internal ColumnExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg) : base(name, cfg)
         {
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }

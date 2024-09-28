@@ -157,7 +157,7 @@ namespace Kevull.EPPLus.MultiHeader
         private void DoFormatting()
         {
             //Hide columns if needed
-            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden))
+            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden ))
             {
                 _sheet.Column(columnInfo.Index).Hidden = true;
             }
@@ -166,6 +166,17 @@ namespace Kevull.EPPLus.MultiHeader
             int lastHeaderRow = _header.FirstRow + _header.Height - 1;
             _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width].AutoFilter = _header.AutoFilter;
 
+            //Width
+            foreach(var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
+            {
+                double minWidth = columnInfo.ColumnWidth.MinimumWidth == double.MinValue ? _sheet.DefaultColWidth : columnInfo.ColumnWidth.MinimumWidth;
+                double maxWidth = columnInfo.ColumnWidth.MaximunWidth;
+                _sheet.Column(columnInfo.Index).AutoFit(minWidth, maxWidth);
+            }
+            foreach (var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Custom))
+            {
+                _sheet.Column(columnInfo.Index).Width = columnInfo.ColumnWidth.Width!.Value;
+            }
 
             //Styles
             BuildDefaultHeaderStyle();

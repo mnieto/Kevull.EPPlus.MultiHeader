@@ -136,6 +136,17 @@ This will create a column titled Name with an hyperlink to the url of the person
 #### IgnoreColumn
 This column will not be rendered. Do not confuse with the hidden pameter in the AddXXXXX methods. With hidden, the column is rendered to an Excel column, but the column is hidden. In this case the property's data doesn't exist in the resulting Excel.
 
+#### Set column width
+Allows to configure the column's width behaviour: Default, Custom, Auto, Hidden
+ ```csharp
+var report = new MultiHeaderReport<Person>(xls, "People");
+report.Configure(options => options
+    .AddColumn(x => x.Name, cfg =>
+        cfg.ColumnWidth.SetWidth(WidthType.Auto))
+    .AddColumn(x => x.Surname, cfg =>
+        cfg.ColumnWidth.SetWidth(8.0))
+).GenerateReport(people);
+```
 
 ### Styles
 #### AddNamedStyle
@@ -168,7 +179,7 @@ Default top-left cell is A1. With `SetStartingAddress` you can specify any other
 
 # Roadmap
 - AutoFilter ✓
-- Columns width: Default, specific width, Auto
+- Columns width: Default, specific width, Auto ✓
 - Conditional format
 - Append rows to an existing report ✓
 - Posibility to change the top-left starting point ✓

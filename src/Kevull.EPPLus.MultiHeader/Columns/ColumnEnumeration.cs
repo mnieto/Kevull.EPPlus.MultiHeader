@@ -20,26 +20,17 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Number of Excel columns needed to render this property (and all its children)
         /// </summary>
-        public override int Width => Header == null ? _keyValues.Count : Header!.Columns.Sum(c => c.Width) * _keyValues.Count;
+        internal override int Width => Header == null ? _keyValues.Count : Header!.Columns.Sum(c => c.Width) * _keyValues.Count;
 
         /// <summary>
         /// Is it a property with a single value or is it a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
         /// </summary>
-        public override bool IsMultiValue => true;
+        internal override bool IsMultiValue => true;
         
         /// <summary>
-        /// Allowed values for the child columns
+        /// Gets the allowed values for the child columns
         /// </summary>
         public List<string> Keys => _keyValues.Keys.Cast<string>().ToList();
-
-        /// <summary>
-        /// Simple Ctor
-        /// </summary>
-        /// <param name="columnSelector">Lambda expression to specify the property</param>
-        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
-        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues) :
-            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, false)
-        { }
 
         /// <summary>
         /// General use Ctor
@@ -51,19 +42,21 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="hidden">Is this column rendered but hidden?</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
         public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) :
-            this(ColumnInfo<T>.GetPropertyName(columnSelector), keyValues, order, displayName, hidden, styleName)
-        { }
+            base(ColumnInfo<T>.GetPropertyName(columnSelector), order, displayName, hidden, styleName)
+        {
+            _keyValues = AddKeyValues(keyValues);
+        }
 
         /// <summary>
-        /// Create a Column based on a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
+        /// Simple Ctor
         /// </summary>
-        /// <param name="name">Name of the column</param>
-        /// <param name="keyValues">Allowed column names for the child columns</param>
-        /// <param name="ignore">ignore attribute</param>
-        internal ColumnEnumeration(string name, IEnumerable<string> keyValues, bool ignore) : base(name, ignore)
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ColumnEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, Action<ColumnDef> cfg) :
+            base(columnSelector, cfg)
         {
-            int i = 0;
-            _keyValues = keyValues.ToDictionary(x => x, _ => i++);
+            _keyValues = AddKeyValues(keyValues);
         }
 
         /// <summary>
@@ -78,21 +71,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         internal ColumnEnumeration(string name, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) 
             : base(name, order, displayName, hidden, styleName)
         {
-            int i = 0;
-            _keyValues = keyValues.ToDictionary(x => x, _ => i++);
-        }
-
-        internal ColumnEnumeration(PropertyNames names, IEnumerable<string> keyValues, bool ignore) : base(names, ignore)
-        {
-            int i = 0;
-            _keyValues = keyValues.ToDictionary(x => x, _ => i++);
-        }
-
-        internal ColumnEnumeration(PropertyNames names, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null) 
-            : base(names, order, displayName, hidden, styleName)
-        {
-            int i = 0;
-            _keyValues = keyValues.ToDictionary(x => x, _ => i++);
+            _keyValues = AddKeyValues(keyValues);
         }
 
         internal override void FormatHeader(ExcelRange cell, int height)
@@ -147,6 +126,12 @@ namespace Kevull.EPPLus.MultiHeader.Columns
                 int offset = _keyValues[key];
                 cell.Offset(1, offset).Value = key;
             }
+        }
+
+        private Dictionary<string, int> AddKeyValues(IEnumerable<string> keyValues)
+        {
+            int i = 0;
+            return keyValues.ToDictionary(x => x, _ => i++);
         }
     }
 }

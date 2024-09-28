@@ -89,6 +89,17 @@ namespace Kevull.EPPLus.MultiHeader
         }
 
         /// <summary>
+        /// Add a column
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, Action<ColumnDef> cfg)
+        {
+            columns.Add(new ColumnInfo<T>(columnSelector, cfg));
+            return this;
+        }
+
+        /// <summary>
         /// Add a column whose type implements <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/> where Tkey is always invoked with <see cref="Object.ToString()"/> />
         /// </summary>
         /// <param name="columnSelector">Allows specify the column name</param>
@@ -100,6 +111,18 @@ namespace Kevull.EPPLus.MultiHeader
         public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, order, displayName, hidden, styleName));
+            return this;
+        }
+
+        /// <summary>
+        /// Add a column
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, Action<ColumnDef> cfg)
+        {
+            columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, cfg));
             return this;
         }
 
@@ -119,6 +142,18 @@ namespace Kevull.EPPLus.MultiHeader
         }
 
         /// <summary>
+        /// Add a column
+        /// </summary>
+        /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
+        /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg)
+        {
+            columns.Add(new ColumnExpression<T>(name, expression, cfg));
+            return this;
+        }
+
+        /// <summary>
         /// Add a formula column. That is, each time the report will render a value for this column, it will use the specified <paramref name="formula"/>.
         /// </summary>
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
@@ -134,6 +169,18 @@ namespace Kevull.EPPLus.MultiHeader
         }
 
         /// <summary>
+        /// Add a column
+        /// </summary>
+        /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
+        /// <param name="formula">Formula used for this column. Be sure to use the correct absulte/relative references in the formula</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ConfigurationBuilder<T> AddFormula(string name, string formula, Action<ColumnDef> cfg)
+        {
+            columns.Add(new ColumnFormula(name, formula, cfg));
+            return this;
+        }
+
+        /// <summary>
         /// Add a column whose cells will contain a hyperlink
         /// </summary>
         /// <param name="columnSelector">Allows specify the column name</param>
@@ -145,6 +192,18 @@ namespace Kevull.EPPLus.MultiHeader
         public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, order, displayName, hidden, styleName));
+            return this;
+        }
+
+        /// <summary>
+        /// Add a column
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="urlColumnSelector">Allows specify the column wich will contain the url</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, Action<ColumnDef> cfg)
+        {
+            columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, cfg));
             return this;
         }
 

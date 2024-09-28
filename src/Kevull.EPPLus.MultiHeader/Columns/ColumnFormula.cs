@@ -18,7 +18,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Data content is rendered from the source object or calculated
         /// </summary>
-        public override bool IsDynamic => true;
+        internal override bool IsDynamic => true;
 
         /// <summary>
         /// Ctor
@@ -41,6 +41,18 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
         public ColumnFormula(string name, string formula, int? order=null, string? displayName = null, bool hidden = false, string? styleName = null) 
             : base(name, order, displayName, hidden, styleName)
+        {
+            _formula = formula;
+        }
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
+        /// <param name="formula">Excel Formula used for this column. Be sure to use the correct absulte/relative references in the formula</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ColumnFormula(string name, string formula, Action<ColumnDef> cfg)
+            : base(name, cfg)
         {
             _formula = formula;
         }

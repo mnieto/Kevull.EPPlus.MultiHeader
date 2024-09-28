@@ -99,5 +99,33 @@ namespace Kevull.EPPLus.MultiHeader.Test
             Assert.Equal("dd/mm", sheet.Cells["C2"].Style.Numberformat.Format);
             Assert.True(sheet.Cells["C2"].Style.Font.Italic);
         }
+
+        [Fact]
+        public void Columns_WithSpecifiedWidth_ApplyDefinedConfiguraiton()
+        {
+
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
+
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(options => options
+                .AddColumn(x => x.Name, cfg =>
+                    cfg.ColumnWidth.SetWidth(WidthType.Auto))
+                .AddColumn(x => x.Surname, cfg =>
+                    cfg.ColumnWidth.SetWidth(8.0))
+                .AddColumn(x => x.BirthDate, cfg =>
+                    cfg.ColumnWidth.SetWidth(WidthType.Hidden))
+                .AddColumn(x => x.NumOfComputers, cfg =>
+                    cfg.ColumnWidth.SetWidth(WidthType.Auto, 12.0, 20.0))
+            );
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+
+            Assert.NotEqual(sheet.DefaultColWidth, sheet.Column(1).Width);
+            Assert.Equal(8.0, sheet.Column(2).Width);
+            Assert.True(sheet.Column(3).Hidden);
+            Assert.Equal(sheet.DefaultColWidth, sheet.Column(4).Width);
+            Assert.Equal(12.0, sheet.Column(5).Width);
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Full name for nested properties. For first level properties, <see cref="FullName"/> and <see cref="Name"/> will be the same
         /// </summary>
-        public string FullName { get; set; }
+        internal string FullName { get; set; }
 
         /// <summary>
         /// Parent property name. If the column has a parent property
@@ -50,7 +50,12 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Parent property Type. If the column has a parent property
         /// </summary>
-        public Type? ParentType { get; protected set; }
+        protected internal Type? ParentType { get; set; }
+
+        /// <summary>
+        /// Allows to configure the colum with and get the with properties
+        /// </summary>
+        public ColumnWidth ColumnWidth { get; set; } = new ColumnWidth();
 
         /// <summary>
         /// Human friendly name. If it is not provided, it will use <see cref="Name"/>
@@ -84,32 +89,32 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <summary>
         /// Data content is rendered from the source object or calculated
         /// </summary>
-        public virtual bool IsDynamic => false;
+        internal virtual bool IsDynamic => false;
         
         /// <summary>
         /// Number of child levels below this
         /// </summary>
-        public int Deep => FullName.Split('.').Length;
+        internal int Deep => FullName.Split('.').Length;
         
         /// <summary>
         /// Is it a property with a single value or is it a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
         /// </summary>
-        public virtual bool IsMultiValue => false;
+        internal virtual bool IsMultiValue => false;
 
         /// <summary>
         /// If this column's Type is a complex object, this property will store the child headers
         /// </summary>
-        public HeaderManager? Header { get; set; }
+        internal HeaderManager? Header { get; set; }
         
         /// <summary>
         /// Has child columns. That is, is it a complex object?
         /// </summary>
-        public bool HasChildren => Header != null && Header.Columns.Count > 0;
+        internal bool HasChildren => Header != null && Header.Columns.Count > 0;
         
         /// <summary>
         /// Number of Excel columns needed to render this property (and all its children)
         /// </summary>
-        public virtual int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
+        internal virtual int Width => Header == null ? 1 : Header!.Columns.Sum(c  => c.Width);
 
         /// <summary>
         /// Name of a style defined in the Excel workbook
@@ -117,12 +122,13 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         /// <remarks>
         /// Style names are not checked at configuration time, but in the <see cref="MultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method
         /// You can assign the style name during the column creation or use any existing Style in the Excel file. 
-        /// The <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{OfficeOpenXml.Style.ExcelStyle})"/> is a handy method that wraps the EPPlus <see cref="ExcelStyles.CreateNamedStyle(string)"/> method
+        /// The <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{OfficeOpenXml.Style.ExcelStyle})"/> is a handy method
+        /// that wraps the EPPlus <see cref="ExcelStyles.CreateNamedStyle(string)"/> method
         /// </remarks>
         public string? StyleName { get; set; }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(string name, bool ignore)
         {
@@ -132,7 +138,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
@@ -144,8 +150,36 @@ namespace Kevull.EPPLus.MultiHeader.Columns
             StyleName = styleName;
         }
 
+        internal ColumnInfo(string name, Action<ColumnDef> configAction)
+        {
+            var config = new ColumnDef();
+            configAction.Invoke(config);
+            FullName = name;
+            Name = GetName(name);
+        }
+
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// </summary>
+        internal ColumnInfo(PropertyNames names, Action<ColumnDef> configAction)
+        {
+            var config = new ColumnDef();
+            configAction.Invoke(config);
+
+            FullName = names.FullName;
+            Name = names.Name;
+            ParentName = names.ParentName;
+            ParentType = names.ParentType;
+
+            //Hidden = config.Hidden;
+            Order = config.Order;
+            _displayName = config.DisplayName;
+            StyleName = config.StyleName;
+            ColumnWidth = config.ColumnWidth;
+        }
+
+        /// <summary>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(PropertyNames names, bool ignore)
         {
@@ -157,7 +191,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
@@ -224,26 +258,39 @@ namespace Kevull.EPPLus.MultiHeader.Columns
         public ColumnInfo(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
             : base(GetPropertyName(columnSelector), order, displayName, hidden, styleName) { }
 
+        /// <summary>
+        /// General use Ctor
+        /// </summary>
+        /// <param name="columnSelector">Lambda expression to specify the property</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ColumnInfo(Expression<Func<T, object?>> columnSelector, Action<ColumnDef> cfg) : base(GetPropertyName(columnSelector), cfg) { }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// General use Ctor
+        /// </summary>
+        /// <param name="name">name for this column</param>
+        /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
+        public ColumnInfo(string name, Action<ColumnDef> cfg) : base(name, cfg) { }
+
+        /// <summary>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(string name, bool ignore) : base(name, ignore) { }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(string name, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
             : base(name, order, displayName, hidden, styleName) { }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(PropertyNames names, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
             : base(names, order, displayName, hidden, styleName) { }
 
         /// <summary>
-        /// Ctor. Used ineternaly in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
+        /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>
         /// </summary>
         internal ColumnInfo(PropertyNames names, bool ignore) : base(names, ignore) { }
 
