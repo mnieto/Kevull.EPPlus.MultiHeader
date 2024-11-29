@@ -17,7 +17,7 @@
 	<PackageProjectUrl>https://github.com/mnieto/EPPlus.MultiHeader</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/mnieto/EPPlus.MultiHeader</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
-	<PackageTags>EPlus;Excel;Multi-header;Report</PackageTags>
+	<PackageTags>EPPlus;Excel;Multi-header;Report</PackageTags>
 	<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageIcon>EPlusMultiHeader.png</PackageIcon>
