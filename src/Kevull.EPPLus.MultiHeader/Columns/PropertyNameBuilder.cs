@@ -35,7 +35,7 @@ namespace Kevull.EPPLus.MultiHeader.Columns
             names.Add(memberExpr!.Member.Name);
             names.Reverse();
             
-            result.FullName = string.Join('.', names);
+            result.FullName = string.Join(".", names);
             return result;
         }
     }

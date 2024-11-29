@@ -183,4 +183,4 @@ Default top-left cell is A1. With `SetStartingAddress` you can specify any other
 - Conditional format
 - Append rows to an existing report ✓
 - Posibility to change the top-left starting point ✓
-- Target netstandard 2.0 in nuget package
+- Target netstandard 2.0 in nuget package ✓

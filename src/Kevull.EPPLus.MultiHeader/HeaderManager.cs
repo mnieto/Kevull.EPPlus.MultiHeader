@@ -81,7 +81,7 @@ namespace Kevull.EPPLus.MultiHeader
             var result = new List<ColumnInfo>();
             foreach(var col in Columns.Where(x => x.Deep > deep))
             {
-                col.FullName = string.Join('.', col.FullName.Split('.').Skip(deep));
+                col.FullName = string.Join(".", col.FullName.Split('.').Skip(deep));
                 result.Add(col);
             }
             return result;
@@ -237,7 +237,12 @@ namespace Kevull.EPPLus.MultiHeader
         private string? GetDefaultStyleNameForDataType(PropertyInfo property)
         {
             string? styleName = null;
-            if (property.PropertyType == typeof(DateOnly) || property.PropertyType == typeof(DateTime))
+            if (property.PropertyType == typeof(DateTime))
+            {
+                styleName = StyleNames.DateStyleName;
+            }
+#if !NETSTANDARD2_0
+            else if (property.PropertyType == typeof(DateOnly))
             {
                 styleName = StyleNames.DateStyleName;
             }
@@ -245,6 +250,7 @@ namespace Kevull.EPPLus.MultiHeader
             {
                 styleName = StyleNames.TimeStyleName;
             }
+#endif
             return styleName;
         }
 
