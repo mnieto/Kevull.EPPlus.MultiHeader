@@ -101,7 +101,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         }
 
         [Fact]
-        public void Columns_WithSpecifiedWidth_ApplyDefinedConfiguraiton()
+        public void Columns_WithSpecifiedWidth_ApplyDefinedConfiguration()
         {
 
             var people = Person.BuildPeopleList();
