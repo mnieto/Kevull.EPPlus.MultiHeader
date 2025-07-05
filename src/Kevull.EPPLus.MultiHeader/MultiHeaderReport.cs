@@ -93,6 +93,11 @@ namespace Kevull.EPPLus.MultiHeader
             CalulateFormulas();
         }
 
+        internal void Save(string fileName)
+        {
+            _xls.SaveAs(fileName);
+        }
+
         private static ExcelWorksheet AddSheet(ExcelPackage xls, string sheetName)
         {
             if (!xls.Workbook.Worksheets.AsEnumerable().Any(x => x.Name == sheetName))
@@ -146,7 +151,7 @@ namespace Kevull.EPPLus.MultiHeader
             {
                 var cell = _sheet.Cells[row, columnInfo.Index];
                 columnInfo.WriteHeader(cell);
-                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - (header.FirstRow - row));
+                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - (row - _header!.FirstRow));
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
