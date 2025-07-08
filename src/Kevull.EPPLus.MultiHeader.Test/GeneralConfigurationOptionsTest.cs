@@ -53,5 +53,33 @@ namespace Kevull.EPPLus.MultiHeader.Test
             sheet = xls.Workbook.Worksheets["People"];
             Assert.Equal("Michelle", sheet.GetValue<string>(4, 1));
         }
+
+        [Fact]
+        public void Report_WithAutoFreeze_ProperlyFreezes()
+        {
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(config =>
+                config.AutoFreezePanes = true
+            );
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Equal("A2", sheet.View.PaneSettings.TopLeftCell);
+        }
+
+        [Fact]
+        public void Report_WithoutAutoFreeze_DoNotHasFrozenPanes()
+        {
+            var people = Person.BuildPeopleList();
+            using var xls = new ExcelPackage();
+            var report = new MultiHeaderReport<Person>(xls, "People");
+            report.Configure(config =>
+                config.AutoFreezePanes = false
+            );
+            report.GenerateReport(people);
+            var sheet = xls.Workbook.Worksheets["People"];
+            Assert.Null(sheet.View.PaneSettings);
+        }
     }
 }

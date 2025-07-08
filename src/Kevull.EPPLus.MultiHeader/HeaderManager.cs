@@ -18,6 +18,8 @@ namespace Kevull.EPPLus.MultiHeader
     public class HeaderManager
     {
 
+        public bool AutoFreezePanes { get; set; } = true;
+
         /// <summary>
         /// First row used for headers
         /// </summary>

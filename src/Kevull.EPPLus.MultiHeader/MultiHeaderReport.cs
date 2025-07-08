@@ -161,6 +161,9 @@ namespace Kevull.EPPLus.MultiHeader
 
         private void DoFormatting()
         {
+            if (_header!.AutoFreezePanes)
+                _sheet.View.FreezePanes(_header.FirstRow + _header!.Height, _header.FirstColumn);
+
             //Hide columns if needed
             foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden ))
             {

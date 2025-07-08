@@ -32,6 +32,11 @@ namespace Kevull.EPPLus.MultiHeader
         public bool AppendToExistingReport { get; set; }
 
         /// <summary>
+        /// If set, the report will freeze panes under the headers. Default is <c>true</c>
+        /// </summary>
+        public bool AutoFreezePanes { get; set; } = true;
+
+        /// <summary>
         /// Top row where the report will start. Default is 1
         /// </summary>
         public int TopRow => StartingAddress.Row;
@@ -256,9 +261,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// Configure the TopLeft starting cell of the report
         /// </summary>
         /// <param name="address">Address of the top-left cell</param>
-        public void SetStartingAddress(string address)
+        public ConfigurationBuilder<T> SetStartingAddress(string address)
         {
             StartingAddress = new ExcelCellAddress(address);
+            return this;
         }
 
         /// <summary>
@@ -266,9 +272,10 @@ namespace Kevull.EPPLus.MultiHeader
         /// </summary>
         /// <param name="row">top row number</param>
         /// <param name="column">left column number</param>
-        public void SetStartingAddres(int row, int column)
+        public ConfigurationBuilder<T> SetStartingAddres(int row, int column)
         {
             StartingAddress = new ExcelCellAddress(row, column);
+            return this;
         }
 
         /// <summary>
@@ -278,6 +285,7 @@ namespace Kevull.EPPLus.MultiHeader
         {
             var headerManager = new HeaderManager<T>(columns);
             headerManager.AutoFilter = AutoFilter;
+            headerManager.AutoFreezePanes = AutoFreezePanes;
             headerManager.FirstRow = StartingAddress.Row;
             headerManager.FirstColumn = StartingAddress.Column;
             headerManager.AppendToExistingReport = AppendToExistingReport;
