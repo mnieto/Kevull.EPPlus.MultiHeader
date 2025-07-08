@@ -28,6 +28,9 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var sheet = xls.Workbook.Worksheets["People"];
             Assert.Equal("Name", sheet.GetValue<string>(3, 2));
             Assert.Equal("Médiamass", sheet.GetValue<string>(4, 2));
+
+            Assert.True(sheet.Cells[3, 8].Style.Font.Bold);             //Last column is properly formatted as header
+            Assert.Equal("B3:H3", sheet.AutoFilter.Address.Address);    //AutoFilter is applied to the correct range
         }
 
         [Fact]

@@ -169,7 +169,8 @@ namespace Kevull.EPPLus.MultiHeader
 
             //Autofilter
             int lastHeaderRow = _header.FirstRow + _header.Height - 1;
-            _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width].AutoFilter = _header.AutoFilter;
+            int lastHeaderColumn = _header.FirstColumn + _header.Width - 1;
+            _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn].AutoFilter = _header.AutoFilter;
 
             //Width
             foreach(var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
@@ -190,7 +191,7 @@ namespace Kevull.EPPLus.MultiHeader
 
             if (!_header!.AppendToExistingReport)
             {
-                var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, _header.Width];
+                var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn];
                 rangeHeader.StyleName = StyleNames.HeaderStyleName;
             }
 
