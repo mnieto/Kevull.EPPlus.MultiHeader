@@ -18,6 +18,9 @@ namespace Kevull.EPPLus.MultiHeader
     public class HeaderManager
     {
 
+        /// <summary>
+        /// Gets or sets whether panes should automatically freeze below the heeader section. Default is <c>true</c>.
+        /// </summary>
         public bool AutoFreezePanes { get; set; } = true;
 
         /// <summary>
