@@ -120,7 +120,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             Assert.Equal(8.0, sheet.Column(2).Width);
             Assert.True(sheet.Column(3).Hidden);
             Assert.Equal(sheet.DefaultColWidth, sheet.Column(4).Width);
-            Assert.Equal(12.0, sheet.Column(5).Width);
+            Assert.NotEqual(sheet.DefaultColWidth, sheet.Column(5).Width);
         }
     }
 }

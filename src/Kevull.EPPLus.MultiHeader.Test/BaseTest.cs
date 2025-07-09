@@ -7,7 +7,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
     {
         public BaseTest()
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.License.SetNonCommercialPersonal("Kevull");
         }
 
         protected void Save<T>(MultiHeaderReport<T> report, [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")

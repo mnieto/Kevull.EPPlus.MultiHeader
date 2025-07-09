@@ -1,7 +1,6 @@
 ﻿using System.Xml.Linq;
 using System;
 using OfficeOpenXml;
-using NuGet.Frameworks;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
