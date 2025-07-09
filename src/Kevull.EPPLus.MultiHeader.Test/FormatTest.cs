@@ -9,13 +9,8 @@ using Xunit;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class FormatTest
+    public class FormatTest : BaseTest
     {
-        public FormatTest()
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
         [Fact]
         public void PropertiesWithoutChildren_HasVerticalMerge()
         {

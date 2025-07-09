@@ -9,13 +9,8 @@ using Xunit;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class TwoHeaderRenderTest
+    public class TwoHeaderRenderTest : BaseTest
     {
-
-        public TwoHeaderRenderTest() {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
         [Fact]
         public void ComposedObjects_AreRendered_InSecondRow()
         {

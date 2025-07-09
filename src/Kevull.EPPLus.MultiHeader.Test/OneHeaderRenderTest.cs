@@ -5,12 +5,11 @@ using NuGet.Frameworks;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class OneHeaderRenderTest
+    public class OneHeaderRenderTest : BaseTest
     {
         private int maxColumns;
-        public OneHeaderRenderTest()
+        public OneHeaderRenderTest() : base()
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             maxColumns = typeof(Person).GetProperties().Length;
         }
 

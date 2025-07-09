@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class GeneralConfigurationOptionsTest
+    public class GeneralConfigurationOptionsTest : BaseTest
     {
-        public GeneralConfigurationOptionsTest()
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
         [Fact]
         public void ReportStatsAt_TopLeftStartingPoint()
         {

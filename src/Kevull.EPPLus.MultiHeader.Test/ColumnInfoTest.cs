@@ -9,14 +9,8 @@ using System.Xml.Linq;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
-    public class ColumnInfoTest
+    public class ColumnInfoTest : BaseTest
     {
-
-        public ColumnInfoTest()
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
         [Fact]
         public void Order_MustBeOneOrUpper()
         {
