@@ -1,4 +1,5 @@
-﻿using Kevull.EPPLus.MultiHeader.Columns;
+﻿using Kevull.MultiHeader.Core.Columns;
+using Kevull.MultiHeader.EPPlus.Adapters;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
-            var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var sheet = new EPPlusWorksheetAdapter(xls.Workbook.Worksheets["Enummeration"]);
             var data = new RiskDict
             {
                 Name = "TestRisk",
@@ -75,7 +76,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
-            var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var sheet = new EPPlusWorksheetAdapter(xls.Workbook.Worksheets["Enummeration"]);
             var data = new RiskDict
             {
                 Name = "TestRisk",
@@ -98,7 +99,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
-            var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var sheet = new EPPlusWorksheetAdapter(xls.Workbook.Worksheets["Enummeration"]);
             var data = new RiskList
             {
                 Name = "TestRisk",
@@ -121,7 +122,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
-            var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var sheet = new EPPlusWorksheetAdapter(xls.Workbook.Worksheets["Enummeration"]);
             var data = new RiskList
             {
                 Name = "TestRisk",

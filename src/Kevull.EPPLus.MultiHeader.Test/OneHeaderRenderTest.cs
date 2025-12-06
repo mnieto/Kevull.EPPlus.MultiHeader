@@ -1,6 +1,7 @@
-﻿using System.Xml.Linq;
-using System;
+﻿using Kevull.MultiHeader.EPPlus;
 using OfficeOpenXml;
+using System;
+using System.Xml.Linq;
 
 namespace Kevull.EPPLus.MultiHeader.Test
 {
@@ -18,7 +19,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.GenerateReport(people);
 
             var sheet = xls.Workbook.Worksheets["People"];
@@ -41,7 +42,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.NumOfComputers, 1)
             ).GenerateReport(people);
@@ -56,7 +57,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Surname, 1)
                 .IgnoreColumn(x => x.NumOfComputers)
@@ -71,7 +72,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.NumOfComputers, hidden: true)
             ).GenerateReport(people);
@@ -85,7 +86,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddHyperLinkColumn(x => x.Name, x => x.Profile)
                 .IgnoreColumn(x => x.Profile)
@@ -101,7 +102,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Name, 1)
                 .AddColumn(x => x.Surname, 2)
@@ -118,7 +119,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Name, 1)
                 .AddColumn(x => x.Surname, 2)

@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Columns
+namespace Kevull.MultiHeader.Core.Columns;
+
+internal class PropertyNames
 {
-    internal class PropertyNames
-    {
-        public string Name { get; set; } = "";
-        public string FullName { get; set; } = "";
-        public string? ParentName { get; set; }
-        public Type? ParentType { get; set; }
-    }
+    public string Name { get; set; } = "";
+    public string FullName { get; set; } = "";
+    public string? ParentName { get; set; }
+    public Type? ParentType { get; set; }
 }

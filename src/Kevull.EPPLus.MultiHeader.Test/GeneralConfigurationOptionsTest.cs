@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kevull.MultiHeader.EPPlus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(config =>
                 config.SetStartingAddres(3, 2)
             );
@@ -34,12 +35,12 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.GenerateReport(people);
             var sheet = xls.Workbook.Worksheets["People"];
 
             people = Person.BuildPeopleList(2, 3);
-            report = new MultiHeaderReport<Person>(xls, "People");
+            report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(config =>
                 config.AppendToExistingReport = true
             );
@@ -54,7 +55,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(config =>
                 config.AutoFreezePanes = true
             );
@@ -68,7 +69,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
         {
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(config =>
                 config.AutoFreezePanes = false
             );

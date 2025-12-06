@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System.Reflection;
 
 namespace Kevull.EPPLus.MultiHeader.Test

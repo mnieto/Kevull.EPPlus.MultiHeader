@@ -1,4 +1,4 @@
-﻿using Kevull.EPPLus.MultiHeader.Columns;
+﻿using Kevull.MultiHeader.Core.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;

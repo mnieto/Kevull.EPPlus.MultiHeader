@@ -25,20 +25,19 @@
 	<PackageIcon>EPlusMultiHeader.png</PackageIcon>
 	<!-- Optional: Detect breaking changes from a previous version -->
 	<!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
-  </PropertyGroup>	
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.25">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="EPPlus" Version="8.0.7" />
   </ItemGroup>
   <ItemGroup>
-	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-	  <_Parameter1>Kevull.EPPLus.MultiHeader.Test</_Parameter1>
-	</AssemblyAttribute>
-  </ItemGroup>
+	  <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		  <_Parameter1>Kevull.EPPLus.MultiHeader.Test</_Parameter1>
+	  </AssemblyAttribute>
+  </ItemGroup>	
   <ItemGroup>
     <None Include="..\EPlusMultiHeader.png">
       <Pack>True</Pack>

@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPLus.MultiHeader", "Kevull.MultiHeader.Core\Kevull.MultiHeader.Core.csproj", "{FC9DB053-9511-434B-A767-4355475D4066}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kevull.MultiHeader.Core", "Kevull.MultiHeader.Core\Kevull.MultiHeader.Core.csproj", "{FC9DB053-9511-434B-A767-4355475D4066}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPLus.MultiHeader.Test", "Kevull.EPPLus.MultiHeader.Test\Kevull.EPPLus.MultiHeader.Test.csproj", "{6FEA8449-BED4-48A0-91A1-48587FFD7604}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kevull.EPPLus.MultiHeader.Test", "Kevull.EPPLus.MultiHeader.Test\Kevull.EPPLus.MultiHeader.Test.csproj", "{6FEA8449-BED4-48A0-91A1-48587FFD7604}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kevull.MultiHeader.EPPlus", "Kevull.MultiHeader.EPPlus\Kevull.MultiHeader.EPPlus.csproj", "{C924E355-0098-4E1B-95E0-F7675F2EEA38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kevull.MultiHeader.ClosedXML", "Kevull.MultiHeader.ClosedXML\Kevull.MultiHeader.ClosedXML.csproj", "{B8713C00-AC15-4958-A2F2-6C8B9156ECDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{6FEA8449-BED4-48A0-91A1-48587FFD7604}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FEA8449-BED4-48A0-91A1-48587FFD7604}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FEA8449-BED4-48A0-91A1-48587FFD7604}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C924E355-0098-4E1B-95E0-F7675F2EEA38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C924E355-0098-4E1B-95E0-F7675F2EEA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C924E355-0098-4E1B-95E0-F7675F2EEA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C924E355-0098-4E1B-95E0-F7675F2EEA38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8713C00-AC15-4958-A2F2-6C8B9156ECDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8713C00-AC15-4958-A2F2-6C8B9156ECDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8713C00-AC15-4958-A2F2-6C8B9156ECDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8713C00-AC15-4958-A2F2-6C8B9156ECDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

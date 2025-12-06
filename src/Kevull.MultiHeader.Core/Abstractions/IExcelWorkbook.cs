@@ -1,7 +1,7 @@
-// Kevull.MultiHeader.Core/Abstractions/IExcelWorkbook.cs
+namespace Kevull.MultiHeader.Core.Abstractions;
 public interface IExcelWorkbook
 {
-    IExcelStyleCollection Styles { get; }
     IExcelWorksheet AddWorksheet(string name);
     void Calculate();
+    void SaveAs(string filePath);
 }

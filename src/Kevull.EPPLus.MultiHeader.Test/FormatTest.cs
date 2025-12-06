@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using Kevull.MultiHeader.EPPlus;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +19,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevel.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevel>(xls, "Object");
             report.GenerateReport(complexObject);
             var sheet = xls.Workbook.Worksheets["Object"];
 
@@ -30,7 +32,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevelDictionary.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevelDictionary>(xls, "Object");
             report.Configure(options => options
                 .AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
                 .AddHeaderStyle(x =>
@@ -52,7 +54,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevel.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevel>(xls, "Object");
             report.GenerateReport(complexObject);
             var sheet = xls.Workbook.Worksheets["Object"];
 
@@ -65,7 +67,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.GenerateReport(people);
             var sheet = xls.Workbook.Worksheets["People"];
 
@@ -79,7 +81,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddNamedStyle("BirthDay", s =>
                 {
@@ -102,7 +104,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var people = Person.BuildPeopleList();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<Person>(xls, "People");
+            var report = new MultiHeaderReportEPPlus<Person>(xls, "People");
             report.Configure(options => options
                 .AddColumn(x => x.Name, cfg =>
                     cfg.ColumnWidth.SetWidth(WidthType.Auto))

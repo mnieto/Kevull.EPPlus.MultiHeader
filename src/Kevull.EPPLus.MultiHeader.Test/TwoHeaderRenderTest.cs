@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.EPPlus;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevel.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevel>(xls, "Object");
             report.GenerateReport(complexObject);
             var sheet = xls.Workbook.Worksheets["Object"];
 
@@ -50,7 +51,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevelDictionary.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevelDictionary>(xls, "Object");
             Assert.Throws<InvalidOperationException>(() => { report.GenerateReport(complexObject); });
         }
 
@@ -60,7 +61,7 @@ namespace Kevull.EPPLus.MultiHeader.Test
             var complexObject = RootLevelDictionary.CreateTest();
             using var xls = new ExcelPackage();
 
-            var report = new MultiHeaderReport<RootLevelDictionary>(xls, "Object");
+            var report = new MultiHeaderReportEPPlus<RootLevelDictionary>(xls, "Object");
             report.Configure(options =>
                 options.AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
             );
