@@ -2,7 +2,7 @@
 using System;
 using OfficeOpenXml;
 
-namespace Kevull.EPPLus.MultiHeader.Test
+namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class OneHeaderRenderTest : BaseTest
     {

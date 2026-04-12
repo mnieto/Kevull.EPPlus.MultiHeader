@@ -1,4 +1,4 @@
-﻿using Kevull.EPPLus.MultiHeader.Columns;
+﻿using Kevull.MultiHeader.EPPLus.Columns;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography.Pkcs;
 
-namespace Kevull.EPPLus.MultiHeader
+namespace Kevull.MultiHeader.EPPLus
 {
     /// <summary>
     /// Stores information about the columns to be shown and build the needed header structure

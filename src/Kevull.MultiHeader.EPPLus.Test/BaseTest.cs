@@ -1,7 +1,7 @@
 ﻿using OfficeOpenXml;
 using System.Reflection;
 
-namespace Kevull.EPPLus.MultiHeader.Test
+namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class BaseTest
     {

@@ -16,8 +16,8 @@
 	<Authors>MNieto</Authors>
 	<Title>EPlus multi-header report</Title>
 	<Description>Extension for the EPPlus library to create reports from complex objects</Description>
-	<PackageProjectUrl>https://github.com/mnieto/EPPlus.MultiHeader</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/mnieto/EPPlus.MultiHeader</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/mnieto/MultiHeader.EPPlus</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/mnieto/MultiHeader.EPPlus</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>EPPlus;Excel;Multi-header;Report</PackageTags>
 	<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
 	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-	  <_Parameter1>Kevull.EPPLus.MultiHeader.Test</_Parameter1>
+	  <_Parameter1>Kevull.MultiHeader.EPPLus.Test</_Parameter1>
 	</AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>

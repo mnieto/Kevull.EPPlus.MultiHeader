@@ -1,4 +1,4 @@
-﻿namespace Kevull.EPPLus.MultiHeader
+﻿namespace Kevull.MultiHeader.EPPLus
 {
     /// <summary>
     /// Allows to configure the colum with

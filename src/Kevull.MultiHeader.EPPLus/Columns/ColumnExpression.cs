@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Columns
+namespace Kevull.MultiHeader.EPPLus.Columns
 {
     /// <summary>
     /// Add an expression column. That is, each time the report will render a value for this column, it will invoke a lambda expression.

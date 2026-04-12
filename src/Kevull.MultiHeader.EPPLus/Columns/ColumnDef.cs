@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Columns
+namespace Kevull.MultiHeader.EPPLus.Columns
 {
     /// <summary>
     /// Column common properties

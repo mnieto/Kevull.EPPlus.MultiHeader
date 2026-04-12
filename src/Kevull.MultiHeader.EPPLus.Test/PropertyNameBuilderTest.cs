@@ -1,11 +1,11 @@
-﻿using Kevull.EPPLus.MultiHeader.Columns;
+﻿using Kevull.MultiHeader.EPPLus.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Test
+namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class PropertyNameBuilderTest
     {

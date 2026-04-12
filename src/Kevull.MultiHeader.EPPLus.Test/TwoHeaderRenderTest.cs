@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Kevull.EPPLus.MultiHeader.Test
+namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class TwoHeaderRenderTest : BaseTest
     {

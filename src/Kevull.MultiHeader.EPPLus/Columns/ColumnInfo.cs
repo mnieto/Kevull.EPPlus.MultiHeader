@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Columns
+namespace Kevull.MultiHeader.EPPLus.Columns
 {
     /// <summary>
     /// Base class for columns

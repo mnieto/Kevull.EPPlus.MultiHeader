@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.EPPLus.MultiHeader.Columns
+namespace Kevull.MultiHeader.EPPLus.Columns
 {
     /// <summary>
     /// Add a formula column. That is, each time the report will render a value for this column, it will use the specified Excel formula

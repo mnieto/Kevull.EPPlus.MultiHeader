@@ -1,4 +1,4 @@
 ﻿<Solution>
-  <Project Path="Kevull.EPPLus.MultiHeader.Test/Kevull.EPPLus.MultiHeader.Test.csproj" />
-  <Project Path="Kevull.EPPLus.MultiHeader/Kevull.EPPLus.MultiHeader.csproj" />
+  <Project Path="Kevull.MultiHeader.EPPLus.Test/Kevull.MultiHeader.EPPLus.Test.csproj" />
+  <Project Path="Kevull.MultiHeader.EPPLus/Kevull.MultiHeader.EPPLus.csproj" />
 </Solution>
