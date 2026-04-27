@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// Is it a property with a single value or is it a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
         /// </summary>
         internal override bool IsMultiValue => true;
-        
+
         /// <summary>
         /// Gets the allowed values for the child columns
         /// </summary>
@@ -74,18 +75,20 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _keyValues = AddKeyValues(keyValues);
         }
 
-        internal override void FormatHeader(ExcelRange cell, int height)
+        internal override void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
-            cell.Offset(0, 0, 1, Width).Merge = true;
-            var enumerator = _keyValues.GetEnumerator();
-            while (enumerator.MoveNext())
+            // Merge the parent header across all columns
+            writer.Merge(row, col, row, col + Width - 1);
+
+            // Merge each child column header vertically
+            foreach (var kvp in _keyValues)
             {
-                int offset = _keyValues[enumerator.Current.Key];
-                cell.Offset(1, offset, height - 1, 1).Merge = true;
+                int offset = kvp.Value;
+                writer.Merge(row + 1, col + offset, row + height - 1, col + offset);
             }
         }
 
-        internal override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
+        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
                 return;
@@ -98,7 +101,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
                 {
                     string key = enumerator.Key.ToString()!;
                     int offset = _keyValues[key];   //this will throw if key is not in the initialized keyValues. This is intentional
-                    cell.Offset(0, offset).Value = enumerator.Value;
+                    writer.WriteCell(row, col + offset, enumerator.Value);
                 }
             }
             else if (collection is IEnumerable enumerable)
@@ -107,7 +110,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
                 {
                     string key = item.ToString()!;
                     int offset = _keyValues[key];   //this will throw if key is not in the initialized keyValues. This is intentional
-                    cell.Offset(0, offset).Value = item;
+                    writer.WriteCell(row, col + offset, item);
                 }
             }
             else
@@ -116,15 +119,17 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             }
         }
 
-        internal override void WriteHeader(ExcelRange cell)
+        internal override void WriteHeader(IExcelWriter writer, int row, int col)
         {
-            cell.Value = DisplayName;
-            var enumerator = _keyValues.GetEnumerator();
-            while (enumerator.MoveNext())
+            // Write parent header
+            writer.WriteCell(row, col, DisplayName);
+
+            // Write child headers
+            foreach (var kvp in _keyValues)
             {
-                string key = enumerator.Current.Key;
-                int offset = _keyValues[key];
-                cell.Offset(1, offset).Value = key;
+                string key = kvp.Key;
+                int offset = kvp.Value;
+                writer.WriteCell(row + 1, col + offset, key);
             }
         }
 

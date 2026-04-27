@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,9 +58,16 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _formula = formula;
         }
 
-        internal override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
+        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
-            cell.Formula = _formula;
+            writer.WriteFormula(row, col, _formula);
+        }
+
+        internal override void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
+        {
+            // Optimize: write formula to entire range at once
+            // Excel will automatically adjust relative references
+            writer.WriteFormula(fromRow, fromCol, toRow, toCol, _formula);
         }
     }
 

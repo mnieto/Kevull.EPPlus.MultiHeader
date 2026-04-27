@@ -30,15 +30,26 @@ namespace Kevull.MultiHeader.EPPLus
         #region Basic Writing
 
         /// <inheritdoc/>
-        public void WriteCell(int row, int col, object value)
+        public void WriteCell(int row, int col, object? value)
         {
             _sheet.Cells[row, col].Value = value;
         }
 
         /// <inheritdoc/>
-        public void WriteCell(int fromRow, int fromCol, int toRow, int toCol, object value)
+        public void WriteCell(int fromRow, int fromCol, int toRow, int toCol, object? value)
         {
             _sheet.Cells[fromRow, fromCol, toRow, toCol].Value = value;
+        }
+
+        /// <inheritdoc/>
+        public void WriteCellWithHyperlink(int row, int col, object? value, string url)
+        {
+            var cell = _sheet.Cells[row, col];
+            cell.Value = value;
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                cell.Hyperlink = new Uri(url);
+            }
         }
 
         /// <inheritdoc/>

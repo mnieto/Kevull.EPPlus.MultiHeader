@@ -1,4 +1,5 @@
-﻿using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Core;
+using Kevull.MultiHeader.EPPLus.Columns;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
             var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var writer = new EPPlusExcelWriter(xls, sheet);
+
             var data = new RiskDict
             {
                 Name = "TestRisk",
@@ -62,7 +65,7 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 .ToDictionary(x => x.Name, x => x);
 
             var column = new ColumnEnumeration<Dictionary<string, int>>("Levels", data.Levels.Keys);
-            column.WriteCell(sheet.Cells["B2"], properties, data);
+            column.WriteCell(writer, 2, 2, properties, data);
 
             Assert.Equal(10, sheet.GetValue<int>(2, 2));
             Assert.Equal(20, sheet.GetValue<int>(2, 3));
@@ -76,6 +79,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
             var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var writer = new EPPlusExcelWriter(xls, sheet);
+
             var data = new RiskDict
             {
                 Name = "TestRisk",
@@ -90,7 +95,7 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 .ToDictionary(x => x.Name, x => x);
 
             var column = new ColumnEnumeration<Dictionary<string, int>>("Levels", data.Levels.Keys.Take(2));
-            Assert.Throws<KeyNotFoundException>(() => column.WriteCell(sheet.Cells["B2"], properties, data));
+            Assert.Throws<KeyNotFoundException>(() => column.WriteCell(writer, 2, 2, properties, data));
         }
 
         [Fact]
@@ -99,6 +104,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
             var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var writer = new EPPlusExcelWriter(xls, sheet);
+
             var data = new RiskList
             {
                 Name = "TestRisk",
@@ -108,7 +115,7 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 .ToDictionary(x => x.Name, x => x);
 
             var column = new ColumnEnumeration<List<int>>("Levels", data.Levels.ConvertAll(x => x.ToString()));
-            column.WriteCell(sheet.Cells["B2"], properties, data);
+            column.WriteCell(writer, 2, 2, properties, data);
 
             Assert.Equal(10, sheet.GetValue<int>(2, 2));
             Assert.Equal(20, sheet.GetValue<int>(2, 3));
@@ -122,6 +129,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
             var xls = new ExcelPackage();
             xls.Workbook.Worksheets.Add("Enummeration");
             var sheet = xls.Workbook.Worksheets["Enummeration"];
+            var writer = new EPPlusExcelWriter(xls, sheet);
+
             var data = new RiskList
             {
                 Name = "TestRisk",
@@ -131,7 +140,7 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 .ToDictionary(x => x.Name, x => x);
 
             var column = new ColumnEnumeration<List<int>>("Levels", data.Levels.ConvertAll(x => x.ToString()).Take(2));
-            Assert.Throws<KeyNotFoundException>(() => column.WriteCell(sheet.Cells["B2"], properties, data));
+            Assert.Throws<KeyNotFoundException>(() => column.WriteCell(writer, 2, 2, properties, data));
         }
 
     }

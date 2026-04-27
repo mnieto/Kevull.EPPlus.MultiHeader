@@ -16,8 +16,8 @@ namespace Kevull.MultiHeader.Core
         /// </summary>
         /// <param name="row">Row number (1-based)</param>
         /// <param name="col">Column number (1-based)</param>
-        /// <param name="value">Value to write to the cell</param>
-        void WriteCell(int row, int col, object value);
+        /// <param name="value">Value to write to the cell (can be null for empty cells)</param>
+        void WriteCell(int row, int col, object? value);
 
         /// <summary>
         /// Writes a value to a range of cells
@@ -26,12 +26,20 @@ namespace Kevull.MultiHeader.Core
         /// <param name="fromCol">Starting column number (1-based)</param>
         /// <param name="toRow">Ending row number (1-based)</param>
         /// <param name="toCol">Ending column number (1-based)</param>
-        /// <param name="value">Value to write to all cells in the range</param>
-        void WriteCell(int fromRow, int fromCol, int toRow, int toCol, object value);
+        /// <param name="value">Value to write to all cells in the range (can be null for empty cells)</param>
+        void WriteCell(int fromRow, int fromCol, int toRow, int toCol, object? value);
 
         /// <summary>
-        /// Writes a formula to a specific cell
+        /// Writes a value with a hyperlink to a specific cell
         /// </summary>
+        /// <param name="row">Row number (1-based)</param>
+        /// <param name="col">Column number (1-based)</param>
+        /// <param name="value">Value to display in the cell (can be null)</param>
+        /// <param name="url">URL for the hyperlink</param>
+        void WriteCellWithHyperlink(int row, int col, object? value, string url);
+
+        /// <summary>
+        /// Writes a formula to a specific cell</summary>
         /// <param name="row">Row number (1-based)</param>
         /// <param name="col">Column number (1-based)</param>
         /// <param name="formula">Excel formula (without the leading '=')</param>

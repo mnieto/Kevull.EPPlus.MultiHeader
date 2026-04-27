@@ -1,7 +1,6 @@
-﻿using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Core;
+using Kevull.MultiHeader.EPPLus.Columns;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
@@ -15,12 +14,13 @@ namespace Kevull.MultiHeader.EPPLus
     {
         private ExcelWorksheet _sheet;
         private ExcelPackage _xls;
+        private IExcelWriter _writer;
 
         private int FirstDataRow => (_header == null || !_header.AppendToExistingReport) ?
                                     _header?.FirstRow + _header?.Height ?? 2 :
                                     _sheet.Dimension.End.Row + 1;
         private int row;
-        
+
         /// <summary>
         /// Internal <see cref="HeaderManager{T}"/>
         /// </summary>
@@ -42,6 +42,7 @@ namespace Kevull.MultiHeader.EPPLus
         {
             _xls = xls;
             _sheet = sheet;
+            _writer = new EPPlusExcelWriter(xls, sheet);
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace Kevull.MultiHeader.EPPLus
                 }
                 else
                 {
-                    columnInfo.WriteCell(_sheet.Cells[row, columnInfo.Index], Properties!, item!);
+                    columnInfo.WriteCell(_writer, row, columnInfo.Index, Properties!, item!);
                 }
             }
             row++;
@@ -137,7 +138,7 @@ namespace Kevull.MultiHeader.EPPLus
                 }
                 else
                 {
-                    columnInfo.WriteCell(_sheet.Cells[row, columnInfo.Index], header.Properties, item);
+                    columnInfo.WriteCell(_writer, row, columnInfo.Index, header.Properties, item);
                 }
             }
 
@@ -149,9 +150,8 @@ namespace Kevull.MultiHeader.EPPLus
             int row = topRow ?? _header!.FirstRow;
             foreach (var columnInfo in header.Columns)
             {
-                var cell = _sheet.Cells[row, columnInfo.Index];
-                columnInfo.WriteHeader(cell);
-                columnInfo.FormatHeader(cell, columnInfo.HasChildren ? 1 : header.Height - (row - _header!.FirstRow));
+                columnInfo.WriteHeader(_writer, row, columnInfo.Index);
+                columnInfo.FormatHeader(_writer, row, columnInfo.Index, columnInfo.HasChildren ? 1 : header.Height - (row - _header!.FirstRow));
                 if (columnInfo.HasChildren)
                 {
                     WriteHeaders(columnInfo.Header!, row + 1);
@@ -162,29 +162,29 @@ namespace Kevull.MultiHeader.EPPLus
         private void DoFormatting()
         {
             if (_header!.AutoFreezePanes)
-                _sheet.View.FreezePanes(_header.FirstRow + _header!.Height, _header.FirstColumn);
+                _writer.FreezePanes(_header.FirstRow + _header!.Height, _header.FirstColumn);
 
             //Hide columns if needed
             foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden ))
             {
-                _sheet.Column(columnInfo.Index).Hidden = true;
+                _writer.SetColumnHidden(columnInfo.Index, true);
             }
 
             //Autofilter
             int lastHeaderRow = _header.FirstRow + _header.Height - 1;
             int lastHeaderColumn = _header.FirstColumn + _header.Width - 1;
-            _sheet.Cells[lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn].AutoFilter = _header.AutoFilter;
+            _writer.SetAutoFilter(lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, _header.AutoFilter);
 
             //Width
             foreach(var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
             {
                 double minWidth = columnInfo.ColumnWidth.MinimumWidth == double.MinValue ? _sheet.DefaultColWidth : columnInfo.ColumnWidth.MinimumWidth;
                 double maxWidth = columnInfo.ColumnWidth.MaximunWidth;
-                _sheet.Column(columnInfo.Index).AutoFit(minWidth, maxWidth);
+                _writer.AutoFitColumn(columnInfo.Index, minWidth, maxWidth);
             }
             foreach (var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Custom))
             {
-                _sheet.Column(columnInfo.Index).Width = columnInfo.ColumnWidth.Width!.Value;
+                _writer.SetColumnWidth(columnInfo.Index, columnInfo.ColumnWidth.Width!.Value);
             }
 
             //Styles
@@ -194,14 +194,12 @@ namespace Kevull.MultiHeader.EPPLus
 
             if (!_header!.AppendToExistingReport)
             {
-                var rangeHeader = _sheet.Cells[_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn];
-                rangeHeader.StyleName = StyleNames.HeaderStyleName;
+                _writer.ApplyNamedStyle(_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, StyleNames.HeaderStyleName);
             }
 
             foreach (var columnInfo in _header!.Columns.Where(x => x.StyleName != null))
             {
-                var range = _sheet.Cells[FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index];
-                range.StyleName = columnInfo.StyleName;
+                _writer.ApplyNamedStyle(FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index, columnInfo.StyleName!);
             }
         }
 
@@ -210,45 +208,59 @@ namespace Kevull.MultiHeader.EPPLus
             bool NeedsCalculate = false;
             foreach (var columnInfo in _header!.Columns.OfType<ColumnFormula>())
             {
-                var range = _sheet.Cells[FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index];
-                columnInfo.WriteCell(range, Properties!, null);
-                NeedsCalculate = true;
+                // Optimized: write formula to entire range at once instead of row by row
+                int lastRow = _sheet.Dimension?.End.Row ?? FirstDataRow;
+                if (lastRow >= FirstDataRow)
+                {
+                    columnInfo.WriteCell(_writer, FirstDataRow, columnInfo.Index, lastRow, columnInfo.Index, Properties!, null);
+                    NeedsCalculate = true;
+                }
             }
             if (NeedsCalculate)
-                _sheet.Calculate();
+                _writer.Recalculate();
         }
 
         private void BuildDefaultHeaderStyle()
         {
-            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.HeaderStyleName) == null)
+            if (!_writer.NamedStyleExists(StyleNames.HeaderStyleName))
             {
-                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.HeaderStyleName);
-                namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
-                namedStyle.Style.Font.Bold = true;
+                var format = new CellFormat
+                {
+                    LeftBorder = BorderStyle.Thin,
+                    RightBorder = BorderStyle.Thin,
+                    TopBorder = BorderStyle.Thin,
+                    BottomBorder = BorderStyle.Thin,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    BackgroundColor = ExcelColor.LightGray,
+                    FillStyle = FillStyle.Solid,
+                    Bold = true
+                };
+                _writer.CreateNamedStyle(StyleNames.HeaderStyleName, format);
             }
         }
 
         private void BuildDateStyle()
         {
-            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.DateStyleName) == null)
+            if (!_writer.NamedStyleExists(StyleNames.DateStyleName))
             {
-                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.DateStyleName);
-                namedStyle.Style.Numberformat.Format = StyleNames.DateFormat;
+                var format = new CellFormat
+                {
+                    NumberFormat = StyleNames.DateFormat
+                };
+                _writer.CreateNamedStyle(StyleNames.DateStyleName, format);
             }
         }
 
         private void BuildTimeStyle()
         {
-            if (_xls.Workbook.Styles.NamedStyles.FirstOrDefault(x => x.Name == StyleNames.TimeStyleName) == null)
+            if (!_writer.NamedStyleExists(StyleNames.TimeStyleName))
             {
-                var namedStyle = _xls.Workbook.Styles.CreateNamedStyle(StyleNames.TimeStyleName);
-                namedStyle.Style.Numberformat.Format = StyleNames.TimeFormat;
+                var format = new CellFormat
+                {
+                    NumberFormat = StyleNames.TimeFormat
+                };
+                _writer.CreateNamedStyle(StyleNames.TimeStyleName, format);
             }
         }
 

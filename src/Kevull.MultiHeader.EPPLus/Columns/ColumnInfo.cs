@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing;
 using System;
 using System.Collections.Generic;
@@ -205,20 +206,35 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _displayName = displayName;
         }
 
-        internal virtual void FormatHeader(ExcelRange cell, int height)
+        internal virtual void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
-            cell.Offset(0, 0, height, Width).Merge = true;
+            writer.Merge(row, col, row + height - 1, col + Width - 1);
         }
 
-        internal virtual void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
+        internal virtual void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj != null)
-                cell.Value = properties[Name].GetValue(obj);
+                writer.WriteCell(row, col, properties[Name].GetValue(obj));
         }
 
-        internal virtual void WriteHeader(ExcelRange cell)
+        internal virtual void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
         {
-            cell.Value = DisplayName;
+            // Default implementation: merge cells and write value to merged range
+            // This is appropriate for headers or properties spanning multiple columns
+            // Can be overridden for specific behaviors (e.g., formulas copy to each cell)
+            if (fromRow != toRow || fromCol != toCol)
+            {
+                writer.Merge(fromRow, fromCol, toRow, toCol);
+            }
+
+            // Write value to the merged cell (EPPlus writes to first cell of merged range)
+            if (obj != null)
+                writer.WriteCell(fromRow, fromCol, properties[Name].GetValue(obj));
+        }
+
+        internal virtual void WriteHeader(IExcelWriter writer, int row, int col)
+        {
+            writer.WriteCell(row, col, DisplayName);
         }
 
         private string GetName(string fullName)

@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,12 +57,12 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
 
-        internal override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
+        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj is null)
                 return;
 
-            cell.Value = _expression((T)obj);
+            writer.WriteCell(row, col, _expression((T)obj));
         }
     }
 

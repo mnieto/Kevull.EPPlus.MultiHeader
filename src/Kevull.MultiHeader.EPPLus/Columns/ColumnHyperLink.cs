@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,23 +52,31 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             UrlPropertyName = GetPropertyName(urlColumnSelector).Name;
         }
 
-        internal override void WriteCell(ExcelRange cell, Dictionary<string, PropertyInfo> properties, object? obj)
+        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
                 return;
-            cell.Value = properties[Name].GetValue(obj);
-            object? url = properties[UrlPropertyName].GetValue(obj);
+
+            var value = properties[Name].GetValue(obj);
+            var url = properties[UrlPropertyName].GetValue(obj);
+
             if (url != null)
             {
                 try
                 {
-                    cell.Hyperlink = new Uri(url.ToString()!);
-                }   
+                    writer.WriteCellWithHyperlink(row, col, value ?? "", url.ToString()!);
+                }
                 catch (Exception)
                 {
                     if (!IgnoreLinkErrors)
                         throw;
+                    // If ignoring errors, just write the value without hyperlink
+                    writer.WriteCell(row, col, value);
                 }
+            }
+            else
+            {
+                writer.WriteCell(row, col, value);
             }
         }
     }
