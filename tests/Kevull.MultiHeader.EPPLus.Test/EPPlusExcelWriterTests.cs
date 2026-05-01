@@ -369,7 +369,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 Italic = true,
                 FontSize = 14,
                 WrapText = true,
-                TextRotation = 45
+                TextRotation = 45,
+                FontColor = Core.ExcelColor.Red
             };
 
             // Act
@@ -382,8 +383,40 @@ namespace Kevull.MultiHeader.EPPLus.Test
             Assert.Equal(14, cell.Style.Font.Size);
             Assert.True(cell.Style.WrapText);
             Assert.Equal(45, cell.Style.TextRotation);
+            Assert.Equal(cell.Style.Font.Color.Rgb, Core.ExcelColor.Red.Argb);
 
             package.Dispose();
+        }
+
+        /// <summary>
+        /// Tests that ApplyFormat applies font family, size and color combinations correctly.
+        /// </summary>
+        [Theory]
+        [InlineData("Calibri", 11d, "#FF0000")]
+        [InlineData("Arial", 12.5d, "112233")]
+        [InlineData("Consolas", 10d, "CC445566")]
+        public void ApplyFormat_WithFontFormat_AppliesFontFormat(string fontName, double fontSize, string fontColorHex)
+        {
+            // Arrange
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("TestSheet");
+            var writer = new EPPlusExcelWriter(package, worksheet);
+            var expectedColor = new Core.ExcelColor(fontColorHex);
+            var format = new CellFormat
+            {
+                FontName = fontName,
+                FontSize = (float)fontSize,
+                FontColor = expectedColor
+            };
+
+            // Act
+            writer.ApplyFormat(1, 1, format);
+
+            // Assert
+            var cell = worksheet.Cells[1, 1];
+            Assert.Equal(fontName, cell.Style.Font.Name);
+            Assert.Equal((float)fontSize, cell.Style.Font.Size);
+            Assert.Equal(expectedColor.Argb, cell.Style.Font.Color.Rgb);
         }
 
         /// <summary>
@@ -413,6 +446,26 @@ namespace Kevull.MultiHeader.EPPLus.Test
             Assert.True(cell.Style.Font.Bold);
 
             package.Dispose();
+        }
+
+        [Theory]
+        [InlineData("FF55")] //Invalid hex color string (too short)
+        [InlineData("GGHHII")] //Invalid hex color string (non-hex characters)
+        [InlineData("#12345")] //Invalid hex color string (too short with #)
+        [InlineData("#123456789")] //Invalid hex color string (too long with #)
+        [InlineData(null)] //Null hex color string
+        [InlineData("")] //Empty hex color string
+        public void ExcelColor_WithInvalidColor_ThowsException(string? invalidColor)
+        {
+            // Arrange & Act & Assert
+            if (string.IsNullOrEmpty(invalidColor))
+            {
+                Assert.Throws<ArgumentNullException>(() => new Core.ExcelColor(invalidColor!));
+            }
+            else
+            {
+                Assert.Throws<ArgumentException>(() => new Core.ExcelColor(invalidColor));
+            }
         }
 
         /// <summary>

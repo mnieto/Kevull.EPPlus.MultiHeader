@@ -56,6 +56,11 @@
         public bool? Italic { get; set; }
 
         /// <summary>
+        /// Font family name
+        /// </summary>
+        public string? FontName { get; set; }
+
+        /// <summary>
         /// Font size in points
         /// </summary>
         public float? FontSize { get; set; }

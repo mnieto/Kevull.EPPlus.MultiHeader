@@ -56,30 +56,50 @@ namespace Kevull.MultiHeader.Core
         /// Creates a color from a hex string (e.g., "#FF0000" or "FF0000")
         /// </summary>
         /// <param name="hex">Hex color string in format "#RRGGBB", "RRGGBB", "#AARRGGBB", or "AARRGGBB"</param>
-        /// <returns>ExcelColor created from the hex string</returns>
         /// <exception cref="ArgumentException">Thrown when hex string is not in a valid format</exception>
-        public static ExcelColor FromHex(string hex)
+        /// <exception cref="ArgumentNullException">Thrown when hex string is null or empty</exception>
+        public ExcelColor(string hex)
         {
+            if (string.IsNullOrEmpty(hex))
+                throw new ArgumentNullException(nameof(hex));
+
             hex = hex.TrimStart('#');
-            if (hex.Length == 6)
-                return new ExcelColor(
-                    Convert.ToByte(hex.Substring(0, 2), 16),
-                    Convert.ToByte(hex.Substring(2, 2), 16),
-                    Convert.ToByte(hex.Substring(4, 2), 16));
-            else if (hex.Length == 8)
-                return new ExcelColor(
-                    Convert.ToByte(hex.Substring(0, 2), 16),
-                    Convert.ToByte(hex.Substring(2, 2), 16),
-                    Convert.ToByte(hex.Substring(4, 2), 16),
-                    Convert.ToByte(hex.Substring(6, 2), 16));
-            throw new ArgumentException("Invalid hex color format");
+            try
+            {
+                if (hex.Length == 6)
+                {
+                    A = 255;
+                    R = Convert.ToByte(hex.Substring(0, 2), 16);
+                    G = Convert.ToByte(hex.Substring(2, 2), 16);
+                    B = Convert.ToByte(hex.Substring(4, 2), 16);
+                    return;
+                }
+                else if (hex.Length == 8)
+                {
+                    A = Convert.ToByte(hex.Substring(0, 2), 16);
+                    R = Convert.ToByte(hex.Substring(2, 2), 16);
+                    G = Convert.ToByte(hex.Substring(4, 2), 16);
+                    B = Convert.ToByte(hex.Substring(6, 2), 16);
+                    return;
+                }
+            }
+            catch (FormatException ex)
+            {
+                throw new ArgumentException($"Invalid hex color format: {hex}", nameof(hex), ex);
+            }
+            throw new ArgumentException($"Invalid hex color format: {hex}", nameof(hex));
         }
+
 
         /// <summary>
         /// Converts the color to a hex string (e.g., "#RRGGBB")
         /// </summary>
-        /// <returns>Hex string representation of the color</returns>
-        public string ToHex() => $"#{R:X2}{G:X2}{B:X2}";
+        public string Rgb => $"{R:X2}{G:X2}{B:X2}";
+
+        /// <summary>
+        /// Gets the color value as an ARGB hexadecimal string in the format AARRGGBB.
+        /// </summary>
+        public string Argb => $"{A:X2}{R:X2}{G:X2}{B:X2}";
 
         /// <summary>
         /// Gets a predefined black color (RGB: 0, 0, 0)

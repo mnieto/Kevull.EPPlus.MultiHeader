@@ -238,6 +238,8 @@ namespace Kevull.MultiHeader.EPPLus
                 style.Font.Bold = format.Bold.Value;
             if (format.Italic.HasValue)
                 style.Font.Italic = format.Italic.Value;
+            if (!string.IsNullOrWhiteSpace(format.FontName))
+                style.Font.Name = format.FontName;
             if (format.FontSize.HasValue)
                 style.Font.Size = format.FontSize.Value;
             if (format.FontColor.HasValue)
