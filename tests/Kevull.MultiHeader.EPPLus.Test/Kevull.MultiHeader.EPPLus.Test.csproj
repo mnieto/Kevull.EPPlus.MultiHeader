@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kevull.MultiHeader.EPPLus\Kevull.MultiHeader.EPPLus.csproj" />
+    <ProjectReference Include="..\..\src\Kevull.MultiHeader.EPPLus\Kevull.MultiHeader.EPPLus.csproj" />
   </ItemGroup>
 
 </Project>

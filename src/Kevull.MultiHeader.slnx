@@ -1,5 +1,0 @@
-﻿<Solution>
-  <Project Path="Kevull.MultiHeader.EPPLus.Test/Kevull.MultiHeader.EPPLus.Test.csproj" />
-  <Project Path="Kevull.MultiHeader.EPPLus/Kevull.MultiHeader.EPPLus.csproj" />
-  <Project Path="Kevull.MultiHeader.Core/Kevull.MultiHeader.Core.csproj" />
-</Solution>
