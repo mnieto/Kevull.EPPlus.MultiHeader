@@ -1,5 +1,4 @@
 ﻿using Kevull.MultiHeader.Core;
-using OfficeOpenXml;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Columns
+namespace Kevull.MultiHeader.Core.Columns
 {
     /// <summary>
     /// Specialized <see cref="ColumnInfo"/> that renders data from a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
@@ -75,7 +74,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _keyValues = AddKeyValues(keyValues);
         }
 
-        internal override void FormatHeader(IExcelWriter writer, int row, int col, int height)
+        public override void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
             // Merge the parent header across all columns
             writer.Merge(row, col, row, col + Width - 1);
@@ -88,7 +87,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             }
         }
 
-        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
+        public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
                 return;
@@ -119,7 +118,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             }
         }
 
-        internal override void WriteHeader(IExcelWriter writer, int row, int col)
+        public override void WriteHeader(IExcelWriter writer, int row, int col)
         {
             // Write parent header
             writer.WriteCell(row, col, DisplayName);

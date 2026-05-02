@@ -1,5 +1,6 @@
-﻿using Kevull.MultiHeader.Core;
-using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Code;
+using Kevull.MultiHeader.Core;
+using Kevull.MultiHeader.Core.Columns;
 using OfficeOpenXml;
 using System.Linq;
 using System.Reflection;
@@ -263,16 +264,5 @@ namespace Kevull.MultiHeader.EPPLus
                 _writer.CreateNamedStyle(StyleNames.TimeStyleName, format);
             }
         }
-
-    }
-
-    internal class StyleNames
-    {
-        public const string HeaderStyleName =  "__Headers__";
-        public const string DateStyleName = "__date__";
-        public const string TimeStyleName = "__time__";
-
-        internal const string TimeFormat = "[$-x-systime]h:mm:ss AM/PM";    //This format depends on local system settings
-        internal const string DateFormat = "mm-dd-yy";         //This format depends on local system settings
     }
 }

@@ -1,5 +1,6 @@
-﻿<Solution>
-  <Project Path="tests/Kevull.MultiHeader.EPPLus.Test/Kevull.MultiHeader.EPPLus.Test.csproj" />
-  <Project Path="src/Kevull.MultiHeader.EPPLus/Kevull.MultiHeader.EPPLus.csproj" />
+<Solution>
   <Project Path="src/Kevull.MultiHeader.Core/Kevull.MultiHeader.Core.csproj" />
+  <Project Path="src/Kevull.MultiHeader.EPPLus/Kevull.MultiHeader.EPPLus.csproj" />
+  <Project Path="tests/Kevull.MultiHeader.Core.Tests/Kevull.MultiHeader.Core.Tests.csproj" />
+  <Project Path="tests/Kevull.MultiHeader.EPPLus.Tests/Kevull.MultiHeader.EPPLus.Tests.csproj" />
 </Solution>

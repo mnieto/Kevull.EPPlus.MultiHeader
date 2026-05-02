@@ -1,5 +1,4 @@
 ﻿using Kevull.MultiHeader.Core;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Columns
+namespace Kevull.MultiHeader.Core.Columns
 {
     /// <summary>
     /// Add a column with hyperlink. That is, the Excel column is associated to 2 fields: the url and the display content
@@ -52,7 +51,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             UrlPropertyName = GetPropertyName(urlColumnSelector).Name;
         }
 
-        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
+        public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
                 return;

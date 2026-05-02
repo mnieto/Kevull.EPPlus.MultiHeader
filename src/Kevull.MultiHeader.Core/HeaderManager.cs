@@ -1,12 +1,13 @@
-﻿using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Code;
+using Kevull.MultiHeader.Core.Columns;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Security.Cryptography.Pkcs;
 
-namespace Kevull.MultiHeader.EPPLus
+
+namespace Kevull.MultiHeader.Core
 {
     /// <summary>
     /// Stores information about the columns to be shown and build the needed header structure
@@ -45,7 +46,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <summary>
         /// If <c>true</c> the configuration will find the end of a previous report and 
         /// </summary>
-        public bool AppendToExistingReport { get; internal set; }
+        public bool AppendToExistingReport { get; set; }
 
         /// <summary>
         /// Porperties, by property name, of the source Type
@@ -121,7 +122,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <summary>
         /// Build the <see cref="Columns"/> and header structure
         /// </summary>
-        internal void BuildHeaders()
+        public void BuildHeaders()
         {
             BuildHeaders(FirstColumn, 1);
         }

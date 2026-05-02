@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Test
+namespace Kevull.MultiHeader.TestCommon
 {
     internal class RootLevel
     {

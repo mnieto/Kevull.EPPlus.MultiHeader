@@ -1,5 +1,4 @@
 ﻿using Kevull.MultiHeader.Core;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Columns
+namespace Kevull.MultiHeader.Core.Columns
 {
     /// <summary>
     /// Add a formula column. That is, each time the report will render a value for this column, it will use the specified Excel formula
@@ -58,12 +57,12 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _formula = formula;
         }
 
-        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
+        public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             writer.WriteFormula(row, col, _formula);
         }
 
-        internal override void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
+        public override void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             // Optimize: write formula to entire range at once
             // Excel will automatically adjust relative references

@@ -1,5 +1,4 @@
 ﻿using Kevull.MultiHeader.Core;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Columns
+namespace Kevull.MultiHeader.Core.Columns
 {
     /// <summary>
     /// Add an expression column. That is, each time the report will render a value for this column, it will invoke a lambda expression.
@@ -52,12 +51,12 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
         /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        internal ColumnExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg) : base(name, cfg)
+        public ColumnExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg) : base(name, cfg)
         {
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
 
-        internal override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
+        public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj is null)
                 return;

@@ -1,6 +1,9 @@
-﻿using OfficeOpenXml;
+﻿using Kevull.MultiHeader.Code;
+using Kevull.MultiHeader.Core;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using Kevull.MultiHeader.TestCommon;
 using System.Drawing;
 using System.Linq;
 using System.Text;

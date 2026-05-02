@@ -23,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Kevull.MultiHeader.Core\Kevull.MultiHeader.Core.csproj" />
     <ProjectReference Include="..\..\src\Kevull.MultiHeader.EPPLus\Kevull.MultiHeader.EPPLus.csproj" />
+    <ProjectReference Include="..\Kevull.MultiHeader.TestCommon\Kevull.MultiHeader.TestCommon.csproj" />
   </ItemGroup>
 
 </Project>

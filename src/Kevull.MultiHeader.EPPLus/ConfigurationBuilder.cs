@@ -1,4 +1,5 @@
-﻿using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Core;
+using Kevull.MultiHeader.Core.Columns;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Linq.Expressions;

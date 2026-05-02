@@ -1,6 +1,4 @@
 ﻿using Kevull.MultiHeader.Core;
-using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kevull.MultiHeader.EPPLus.Columns
+namespace Kevull.MultiHeader.Core.Columns
 {
     /// <summary>
     /// Base class for columns
@@ -66,7 +64,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// <summary>
         /// Excel column index where render the data. Do not confuse with <see cref="Order"/>. Intended for internal use purposes.
         /// </summary>
-        internal int Index { get; set; }
+        public int Index { get; set; }
 
         /// <summary>
         /// Diplay order. Order is relative to the other columns. Columns that has no order are added after those that have it. Order starts from 1
@@ -96,7 +94,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// Number of child levels below this
         /// </summary>
         internal int Deep => FullName.Split('.').Length;
-        
+
         /// <summary>
         /// Is it a property with a single value or is it a <see cref="IDictionary{TKey, TValue}"/> or <see cref="IEnumerable{T}"/>.
         /// </summary>
@@ -105,12 +103,12 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// <summary>
         /// If this column's Type is a complex object, this property will store the child headers
         /// </summary>
-        internal HeaderManager? Header { get; set; }
+        public HeaderManager? Header { get; set; }
         
         /// <summary>
         /// Has child columns. That is, is it a complex object?
         /// </summary>
-        internal bool HasChildren => Header != null && Header.Columns.Count > 0;
+        public bool HasChildren => Header != null && Header.Columns.Count > 0;
         
         /// <summary>
         /// Number of Excel columns needed to render this property (and all its children)
@@ -206,18 +204,18 @@ namespace Kevull.MultiHeader.EPPLus.Columns
             _displayName = displayName;
         }
 
-        internal virtual void FormatHeader(IExcelWriter writer, int row, int col, int height)
+        public virtual void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
             writer.Merge(row, col, row + height - 1, col + Width - 1);
         }
 
-        internal virtual void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
+        public virtual void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj != null)
                 writer.WriteCell(row, col, properties[Name].GetValue(obj));
         }
 
-        internal virtual void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
+        public virtual void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             // Default implementation: merge cells and write value to merged range
             // This is appropriate for headers or properties spanning multiple columns
@@ -232,7 +230,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
                 writer.WriteCell(fromRow, fromCol, properties[Name].GetValue(obj));
         }
 
-        internal virtual void WriteHeader(IExcelWriter writer, int row, int col)
+        public virtual void WriteHeader(IExcelWriter writer, int row, int col)
         {
             writer.WriteCell(row, col, DisplayName);
         }
@@ -286,7 +284,7 @@ namespace Kevull.MultiHeader.EPPLus.Columns
         /// </summary>
         /// <param name="name">name for this column</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ColumnInfo(string name, Action<ColumnDef> cfg) : base(name, cfg) { }
+        internal ColumnInfo(string name, Action<ColumnDef> cfg) : base(name, cfg) { }
 
         /// <summary>
         /// Ctor. Used internally in nested properties and for testing purposes. Use <see cref="ColumnInfo{T}"/>

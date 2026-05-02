@@ -1,48 +1,13 @@
-﻿using Kevull.MultiHeader.Core;
-using Kevull.MultiHeader.EPPLus.Columns;
+﻿using Kevull.MultiHeader.Core.Columns;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class ColumnInfoTest : BaseTest
     {
-        [Fact]
-        public void Order_MustBeOneOrUpper()
-        {
-            var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.Name));
-            var sut = new ColumnInfo(nameof(Person.Name));
-            Action act = () => sut.Order = 0;
-            Assert.Throws<ArgumentOutOfRangeException>(act);
-        }
-
-        [Fact]
-        public void DisplayName_IsName_IfNotAssigned()
-        {
-            var property = typeof(Person).GetProperties().First(x => x.Name == nameof(Person.BirthDate));
-            var sut = new ColumnInfo(nameof(Person.BirthDate));
-            Assert.Equal(sut.Name, sut.DisplayName);
-        }
-
-        [Fact]
-        public void Deep_InDirectProprties_IsOne()
-        {
-            var sut = new ColumnInfo<RootLevelDictionary>(x => x.SimpleProperty);
-            Assert.Equal(1, sut.Deep);
-        }
-
-        [Fact]
-        public void Deep_InDirectChildProperties_IsTwo()
-        {
-            var sut = new ColumnInfo<RootLevelDictionary>(x => x.ComplexProperty.RightColumn);
-            Assert.Equal(2, sut.Deep);
-        }
-
         [Fact]
         public void ColumnEnumeration_Dicitionary_WritesOneColumPerKey()
         {
