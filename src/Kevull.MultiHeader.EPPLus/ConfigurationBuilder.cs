@@ -12,11 +12,12 @@ namespace Kevull.MultiHeader.EPPLus
     /// Helper class to configure the report and column options
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ConfigurationBuilder<T>
+    public class ConfigurationBuilder<T> : IConfigurationBuilder<T>
     {
         private List<ColumnInfo> columns;
         private ExcelPackage xls;
         private ExcelCellAddress StartingAddress { get; set; } = new ExcelCellAddress();
+        public Dictionary<string, CellFormat> NamedStyles = new Dictionary<string, CellFormat>();
 
         /// <summary>
         /// Shows or not autofilter on last header row
@@ -74,7 +75,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <summary>
         /// Adds a column with default configuration
         /// </summary>
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector)
+        public IConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector)
         {
             columns.Add(new ColumnInfo<T>(columnSelector));
             return this;
@@ -88,7 +89,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+        public IConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnInfo<T>(columnSelector, order, displayName, hidden, styleName));
             return this;
@@ -99,7 +100,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// </summary>
         /// <param name="columnSelector">Lambda expression to specify the property</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, Action<ColumnDef> cfg)
+        public IConfigurationBuilder<T> AddColumn(Expression<Func<T, object?>> columnSelector, Action<ColumnDef> cfg)
         {
             columns.Add(new ColumnInfo<T>(columnSelector, cfg));
             return this;
@@ -114,7 +115,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
-        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+        public IConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, order, displayName, hidden, styleName));
             return this;
@@ -126,7 +127,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="columnSelector">Lambda expression to specify the property</param>
         /// <param name="keyValues">Allowed key values. This is used to allocate a specific number of columns</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, Action<ColumnDef> cfg)
+        public IConfigurationBuilder<T> AddEnumeration(Expression<Func<T, object?>> columnSelector, IEnumerable<string> keyValues, Action<ColumnDef> cfg)
         {
             columns.Add(new ColumnEnumeration<T>(columnSelector, keyValues, cfg));
             return this;
@@ -141,7 +142,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
-        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+        public IConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnExpression<T>(name, expression, order, displayName, hidden, styleName));
             return this;
@@ -153,7 +154,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
         /// <param name="expression">Lambda expression to be evaluated to render the column value each row</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg)
+        public IConfigurationBuilder<T> AddExpression(string name, Func<T, object?> expression, Action<ColumnDef> cfg)
         {
             columns.Add(new ColumnExpression<T>(name, expression, cfg));
             return this;
@@ -168,7 +169,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
-        public ConfigurationBuilder<T> AddFormula(string name, string formula, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+        public IConfigurationBuilder<T> AddFormula(string name, string formula, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnFormula(name, formula, order, displayName, hidden, styleName));
             return this;
@@ -180,7 +181,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="name">name of the property. In this case, it cannot be infered from the source Type</param>
         /// <param name="formula">Formula used for this column. Be sure to use the correct absulte/relative references in the formula</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ConfigurationBuilder<T> AddFormula(string name, string formula, Action<ColumnDef> cfg)
+        public IConfigurationBuilder<T> AddFormula(string name, string formula, Action<ColumnDef> cfg)
         {
             columns.Add(new ColumnFormula(name, formula, cfg));
             return this;
@@ -195,7 +196,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="displayName">Human friendly name for the column. If not specified, the property Name is used</param>
         /// <param name="hidden">Column is written to the Excel, but it's hidden</param>
         /// <param name="styleName">Name of a style defined in the Excel workbook</param>
-        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
+        public IConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, int? order = null, string? displayName = null, bool hidden = false, string? styleName = null)
         {
             columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, order, displayName, hidden, styleName));
             return this;
@@ -207,7 +208,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// <param name="columnSelector">Lambda expression to specify the property</param>
         /// <param name="urlColumnSelector">Allows specify the column wich will contain the url</param>
         /// <param name="cfg"> Action that will be invoked to configure the ColumnInfo properties using a <see cref="ColumnDef"/> object</param>
-        public ConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, Action<ColumnDef> cfg)
+        public IConfigurationBuilder<T> AddHyperLinkColumn(Expression<Func<T, object?>> columnSelector, Expression<Func<T, object?>> urlColumnSelector, Action<ColumnDef> cfg)
         {
             columns.Add(new ColumnHyperLink<T>(columnSelector, urlColumnSelector, cfg));
             return this;
@@ -217,11 +218,34 @@ namespace Kevull.MultiHeader.EPPLus
         /// Ignore this property. This column will not be rendered
         /// </summary>
         /// <param name="columnSelector">Allows specify the column name</param>
-        public ConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object?>> columnSelector)
+        public IConfigurationBuilder<T> IgnoreColumn(Expression<Func<T, object?>> columnSelector)
         {
             columns.Add(new ColumnInfo<T>(columnSelector, true));
             return this;
         }
+
+        ///// <summary>
+        ///// Adds a custom header style. If not specified, a default one will be applyed
+        ///// </summary>
+        ///// <param name="style">Lambda expresion to define the style</param>
+        ///// <remarks>The default style is defined as below</remarks>
+        ///// <example>
+        ///// <code>
+        ///// var namedStyle = _xls.Workbook.Styles.CreateNamedStyle("Headers");
+        ///// namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+        ///// namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+        ///// namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+        ///// namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+        ///// namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        ///// namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        ///// namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
+        ///// namedStyle.Style.Font.Bold = true;
+        ///// </code>
+        ///// </example>
+        //public ConfigurationBuilder<T> AddHeaderStyle(Action<ExcelStyle> style)
+        //{
+        //    return AddNamedStyle(MultiHeaderReport<T>.HeaderStyleName, style);
+        //}
 
         /// <summary>
         /// Adds a custom header style. If not specified, a default one will be applyed
@@ -241,20 +265,32 @@ namespace Kevull.MultiHeader.EPPLus
         /// namedStyle.Style.Font.Bold = true;
         /// </code>
         /// </example>
-        public ConfigurationBuilder<T> AddHeaderStyle(Action<ExcelStyle> style)
+        public IConfigurationBuilder<T> AddHeaderStyle(Action<CellFormat> style)
         {
             return AddNamedStyle(MultiHeaderReport<T>.HeaderStyleName, style);
         }
+
+        ///// <summary>
+        ///// Adds a named style that can be used later by any column.
+        ///// </summary>
+        ///// <param name="name">Name of the style</param>
+        ///// <param name="style">Action that allows to configure the style</param>
+        //public ConfigurationBuilder<T> AddNamedStyle(string name, Action<ExcelStyle> style)
+        //{
+        //    var namedStyle = xls.Workbook.Styles.CreateNamedStyle(name);
+        //    style?.Invoke(namedStyle.Style);
+        //    return this;
+        //}
 
         /// <summary>
         /// Adds a named style that can be used later by any column.
         /// </summary>
         /// <param name="name">Name of the style</param>
         /// <param name="style">Action that allows to configure the style</param>
-        public ConfigurationBuilder<T> AddNamedStyle(string name, Action<ExcelStyle> style)
+        public IConfigurationBuilder<T> AddNamedStyle(string name, Action<CellFormat> style)
         {
-            var namedStyle = xls.Workbook.Styles.CreateNamedStyle(name);
-            style?.Invoke(namedStyle.Style);
+            NamedStyles.Add(name, new CellFormat());
+            style?.Invoke(NamedStyles[name]);
             return this;
         }
 
@@ -262,7 +298,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// Configure the TopLeft starting cell of the report
         /// </summary>
         /// <param name="address">Address of the top-left cell</param>
-        public ConfigurationBuilder<T> SetStartingAddress(string address)
+        public IConfigurationBuilder<T> SetStartingAddress(string address)
         {
             StartingAddress = new ExcelCellAddress(address);
             return this;
@@ -273,7 +309,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// </summary>
         /// <param name="row">top row number</param>
         /// <param name="column">left column number</param>
-        public ConfigurationBuilder<T> SetStartingAddres(int row, int column)
+        public IConfigurationBuilder<T> SetStartingAddres(int row, int column)
         {
             StartingAddress = new ExcelCellAddress(row, column);
             return this;

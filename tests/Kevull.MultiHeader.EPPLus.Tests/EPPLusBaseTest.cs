@@ -1,12 +1,16 @@
-﻿using Kevull.MultiHeader.Core;
-using System.IO;
+﻿using OfficeOpenXml;
 using System.Reflection;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
     public class BaseTest
     {
-        protected void Save<T>(IMultiHeaderReport<T> report, [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")
+        public BaseTest()
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("Kevull");
+        }
+
+        protected void Save<T>(MultiHeaderReport<T> report, [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")
         {
             report.Save(string.Concat(methodName, ".xlsx"));
         }

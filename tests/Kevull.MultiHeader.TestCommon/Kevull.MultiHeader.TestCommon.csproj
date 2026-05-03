@@ -11,4 +11,7 @@
 			<_Parameter1>Kevull.MultiHeader.EPPLus.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Kevull.MultiHeader.Core\Kevull.MultiHeader.Core.csproj" />
+	</ItemGroup>
 </Project>

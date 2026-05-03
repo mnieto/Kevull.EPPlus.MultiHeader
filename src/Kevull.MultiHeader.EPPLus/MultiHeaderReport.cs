@@ -11,7 +11,7 @@ namespace Kevull.MultiHeader.EPPLus
     /// Given an <see cref="IEnumerable{T}"/> list of objects it creates an in-memory Excel report
     /// </summary>
     /// <typeparam name="T">Type of objects</typeparam>
-    public class MultiHeaderReport<T>
+    public class MultiHeaderReport<T> : IMultiHeaderReport<T>
     {
         private ExcelWorksheet _sheet;
         private ExcelPackage _xls;
@@ -26,6 +26,12 @@ namespace Kevull.MultiHeader.EPPLus
         /// Internal <see cref="HeaderManager{T}"/>
         /// </summary>
         protected HeaderManager<T>? _header;
+
+        /// <summary>
+        /// Custom styles defined by the user to be applied to headers or columns. 
+        /// The key is the style name and the value is the style definition <see cref="CellFormat"/> agnostic format. See <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{CellFormat})"/>
+        /// </summary>
+        protected Dictionary<string, CellFormat> _namedStyles = [];
 
         internal const string HeaderStyleName = "__Headers__";
 
@@ -51,18 +57,19 @@ namespace Kevull.MultiHeader.EPPLus
         /// </summary>
         /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
         /// <param name="sheetName">Worksheet name to be created where generate the report</param>
-        public MultiHeaderReport(ExcelPackage xls, string sheetName): this(xls, AddSheet(xls, sheetName)) { }
+        public MultiHeaderReport(ExcelPackage xls, string sheetName) : this(xls, AddSheet(xls, sheetName)) { }
 
         /// <summary>
         /// Customize the columns and formats during the report generation. See <see cref="ConfigurationBuilder{T}"/>.
         /// </summary>
         /// <param name="options">Lambda expresion to configure the report</param>
         /// <returns><see cref="MultiHeaderReport{T}"/>This allows a fluent style to configure and generate the report</returns>
-        public MultiHeaderReport<T> Configure(Action<ConfigurationBuilder<T>> options)
+        public IMultiHeaderReport<T> Configure(Action<IConfigurationBuilder<T>> options)
         {
             var builder = new ConfigurationBuilder<T>(_xls);
             options?.Invoke(builder);
             _header = builder.Build();
+            _namedStyles = builder.NamedStyles;
             return this;
         }
 
@@ -78,7 +85,8 @@ namespace Kevull.MultiHeader.EPPLus
             if (_header == null)
             {
                 _header = new HeaderManager<T>();
-            } else
+            }
+            else
             {
                 _header.BuildHeaders();
             }
@@ -95,7 +103,8 @@ namespace Kevull.MultiHeader.EPPLus
             CalulateFormulas();
         }
 
-        internal void Save(string fileName)
+        /// <inheritdoc/>
+        public void Save(string fileName)
         {
             _xls.SaveAs(fileName);
         }
@@ -131,7 +140,7 @@ namespace Kevull.MultiHeader.EPPLus
                 return;
             if (header.Properties == null)
                 throw new ArgumentNullException(nameof(header.Properties));
-            foreach(var columnInfo in header.Columns)
+            foreach (var columnInfo in header.Columns)
             {
                 if (columnInfo.HasChildren)
                 {
@@ -166,7 +175,7 @@ namespace Kevull.MultiHeader.EPPLus
                 _writer.FreezePanes(_header.FirstRow + _header!.Height, _header.FirstColumn);
 
             //Hide columns if needed
-            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden ))
+            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden))
             {
                 _writer.SetColumnHidden(columnInfo.Index, true);
             }
@@ -177,7 +186,7 @@ namespace Kevull.MultiHeader.EPPLus
             _writer.SetAutoFilter(lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, _header.AutoFilter);
 
             //Width
-            foreach(var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
+            foreach (var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
             {
                 double minWidth = columnInfo.ColumnWidth.MinimumWidth == double.MinValue ? _sheet.DefaultColWidth : columnInfo.ColumnWidth.MinimumWidth;
                 double maxWidth = columnInfo.ColumnWidth.MaximunWidth;
@@ -189,12 +198,13 @@ namespace Kevull.MultiHeader.EPPLus
             }
 
             //Styles
-            BuildDefaultHeaderStyle();
             BuildDateStyle();
             BuildTimeStyle();
+            BuildColumnStyles();
 
             if (!_header!.AppendToExistingReport)
             {
+                BuildDefaultHeaderStyle();
                 _writer.ApplyNamedStyle(_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, StyleNames.HeaderStyleName);
             }
 
@@ -237,6 +247,10 @@ namespace Kevull.MultiHeader.EPPLus
                     FillStyle = FillStyle.Solid,
                     Bold = true
                 };
+
+                //If the user has defined a custom header style, merge it with the default one
+                if (_namedStyles.ContainsKey(HeaderStyleName))
+                    format.Merge(_namedStyles[HeaderStyleName]);
                 _writer.CreateNamedStyle(StyleNames.HeaderStyleName, format);
             }
         }
@@ -264,5 +278,18 @@ namespace Kevull.MultiHeader.EPPLus
                 _writer.CreateNamedStyle(StyleNames.TimeStyleName, format);
             }
         }
+
+        private void BuildColumnStyles()
+        {
+            foreach (var style in _namedStyles.Keys)
+            {
+                //The header sytyle is built separately and it is applied to all header rows, so we need to make sure it is not overridden by a user defined style with the same name. 
+                if (style != HeaderStyleName && !_writer.NamedStyleExists(style))
+                {
+                    _writer.CreateNamedStyle(style, _namedStyles[style]);
+                }
+            }
+        }
+
     }
 }

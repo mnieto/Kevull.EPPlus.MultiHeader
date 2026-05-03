@@ -84,5 +84,36 @@
         /// Whether text should wrap in the cell
         /// </summary>
         public bool? WrapText { get; set; }
+
+        /// <summary>
+        /// Merges the current format with another format.
+        /// Any non-null value in <paramref name="other" /> overwrites the current value.
+        /// </summary>
+        /// <param name="other">Format to merge into the current instance.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="other" /> is <c>null</c>.</exception>
+        public void Merge(CellFormat other)
+        {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            LeftBorder = other.LeftBorder ?? LeftBorder;
+            RightBorder = other.RightBorder ?? RightBorder;
+            TopBorder = other.TopBorder ?? TopBorder;
+            BottomBorder = other.BottomBorder ?? BottomBorder;
+            VerticalAlignment = other.VerticalAlignment ?? VerticalAlignment;
+            HorizontalAlignment = other.HorizontalAlignment ?? HorizontalAlignment;
+            BackgroundColor = other.BackgroundColor ?? BackgroundColor;
+            FillStyle = other.FillStyle ?? FillStyle;
+            Bold = other.Bold ?? Bold;
+            Italic = other.Italic ?? Italic;
+            FontName = other.FontName ?? FontName;
+            FontSize = other.FontSize ?? FontSize;
+            FontColor = other.FontColor ?? FontColor;
+            NumberFormat = other.NumberFormat ?? NumberFormat;
+            TextRotation = other.TextRotation ?? TextRotation;
+            WrapText = other.WrapText ?? WrapText;
+        }
     }
 }

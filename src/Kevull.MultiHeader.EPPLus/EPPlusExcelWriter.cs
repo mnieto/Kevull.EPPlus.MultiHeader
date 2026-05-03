@@ -341,4 +341,152 @@ namespace Kevull.MultiHeader.EPPLus
 
         #endregion
     }
+
+    public static class ExcelStyleExtensions
+    {
+        /// <summary>
+        /// Sets the background color and fill style for an ExcelStyle
+        /// </summary>
+        public static ExcelStyle SetBackground(this CellFormat format, ExcelStyle style)
+        {
+            ApplyFormatToRange(style, format);
+            return style;
+        }
+
+
+        /// <summary>
+        /// Applies CellFormat to an ExcelStyle
+        /// </summary>
+        private static void ApplyFormatToRange(ExcelStyle style, CellFormat format)
+        {
+            // Borders
+            if (format.LeftBorder.HasValue)
+                style.Border.Left.Style = ConvertBorderStyle(format.LeftBorder.Value);
+            if (format.RightBorder.HasValue)
+                style.Border.Right.Style = ConvertBorderStyle(format.RightBorder.Value);
+            if (format.TopBorder.HasValue)
+                style.Border.Top.Style = ConvertBorderStyle(format.TopBorder.Value);
+            if (format.BottomBorder.HasValue)
+                style.Border.Bottom.Style = ConvertBorderStyle(format.BottomBorder.Value);
+
+            // Alignment
+            if (format.VerticalAlignment.HasValue)
+                style.VerticalAlignment = ConvertVerticalAlignment(format.VerticalAlignment.Value);
+            if (format.HorizontalAlignment.HasValue)
+                style.HorizontalAlignment = ConvertHorizontalAlignment(format.HorizontalAlignment.Value);
+
+            // Fill
+            if (format.BackgroundColor.HasValue && format.FillStyle.HasValue)
+            {
+                var color = ConvertColor(format.BackgroundColor.Value);
+                var fillStyle = ConvertFillStyle(format.FillStyle.Value);
+                style.Fill.SetBackground(color, fillStyle);
+            }
+
+            // Font
+            if (format.Bold.HasValue)
+                style.Font.Bold = format.Bold.Value;
+            if (format.Italic.HasValue)
+                style.Font.Italic = format.Italic.Value;
+            if (!string.IsNullOrWhiteSpace(format.FontName))
+                style.Font.Name = format.FontName;
+            if (format.FontSize.HasValue)
+                style.Font.Size = format.FontSize.Value;
+            if (format.FontColor.HasValue)
+                style.Font.Color.SetColor(ConvertColor(format.FontColor.Value));
+
+            // Number Format
+            if (!string.IsNullOrWhiteSpace(format.NumberFormat))
+                style.Numberformat.Format = format.NumberFormat;
+
+            // Text Rotation
+            if (format.TextRotation.HasValue)
+                style.TextRotation = format.TextRotation.Value;
+
+            // Wrap Text
+            if (format.WrapText.HasValue)
+                style.WrapText = format.WrapText.Value;
+        }
+
+        /// <summary>
+        /// Converts library-agnostic BorderStyle to EPPlus ExcelBorderStyle
+        /// </summary>
+        private static ExcelBorderStyle ConvertBorderStyle(Core.BorderStyle borderStyle)
+        {
+            return borderStyle switch
+            {
+                Core.BorderStyle.None => ExcelBorderStyle.None,
+                Core.BorderStyle.Thin => ExcelBorderStyle.Thin,
+                Core.BorderStyle.Medium => ExcelBorderStyle.Medium,
+                Core.BorderStyle.Thick => ExcelBorderStyle.Thick,
+                Core.BorderStyle.Double => ExcelBorderStyle.Double,
+                Core.BorderStyle.Dotted => ExcelBorderStyle.Dotted,
+                Core.BorderStyle.Dashed => ExcelBorderStyle.Dashed,
+                Core.BorderStyle.DashDot => ExcelBorderStyle.DashDot,
+                Core.BorderStyle.DashDotDot => ExcelBorderStyle.DashDotDot,
+                _ => ExcelBorderStyle.None
+            };
+        }
+
+        /// <summary>
+        /// Converts library-agnostic VerticalAlignment to EPPlus ExcelVerticalAlignment
+        /// </summary>
+        private static ExcelVerticalAlignment ConvertVerticalAlignment(Core.VerticalAlignment alignment)
+        {
+            return alignment switch
+            {
+                Core.VerticalAlignment.Top => ExcelVerticalAlignment.Top,
+                Core.VerticalAlignment.Center => ExcelVerticalAlignment.Center,
+                Core.VerticalAlignment.Bottom => ExcelVerticalAlignment.Bottom,
+                Core.VerticalAlignment.Justify => ExcelVerticalAlignment.Justify,
+                Core.VerticalAlignment.Distributed => ExcelVerticalAlignment.Distributed,
+                _ => ExcelVerticalAlignment.Bottom
+            };
+        }
+
+        /// <summary>
+        /// Converts library-agnostic HorizontalAlignment to EPPlus ExcelHorizontalAlignment
+        /// </summary>
+        private static ExcelHorizontalAlignment ConvertHorizontalAlignment(Core.HorizontalAlignment alignment)
+        {
+            return alignment switch
+            {
+                Core.HorizontalAlignment.General => ExcelHorizontalAlignment.General,
+                Core.HorizontalAlignment.Left => ExcelHorizontalAlignment.Left,
+                Core.HorizontalAlignment.Center => ExcelHorizontalAlignment.Center,
+                Core.HorizontalAlignment.Right => ExcelHorizontalAlignment.Right,
+                Core.HorizontalAlignment.Fill => ExcelHorizontalAlignment.Fill,
+                Core.HorizontalAlignment.Justify => ExcelHorizontalAlignment.Justify,
+                Core.HorizontalAlignment.CenterContinuous => ExcelHorizontalAlignment.CenterContinuous,
+                Core.HorizontalAlignment.Distributed => ExcelHorizontalAlignment.Distributed,
+                _ => ExcelHorizontalAlignment.General
+            };
+        }
+
+        /// <summary>
+        /// Converts library-agnostic FillStyle to EPPlus ExcelFillStyle
+        /// </summary>
+        private static ExcelFillStyle ConvertFillStyle(Core.FillStyle fillStyle)
+        {
+            return fillStyle switch
+            {
+                Core.FillStyle.None => ExcelFillStyle.None,
+                Core.FillStyle.Solid => ExcelFillStyle.Solid,
+                Core.FillStyle.DarkGray => ExcelFillStyle.DarkGray,
+                Core.FillStyle.MediumGray => ExcelFillStyle.MediumGray,
+                Core.FillStyle.LightGray => ExcelFillStyle.LightGray,
+                Core.FillStyle.Gray125 => ExcelFillStyle.Gray125,
+                Core.FillStyle.Gray0625 => ExcelFillStyle.Gray0625,
+                _ => ExcelFillStyle.None
+            };
+        }
+
+        /// <summary>
+        /// Converts library-agnostic ExcelColor to System.Drawing.Color
+        /// </summary>
+        private static Color ConvertColor(CoreExcelColor excelColor)
+        {
+            return Color.FromArgb(excelColor.A, excelColor.R, excelColor.G, excelColor.B);
+        }
+    }
 }

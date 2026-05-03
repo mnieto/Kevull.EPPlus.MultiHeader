@@ -90,7 +90,6 @@ namespace Kevull.MultiHeader.Core
             throw new ArgumentException($"Invalid hex color format: {hex}", nameof(hex));
         }
 
-
         /// <summary>
         /// Converts the color to a hex string (e.g., "#RRGGBB")
         /// </summary>

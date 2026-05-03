@@ -38,15 +38,16 @@ namespace Kevull.MultiHeader.EPPLus.Test
                 .AddEnumeration(x => x.ComplexProperty.RightColumn, complexObject.First().ComplexProperty.RightColumn.Keys)
                 .AddHeaderStyle(x =>
                 {
-                    x.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    x.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    x.HorizontalAlignment = HorizontalAlignment.Center;
+                    x.VerticalAlignment = VerticalAlignment.Center;
+                    x.BackgroundColor = ExcelColor.Black;
                 })
             );
             report.GenerateReport(complexObject);
             var sheet = xls.Workbook.Worksheets["Object"];
 
             Assert.Equal(OfficeOpenXml.Style.ExcelHorizontalAlignment.Center, sheet.Cells["A1"].Style.HorizontalAlignment);
-            Assert.NotEqual(Color.LightGray.ToArgb().ToString("X"), sheet.Cells["A1"].Style.Fill.BackgroundColor.Rgb);
+            Assert.Equal(ExcelColor.Black.Argb, sheet.Cells["A1"].Style.Fill.BackgroundColor.Rgb);
         }
 
         [Fact]
@@ -86,8 +87,8 @@ namespace Kevull.MultiHeader.EPPLus.Test
             report.Configure(options => options
                 .AddNamedStyle("BirthDay", s =>
                 {
-                    s.Font.Italic = true;
-                    s.Numberformat.Format = "dd/mm";
+                    s.Italic = true;
+                    s.NumberFormat = "dd/mm";
                 })
                 .AddColumn(x => x.BirthDate, styleName: "BirthDay")
             );
