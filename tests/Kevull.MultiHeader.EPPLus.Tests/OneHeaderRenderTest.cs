@@ -5,7 +5,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
-    public class OneHeaderRenderTest : BaseTest
+    public class OneHeaderRenderTest : EPPLusBaseTest
     {
         private int maxColumns;
         public OneHeaderRenderTest() : base()

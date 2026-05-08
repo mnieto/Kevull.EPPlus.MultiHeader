@@ -12,7 +12,7 @@ namespace Kevull.MultiHeader.EPPLus.Test
     /// <summary>
     /// Unit tests for EPPlusExcelWriter class
     /// </summary>
-    public partial class EPPlusExcelWriterTests : BaseTest
+    public partial class EPPlusExcelWriterTests : BaseTest, IDisposable
     {
         private readonly ExcelPackage _package;
         private readonly ExcelWorksheet _worksheet;
