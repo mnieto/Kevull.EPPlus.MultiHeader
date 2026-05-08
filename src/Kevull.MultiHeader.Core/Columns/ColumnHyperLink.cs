@@ -51,6 +51,7 @@ namespace Kevull.MultiHeader.Core.Columns
             UrlPropertyName = GetPropertyName(urlColumnSelector).Name;
         }
 
+        /// <inheritdoc />
         public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)

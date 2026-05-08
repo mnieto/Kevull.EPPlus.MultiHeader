@@ -74,6 +74,7 @@ namespace Kevull.MultiHeader.Core.Columns
             _keyValues = AddKeyValues(keyValues);
         }
 
+        /// <inheritdoc />
         public override void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
             // Merge the parent header across all columns
@@ -87,6 +88,7 @@ namespace Kevull.MultiHeader.Core.Columns
             }
         }
 
+        /// <inheritdoc />
         public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj == null)
@@ -118,6 +120,7 @@ namespace Kevull.MultiHeader.Core.Columns
             }
         }
 
+        /// <inheritdoc />
         public override void WriteHeader(IExcelWriter writer, int row, int col)
         {
             // Write parent header

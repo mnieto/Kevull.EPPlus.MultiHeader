@@ -119,10 +119,9 @@ namespace Kevull.MultiHeader.Core.Columns
         /// Name of a style defined in the Excel workbook
         /// </summary>
         /// <remarks>
-        /// Style names are not checked at configuration time, but in the <see cref="MultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method
+        /// Style names are not checked at configuration time, but in the <see cref="IMultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method.
         /// You can assign the style name during the column creation or use any existing Style in the Excel file. 
-        /// The <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{OfficeOpenXml.Style.ExcelStyle})"/> is a handy method
-        /// that wraps the EPPlus <see cref="ExcelStyles.CreateNamedStyle(string)"/> method
+        /// The <see cref="IConfigurationBuilder{T}.AddNamedStyle(string, Action{CellFormat})"/> method can be used to define reusable styles.
         /// </remarks>
         public string? StyleName { get; set; }
 
@@ -204,17 +203,42 @@ namespace Kevull.MultiHeader.Core.Columns
             _displayName = displayName;
         }
 
+        /// <summary>
+        /// Applies header formatting for this column.
+        /// </summary>
+        /// <param name="writer">The writer used to apply Excel operations.</param>
+        /// <param name="row">The starting row index of the header cell.</param>
+        /// <param name="col">The starting column index of the header cell.</param>
+        /// <param name="height">The number of rows spanned by the header.</param>
         public virtual void FormatHeader(IExcelWriter writer, int row, int col, int height)
         {
             writer.Merge(row, col, row + height - 1, col + Width - 1);
         }
 
+        /// <summary>
+        /// Writes the column value for a single cell.
+        /// </summary>
+        /// <param name="writer">The writer used to output cell values.</param>
+        /// <param name="row">The destination row index.</param>
+        /// <param name="col">The destination column index.</param>
+        /// <param name="properties">The property map used to resolve values from the source object.</param>
+        /// <param name="obj">The source object containing values for the current row.</param>
         public virtual void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj != null)
                 writer.WriteCell(row, col, properties[Name].GetValue(obj));
         }
 
+        /// <summary>
+        /// Writes the column value for a potentially merged cell range.
+        /// </summary>
+        /// <param name="writer">The writer used to output cell values.</param>
+        /// <param name="fromRow">The starting row index of the range.</param>
+        /// <param name="fromCol">The starting column index of the range.</param>
+        /// <param name="toRow">The ending row index of the range.</param>
+        /// <param name="toCol">The ending column index of the range.</param>
+        /// <param name="properties">The property map used to resolve values from the source object.</param>
+        /// <param name="obj">The source object containing values for the current row.</param>
         public virtual void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             // Default implementation: merge cells and write value to merged range
@@ -230,6 +254,12 @@ namespace Kevull.MultiHeader.Core.Columns
                 writer.WriteCell(fromRow, fromCol, properties[Name].GetValue(obj));
         }
 
+        /// <summary>
+        /// Writes the header text for this column.
+        /// </summary>
+        /// <param name="writer">The writer used to output cell values.</param>
+        /// <param name="row">The destination row index.</param>
+        /// <param name="col">The destination column index.</param>
         public virtual void WriteHeader(IExcelWriter writer, int row, int col)
         {
             writer.WriteCell(row, col, DisplayName);

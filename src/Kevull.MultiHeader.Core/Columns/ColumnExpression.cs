@@ -56,6 +56,7 @@ namespace Kevull.MultiHeader.Core.Columns
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
 
+        /// <inheritdoc />
         public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             if (obj is null)

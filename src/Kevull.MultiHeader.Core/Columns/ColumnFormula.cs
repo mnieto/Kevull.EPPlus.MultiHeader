@@ -57,11 +57,13 @@ namespace Kevull.MultiHeader.Core.Columns
             _formula = formula;
         }
 
+        /// <inheritdoc />
         public override void WriteCell(IExcelWriter writer, int row, int col, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             writer.WriteFormula(row, col, _formula);
         }
 
+        /// <inheritdoc />
         public override void WriteCell(IExcelWriter writer, int fromRow, int fromCol, int toRow, int toCol, Dictionary<string, PropertyInfo> properties, object? obj)
         {
             // Optimize: write formula to entire range at once

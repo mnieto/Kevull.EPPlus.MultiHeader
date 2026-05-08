@@ -342,6 +342,9 @@ namespace Kevull.MultiHeader.EPPLus
         #endregion
     }
 
+    /// <summary>
+    /// Extension methods to apply library-agnostic cell format definitions to EPPlus styles.
+    /// </summary>
     public static class ExcelStyleExtensions
     {
         /// <summary>

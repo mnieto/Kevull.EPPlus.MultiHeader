@@ -17,6 +17,10 @@ namespace Kevull.MultiHeader.EPPLus
         private List<ColumnInfo> columns;
         private ExcelPackage xls;
         private ExcelCellAddress StartingAddress { get; set; } = new ExcelCellAddress();
+
+        /// <summary>
+        /// Collection of named styles available for column and header formatting.
+        /// </summary>
         public Dictionary<string, CellFormat> NamedStyles = new Dictionary<string, CellFormat>();
 
         /// <summary>
