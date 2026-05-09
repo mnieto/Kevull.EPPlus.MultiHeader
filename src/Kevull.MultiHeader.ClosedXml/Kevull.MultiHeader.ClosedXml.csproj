@@ -15,11 +15,11 @@
 	<EnablePackageValidation>true</EnablePackageValidation>
 	<Authors>MNieto</Authors>
 	<Title>EPlus multi-header report</Title>
-	<Description>Extension for the EPPlus library to create reports from complex objects</Description>
+	<Description>Extension for the ClosedXML library to create reports from complex objects</Description>
 	<PackageProjectUrl>https://github.com/mnieto/Kevull.MultiHeader</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/mnieto/Kevull.MultiHeader</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
-	<PackageTags>EPPlus;Excel;Multi-header;Report</PackageTags>
+	<PackageTags>ClosedXML;Excel;Multi-header;Report</PackageTags>
 	<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageIcon>EPlusMultiHeader.png</PackageIcon>
@@ -28,11 +28,12 @@
   </PropertyGroup>	
 
   <ItemGroup>
+	<PackageReference Include="ClosedXML" Version="0.105.0" />
 	<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.25">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="EPPlus" Version="8.5.4" />
+	
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +42,7 @@
 
   <ItemGroup>
 	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-	  <_Parameter1>Kevull.MultiHeader.EPPLus.Tests</_Parameter1>
+	  <_Parameter1>Kevull.MultiHeader.ClosedXml.Tests</_Parameter1>
 	</AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
