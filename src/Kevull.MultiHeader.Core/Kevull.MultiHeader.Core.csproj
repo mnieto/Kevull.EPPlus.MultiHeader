@@ -16,8 +16,8 @@
 	<Authors>MNieto</Authors>
 	<Title>EPlus multi-header report</Title>
 	<Description>Extension for Excel libraries to create reports from complex objects</Description>
-	<PackageProjectUrl>https://github.com/mnieto/MultiHeader.Core</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/mnieto/MultiHeader.Core</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/mnieto/Kevull.MultiHeader</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/mnieto/Kevull.MultiHeader</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>EPPlus;Excel;Multi-header;Report</PackageTags>
 	<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
