@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Kevull.MultiHeader.ClosedXml.Tests/Kevull.MultiHeader.ClosedXml.Tests.csproj" />
+    <Project Path="tests/Kevull.MultiHeader.Core.Tests/Kevull.MultiHeader.Core.Tests.csproj" />
+    <Project Path="tests/Kevull.MultiHeader.EPPLus.Tests/Kevull.MultiHeader.EPPLus.Tests.csproj" />
+    <Project Path="tests/Kevull.MultiHeader.TestCommon/Kevull.MultiHeader.TestCommon.csproj" />
+  </Folder>
+  <Project Path="src/Kevull.MultiHeader.ClosedXml/Kevull.MultiHeader.ClosedXml.csproj" />
+  <Project Path="src/Kevull.MultiHeader.Core/Kevull.MultiHeader.Core.csproj" />
+  <Project Path="src/Kevull.MultiHeader.EPPLus/Kevull.MultiHeader.EPPLus.csproj" />
+</Solution>

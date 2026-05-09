@@ -12,14 +12,14 @@ on:
 
 env:
   NUGET_FOLDER: ${{ github.workspace}}/nuget
-  DOTNET_VERSION: 8.0.X
+  DOTNET_VERSION: 10.0.X
   CONFIGURATION: Release
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SOLUTION_ROOT: src/Kevull.EPPLus.MultiHeader.sln
+      SOLUTION_ROOT: Kevull.MultiHeader.slnx
 
     steps:
     - uses: actions/checkout@v3
