@@ -10,7 +10,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
-    public class TwoHeaderRenderTest : BaseTest
+    public class TwoHeaderRenderTest : EPPLusBaseTest
     {
         [Fact]
         public void ComposedObjects_AreRendered_InSecondRow()

@@ -228,29 +228,6 @@ namespace Kevull.MultiHeader.EPPLus
             return this;
         }
 
-        ///// <summary>
-        ///// Adds a custom header style. If not specified, a default one will be applyed
-        ///// </summary>
-        ///// <param name="style">Lambda expresion to define the style</param>
-        ///// <remarks>The default style is defined as below</remarks>
-        ///// <example>
-        ///// <code>
-        ///// var namedStyle = _xls.Workbook.Styles.CreateNamedStyle("Headers");
-        ///// namedStyle.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-        ///// namedStyle.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-        ///// namedStyle.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-        ///// namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-        ///// namedStyle.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        ///// namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        ///// namedStyle.Style.Fill.SetBackground(Color.LightGray, ExcelFillStyle.Solid);
-        ///// namedStyle.Style.Font.Bold = true;
-        ///// </code>
-        ///// </example>
-        //public ConfigurationBuilder<T> AddHeaderStyle(Action<ExcelStyle> style)
-        //{
-        //    return AddNamedStyle(MultiHeaderReport<T>.HeaderStyleName, style);
-        //}
-
         /// <summary>
         /// Adds a custom header style. If not specified, a default one will be applyed
         /// </summary>
@@ -271,7 +248,7 @@ namespace Kevull.MultiHeader.EPPLus
         /// </example>
         public IConfigurationBuilder<T> AddHeaderStyle(Action<CellFormat> style)
         {
-            return AddNamedStyle(MultiHeaderReport<T>.HeaderStyleName, style);
+            return AddNamedStyle(StyleNames.HeaderStyleName, style);
         }
 
         ///// <summary>

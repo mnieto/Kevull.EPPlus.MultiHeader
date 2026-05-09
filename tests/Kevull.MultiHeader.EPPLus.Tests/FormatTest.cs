@@ -1,5 +1,4 @@
-﻿using Kevull.MultiHeader.Code;
-using Kevull.MultiHeader.Core;
+﻿using Kevull.MultiHeader.Core;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using Xunit;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
-    public class FormatTest : BaseTest
+    public class FormatTest : EPPLusBaseTest
     {
         [Fact]
         public void PropertiesWithoutChildren_HasVerticalMerge()

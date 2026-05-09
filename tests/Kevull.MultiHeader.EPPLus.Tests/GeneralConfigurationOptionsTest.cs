@@ -7,7 +7,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.EPPLus.Test
 {
-    public class GeneralConfigurationOptionsTest : BaseTest
+    public class GeneralConfigurationOptionsTest : EPPLusBaseTest
     {
         [Fact]
         public void ReportStatsAt_TopLeftStartingPoint()

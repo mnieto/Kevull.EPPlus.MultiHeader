@@ -1,7 +1,9 @@
 [![build library](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/actions/workflows/build.yml/badge.svg)](https://github.com/mnieto/Kevull.EPPLus.MultiHeader/actions/workflows/build.yml)
 
 # Kevull.EPPLus.MultiHeader
-Extension for the [EPPlus](https://github.com/EPPlusSoftware/EPPlus) library to create reports from complex objects
+Extension to create Excel reports from complex objects with two implementation flavours:
+- [EPPlus](https://github.com/EPPlusSoftware/EPPlus)
+- [ClosedXML](https://github.com/ClosedXML/ClosedXML)
 
 Given a list like this:
 ```csharp
@@ -35,12 +37,20 @@ Given a list like this:
             };
 ```
 
-this code:
+With EPPlus:
 ```csharp
             using var xls = new ExcelPackage();
             var report = new MultiHeaderReport<RootLevel>(xls, "Object");
             report.GenerateReport(complexObject);
             xls.SaveAs("Report.xlsx");
+```
+
+Equivalent code with ClosedXML:
+```csharp
+            using var xls = new XLWorkbook();
+            var report = new MultiHeaderReport<RootLevel>(xls, "Object");
+            report.GenerateReport(complexObject);
+            report.Save("Report.xlsx");
 ```
 
 will render like this:
@@ -184,4 +194,5 @@ Default top-left cell is A1. With `SetStartingAddress` you can specify any other
 - Append rows to an existing report ✓
 - Posibility to change the top-left starting point ✓
 - Target netstandard 2.0 in nuget package ✓
+- Dual implementation with EPPlus and ClosedXML ✓
 - Frozen rows and columns ✓

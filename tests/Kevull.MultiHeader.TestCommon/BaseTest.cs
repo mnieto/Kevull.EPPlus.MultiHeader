@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Kevull.MultiHeader.EPPLus.Test
+namespace Kevull.MultiHeader.TestCommon
 {
     public class BaseTest
     {

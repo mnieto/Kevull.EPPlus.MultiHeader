@@ -1,4 +1,4 @@
-﻿namespace Kevull.MultiHeader.Code
+﻿namespace Kevull.MultiHeader.Core
 {
     /// <summary>
     /// Contains names and number formats used by default report styles.

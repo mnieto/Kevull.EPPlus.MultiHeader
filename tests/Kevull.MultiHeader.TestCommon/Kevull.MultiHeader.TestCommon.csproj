@@ -11,6 +11,9 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>Kevull.MultiHeader.EPPLus.Tests</_Parameter1>
 		</AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Kevull.MultiHeader.ClosedXml.Tests</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Kevull.MultiHeader.Core\Kevull.MultiHeader.Core.csproj" />

@@ -1,68 +1,64 @@
-﻿using Kevull.MultiHeader.Core;
+using ClosedXML.Excel;
+using Kevull.MultiHeader.Core;
 using Kevull.MultiHeader.Core.Columns;
-using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Kevull.MultiHeader.EPPLus
+namespace Kevull.MultiHeader.ClosedXml
 {
     /// <summary>
-    /// Given an <see cref="IEnumerable{T}"/> list of objects it creates an in-memory Excel report
+    /// Given an <see cref="IEnumerable{T}"/> list of objects it creates an in-memory Excel report.
     /// </summary>
-    /// <typeparam name="T">Type of objects</typeparam>
+    /// <typeparam name="T">Type of objects.</typeparam>
     public class MultiHeaderReport<T> : IMultiHeaderReport<T>
     {
-        private ExcelWorksheet _sheet;
-        private ExcelPackage _xls;
-        private IExcelWriter _writer;
+        private readonly IXLWorksheet _sheet;
+        private readonly XLWorkbook _xls;
+        private readonly IExcelWriter _writer;
 
-        private int FirstDataRow => (_header == null || !_header.AppendToExistingReport) ?
-                                    _header?.FirstRow + _header?.Height ?? 2 :
-                                    _sheet.Dimension.End.Row + 1;
+        private int FirstDataRow => (_header == null || !_header.AppendToExistingReport)
+            ? _header?.FirstRow + _header?.Height ?? 2
+            : (_sheet.LastRowUsed()?.RowNumber() ?? 0) + 1;
+
         private int row;
 
         /// <summary>
-        /// Internal <see cref="HeaderManager{T}"/>
+        /// Internal <see cref="HeaderManager{T}"/>.
         /// </summary>
         protected HeaderManager<T>? _header;
 
         /// <summary>
-        /// Custom styles defined by the user to be applied to headers or columns. 
-        /// The key is the style name and the value is the style definition <see cref="CellFormat"/> agnostic format. See <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{CellFormat})"/>
+        /// Custom styles defined by the user to be applied to headers or columns.
         /// </summary>
         protected Dictionary<string, CellFormat> _namedStyles = [];
 
-        //internal const string HeaderStyleName = StyleNames.HeaderStyleName;
-
         /// <summary>
-        /// Object properties associated to the columns
+        /// Object properties associated to the columns.
         /// </summary>
         protected Dictionary<string, PropertyInfo>? Properties { get; private set; }
 
         /// <summary>
-        /// Ctor
+        /// Ctor.
         /// </summary>
-        /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
-        /// <param name="sheet">Existing worksheet where generate the report</param>
-        public MultiHeaderReport(ExcelPackage xls, ExcelWorksheet sheet)
+        /// <param name="xls">Initialized <see cref="XLWorkbook"/>.</param>
+        /// <param name="sheet">Existing worksheet where to generate the report.</param>
+        public MultiHeaderReport(XLWorkbook xls, IXLWorksheet sheet)
         {
-            _xls = xls;
-            _sheet = sheet;
-            _writer = new EPPlusExcelWriter(xls, sheet);
+            _xls = xls ?? throw new ArgumentNullException(nameof(xls));
+            _sheet = sheet ?? throw new ArgumentNullException(nameof(sheet));
+            _writer = new ClosedXmlExcelWriter(xls, sheet);
         }
 
         /// <summary>
-        /// Ctor
+        /// Ctor.
         /// </summary>
-        /// <param name="xls">Initialized <see cref="ExcelPackage"/></param>
-        /// <param name="sheetName">Worksheet name to be created where generate the report</param>
-        public MultiHeaderReport(ExcelPackage xls, string sheetName) : this(xls, AddSheet(xls, sheetName)) { }
+        /// <param name="xls">Initialized <see cref="XLWorkbook"/>.</param>
+        /// <param name="sheetName">Worksheet name to be created where generate the report.</param>
+        public MultiHeaderReport(XLWorkbook xls, string sheetName) : this(xls, AddSheet(xls, sheetName)) { }
 
-        /// <summary>
-        /// Customize the columns and formats during the report generation. See <see cref="ConfigurationBuilder{T}"/>.
-        /// </summary>
-        /// <param name="options">Lambda expresion to configure the report</param>
-        /// <returns><see cref="MultiHeaderReport{T}"/>This allows a fluent style to configure and generate the report</returns>
+        /// <inheritdoc />
         public IMultiHeaderReport<T> Configure(Action<IConfigurationBuilder<T>> options)
         {
             var builder = new ConfigurationBuilder<T>(_xls);
@@ -72,15 +68,9 @@ namespace Kevull.MultiHeader.EPPLus
             return this;
         }
 
-
-        /// <summary>
-        /// Generate the report in Excel
-        /// </summary>
-        /// <param name="data">Data of tyepe <typeparamref name="T"/></param>
-        /// <remarks>If there is any configuration, it will generate the report using the default conventions</remarks>
+        /// <inheritdoc />
         public void GenerateReport(IEnumerable<T> data)
         {
-            //If no configuration is provided, use default simple headers
             if (_header == null)
             {
                 _header = new HeaderManager<T>();
@@ -89,32 +79,34 @@ namespace Kevull.MultiHeader.EPPLus
             {
                 _header.BuildHeaders();
             }
+
             Properties = _header.Properties;
             if (!_header.AppendToExistingReport)
                 WriteHeaders();
 
             row = FirstDataRow;
-            foreach (T item in data)
+            foreach (var item in data)
             {
                 ProcessRow(item);
             }
+
             DoFormatting();
             CalulateFormulas();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void Save(string fileName)
         {
             _xls.SaveAs(fileName);
         }
 
-        private static ExcelWorksheet AddSheet(ExcelPackage xls, string sheetName)
+        private static IXLWorksheet AddSheet(XLWorkbook xls, string sheetName)
         {
-            if (!xls.Workbook.Worksheets.AsEnumerable().Any(x => x.Name == sheetName))
+            if (!xls.Worksheets.Any(x => x.Name == sheetName))
             {
-                xls.Workbook.Worksheets.Add(sheetName);
+                xls.AddWorksheet(sheetName);
             }
-            return xls.Workbook.Worksheets[sheetName];
+            return xls.Worksheet(sheetName);
         }
 
         private void ProcessRow(T item)
@@ -139,6 +131,7 @@ namespace Kevull.MultiHeader.EPPLus
                 return;
             if (header.Properties == null)
                 throw new ArgumentNullException(nameof(header.Properties));
+
             foreach (var columnInfo in header.Columns)
             {
                 if (columnInfo.HasChildren)
@@ -150,20 +143,19 @@ namespace Kevull.MultiHeader.EPPLus
                     columnInfo.WriteCell(_writer, row, columnInfo.Index, header.Properties, item);
                 }
             }
-
         }
 
         private void WriteHeaders(HeaderManager? header = null, int? topRow = null)
         {
-            header = header ?? _header!;
-            int row = topRow ?? _header!.FirstRow;
+            header ??= _header!;
+            int localRow = topRow ?? _header!.FirstRow;
             foreach (var columnInfo in header.Columns)
             {
-                columnInfo.WriteHeader(_writer, row, columnInfo.Index);
-                columnInfo.FormatHeader(_writer, row, columnInfo.Index, columnInfo.HasChildren ? 1 : header.Height - (row - _header!.FirstRow));
+                columnInfo.WriteHeader(_writer, localRow, columnInfo.Index);
+                columnInfo.FormatHeader(_writer, localRow, columnInfo.Index, columnInfo.HasChildren ? 1 : header.Height - (localRow - _header!.FirstRow));
                 if (columnInfo.HasChildren)
                 {
-                    WriteHeaders(columnInfo.Header!, row + 1);
+                    WriteHeaders(columnInfo.Header!, localRow + 1);
                 }
             }
         }
@@ -171,62 +163,61 @@ namespace Kevull.MultiHeader.EPPLus
         private void DoFormatting()
         {
             if (_header!.AutoFreezePanes)
-                _writer.FreezePanes(_header.FirstRow + _header!.Height, _header.FirstColumn);
+                _writer.FreezePanes(_header.FirstRow + _header.Height, _header.FirstColumn);
 
-            //Hide columns if needed
-            foreach (var columnInfo in _header!.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden))
+            foreach (var columnInfo in _header.Columns.Where(x => x.Hidden || x.ColumnWidth.Type == WidthType.Hidden))
             {
                 _writer.SetColumnHidden(columnInfo.Index, true);
             }
 
-            //Autofilter
             int lastHeaderRow = _header.FirstRow + _header.Height - 1;
             int lastHeaderColumn = _header.FirstColumn + _header.Width - 1;
-            _writer.SetAutoFilter(lastHeaderRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, _header.AutoFilter);
+            _writer.SetAutoFilter(lastHeaderRow, _header.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, _header.AutoFilter);
 
-            //Width
-            foreach (var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
+            foreach (var columnInfo in _header.Columns.Where(x => x.ColumnWidth.Type == WidthType.Auto))
             {
-                double minWidth = columnInfo.ColumnWidth.MinimumWidth == double.MinValue ? _sheet.DefaultColWidth : columnInfo.ColumnWidth.MinimumWidth;
+                double minWidth = columnInfo.ColumnWidth.MinimumWidth == double.MinValue ? _sheet.ColumnWidth : columnInfo.ColumnWidth.MinimumWidth;
                 double maxWidth = columnInfo.ColumnWidth.MaximunWidth;
                 _writer.AutoFitColumn(columnInfo.Index, minWidth, maxWidth);
             }
-            foreach (var columnInfo in _header!.Columns.Where(x => x.ColumnWidth.Type == WidthType.Custom))
+            foreach (var columnInfo in _header.Columns.Where(x => x.ColumnWidth.Type == WidthType.Custom))
             {
                 _writer.SetColumnWidth(columnInfo.Index, columnInfo.ColumnWidth.Width!.Value);
             }
 
-            //Styles
             BuildDateStyle();
             BuildTimeStyle();
             BuildColumnStyles();
 
-            if (!_header!.AppendToExistingReport)
+            if (!_header.AppendToExistingReport)
             {
                 BuildDefaultHeaderStyle();
-                _writer.ApplyNamedStyle(_header.FirstRow, _header!.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, StyleNames.HeaderStyleName);
+                _writer.ApplyNamedStyle(_header.FirstRow, _header.Columns.Min(x => x.Index), lastHeaderRow, lastHeaderColumn, StyleNames.HeaderStyleName);
             }
 
-            foreach (var columnInfo in _header!.Columns.Where(x => x.StyleName != null))
+            int lastDataRow = _sheet.LastRowUsed()?.RowNumber() ?? (FirstDataRow - 1);
+            if (lastDataRow >= FirstDataRow)
             {
-                _writer.ApplyNamedStyle(FirstDataRow, columnInfo.Index, _sheet.Dimension.End.Row, columnInfo.Index, columnInfo.StyleName!);
+                foreach (var columnInfo in _header.Columns.Where(x => x.StyleName != null))
+                {
+                    _writer.ApplyNamedStyle(FirstDataRow, columnInfo.Index, lastDataRow, columnInfo.Index, columnInfo.StyleName!);
+                }
             }
         }
 
         private void CalulateFormulas()
         {
-            bool NeedsCalculate = false;
+            bool needsCalculate = false;
             foreach (var columnInfo in _header!.Columns.OfType<ColumnFormula>())
             {
-                // Optimized: write formula to entire range at once instead of row by row
-                int lastRow = _sheet.Dimension?.End.Row ?? FirstDataRow;
+                int lastRow = _sheet.LastRowUsed()?.RowNumber() ?? FirstDataRow;
                 if (lastRow >= FirstDataRow)
                 {
                     columnInfo.WriteCell(_writer, FirstDataRow, columnInfo.Index, lastRow, columnInfo.Index, Properties!, null);
-                    NeedsCalculate = true;
+                    needsCalculate = true;
                 }
             }
-            if (NeedsCalculate)
+            if (needsCalculate)
                 _writer.Recalculate();
         }
 
@@ -247,7 +238,6 @@ namespace Kevull.MultiHeader.EPPLus
                     Bold = true
                 };
 
-                //If the user has defined a custom header style, merge it with the default one
                 if (_namedStyles.ContainsKey(StyleNames.HeaderStyleName))
                     format.Merge(_namedStyles[StyleNames.HeaderStyleName]);
                 _writer.CreateNamedStyle(StyleNames.HeaderStyleName, format);
@@ -282,13 +272,11 @@ namespace Kevull.MultiHeader.EPPLus
         {
             foreach (var style in _namedStyles.Keys)
             {
-                //The header sytyle is built separately and it is applied to all header rows, so we need to make sure it is not overridden by a user defined style with the same name. 
                 if (style != StyleNames.HeaderStyleName && !_writer.NamedStyleExists(style))
                 {
                     _writer.CreateNamedStyle(style, _namedStyles[style]);
                 }
             }
         }
-
     }
 }

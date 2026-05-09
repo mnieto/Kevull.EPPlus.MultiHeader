@@ -1,4 +1,4 @@
-﻿using Kevull.MultiHeader.Code;
+﻿using Kevull.MultiHeader.Core;
 using Kevull.MultiHeader.Core.Columns;
 using System;
 using System.Collections;
