@@ -2,7 +2,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.ClosedXml.Test
 {
-    public class GeneralConfigurationOptionsTest
+    public class GeneralConfigurationOptionsTest : BaseTest
     {
         [Fact]
         public void ReportStatsAt_TopLeftStartingPoint()

@@ -3,7 +3,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.ClosedXml.Test
 {
-    public class FormatTest
+    public class FormatTest : BaseTest
     {
         [Fact]
         public void PropertiesWithoutChildren_HasVerticalMerge()

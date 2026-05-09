@@ -44,9 +44,9 @@ namespace Kevull.MultiHeader.Core.Columns
         /// Name of a style defined in the Excel workbook
         /// </summary>
         /// <remarks>
-        /// Style names are not checked at configuration time, but in the <see cref="MultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method
+        /// Style names are not checked at configuration time, but in the <see cref="IMultiHeaderReport{T}.GenerateReport(IEnumerable{T})"/> method
         /// You can assign the style name during the column creation or use any existing Style in the Excel file. 
-        /// The <see cref="ConfigurationBuilder{T}.AddNamedStyle(string, Action{OfficeOpenXml.Style.ExcelStyle})"/> is a handy method that wraps the EPPlus <see cref="OfficeOpenXml.ExcelStyles.CreateNamedStyle(string)"/> method
+        /// The <see cref="IConfigurationBuilder{T}.AddNamedStyle(string, Action{CellFormat})"/> method allows you to define reusable named styles.
         /// </remarks>
         public string? StyleName { get; set; }
 

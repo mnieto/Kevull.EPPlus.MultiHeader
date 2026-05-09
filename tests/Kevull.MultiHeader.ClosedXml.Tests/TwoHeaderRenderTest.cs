@@ -2,7 +2,7 @@ using Kevull.MultiHeader.TestCommon;
 
 namespace Kevull.MultiHeader.ClosedXml.Test
 {
-    public class TwoHeaderRenderTest
+    public class TwoHeaderRenderTest : BaseTest
     {
         [Fact]
         public void ComposedObjects_AreRendered_InSecondRow()
